@@ -1,0 +1,69 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+build/
+builds/
+extern/cmake
+/out
+slnx.sqlite
+*.suo
+Debug/
+/squares
+.vs/*
+/**/*.xcodeproj/*
+/**/CMakeScripts/*
+/**/generated/*
+/**/*.build*/*
+CMakeFiles/*
+*.log
+CTestCostData.txt
+*.cmake
+CMakeFiles
+CMakeCache.txt
+DartConfiguration.tcl
+Makefile
+bin/*
+
+*.ipch
+Browse.VC.dylib
+ipch/*
+Browse.VC.db
+*.bin
+.DS_Store
+*.xcuserdatad
+
+extern/*/**
+!extern/*.cmake
+builds
+.vscode/c_cpp_properties.json
+.vscode/settings.json
