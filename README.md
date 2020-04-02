@@ -10,8 +10,8 @@ This c++ library is used to support the generation of seeds, symmetric keys, pub
 Since we include GoogleTest and opencv as submodules, you will need to clone this repository using the ``--recursive`` directory so that the submodule will be downloaded. (If you forgot, use ``git submodule update --init --recursive``.)
 
 ```
-git clone --recursive https://github.com/dicekeys/crypto-seeded.git
-cd crypto-seeded
+git clone --recursive https://github.com/dicekeys/seeded-crypto.git
+cd seeded-crypto
 ```
 
 You will need to set SEEDED_CREATE_AND_RUN_TESTS in order to create/run tests.
@@ -28,7 +28,7 @@ Open this directory in Visual Studio 2019 to automatically build and load tests 
 #### Compiling and running tests on unix/macos
 
 ```
-cd read-keysqr
+cd seeded-crypto
 cmake -B build
 cd build
 make
