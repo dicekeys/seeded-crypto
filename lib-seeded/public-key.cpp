@@ -2,6 +2,7 @@
 #include "github-com-nlohmann-json/json.hpp"
 #include "crypto_box_seal_salted.h"
 #include "convert.hpp"
+#include "lib-seeded.hpp"
 
 namespace PublicKeyJsonFieldName {
   const std::string publicKeyBytesAsHexDigits = "keyBytes";
@@ -21,14 +22,18 @@ PublicKey::PublicKey(const std::string &publicKeyAsJson) :
   PublicKey(create(publicKeyAsJson)) {}
 
 PublicKey PublicKey::create(const std::string &publicKeyAsJson) {
-  nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
-  const std::string publicKeyBytesAsHexDigits = jsonObject.value<std::string>(
-    PublicKeyJsonFieldName::publicKeyBytesAsHexDigits, "");
-  const std::vector<unsigned char> publicKeyBytes = hexStrToByteVector(publicKeyBytesAsHexDigits);
-  const std::string keyDerivationOptionsJson = jsonObject.value<std::string>(
-    PublicKeyJsonFieldName::keyDerivationOptionsJson, ""
+  try {
+    nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
+    const std::string publicKeyBytesAsHexDigits = jsonObject.value<std::string>(
+      PublicKeyJsonFieldName::publicKeyBytesAsHexDigits, "");
+    const std::vector<unsigned char> publicKeyBytes = hexStrToByteVector(publicKeyBytesAsHexDigits);
+    const std::string keyDerivationOptionsJson = jsonObject.value<std::string>(
+      PublicKeyJsonFieldName::keyDerivationOptionsJson, ""
     );
-  return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
+    return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
+  } catch (std::exception e) {
+    throw JsonParsingException(e.what());
+  }
 }
 
 const std::string PublicKey::toJson(

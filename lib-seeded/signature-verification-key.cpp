@@ -1,10 +1,11 @@
 #include "github-com-nlohmann-json/json.hpp"
 #include "signature-verification-key.hpp"
+#include "exceptions.hpp"
 #include "convert.hpp"
 #include <stdexcept>
 
 namespace SignatureVerificationKeyJsonFieldName {
-  const std::string verificationKeyBytesAsHexDigits = "verificationKeyBytesAsHexDigits";
+  const std::string verificationKeyBytesAsHexDigits = "keyBytes";
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
@@ -21,14 +22,18 @@ SignatureVerificationKey::SignatureVerificationKey(const std::string &verificati
  SignatureVerificationKey(create(verificationKeyAsJson)) {}
 
 SignatureVerificationKey SignatureVerificationKey::create(const std::string& signatureVerificationKeyAsJson) {
- nlohmann::json jsonObject = nlohmann::json::parse(signatureVerificationKeyAsJson);
- const std::string verificationKeyBytesAsHexDigits = jsonObject.value<std::string>(
-   SignatureVerificationKeyJsonFieldName::verificationKeyBytesAsHexDigits, "");
- const std::vector<unsigned char> verificationKeyBytes = hexStrToByteVector(verificationKeyBytesAsHexDigits);
- const std::string keyDerivationOptionsJson = jsonObject.value<std::string>(
-   SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson, ""
-   );
- return SignatureVerificationKey(verificationKeyBytes, keyDerivationOptionsJson);
+  try {
+     nlohmann::json jsonObject = nlohmann::json::parse(signatureVerificationKeyAsJson);
+     const std::string verificationKeyBytesAsHexDigits = jsonObject.value<std::string>(
+       SignatureVerificationKeyJsonFieldName::verificationKeyBytesAsHexDigits, "");
+     const std::vector<unsigned char> verificationKeyBytes = hexStrToByteVector(verificationKeyBytesAsHexDigits);
+     const std::string keyDerivationOptionsJson = jsonObject.value<std::string>(
+       SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson, ""
+       );
+     return SignatureVerificationKey(verificationKeyBytes, keyDerivationOptionsJson);
+  } catch (std::exception e) {
+    throw JsonParsingException(e.what());
+  }
 }
 
 const std::string SignatureVerificationKey::toJson(
