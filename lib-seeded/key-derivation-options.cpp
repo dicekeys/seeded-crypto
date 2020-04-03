@@ -217,7 +217,7 @@ KeyDerivationOptions::KeyDerivationOptions(
       hashFunctionImplemenation = new HashFunctionBlake2b();
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Argon2id) {
       hashFunctionImplemenation = new HashFunctionArgon2id(hashFunctionIterations, hashFunctionMemoryLimit);
-    } else if (algorithm == KeyDerivationOptionsJson::HashFunction::Scrypt) {
+    } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Scrypt) {
       hashFunctionImplemenation = new HashFunctionScrypt(hashFunctionIterations, hashFunctionMemoryLimit);
     } else {
       throw std::invalid_argument("Invalid hashFunction");

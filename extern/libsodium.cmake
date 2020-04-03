@@ -28,7 +28,7 @@ project("sodium")
 
 option(SODIUM_MINIMAL "Only compile the minimum set of functions required for the high-level API" OFF)
 option(SODIUM_ENABLE_BLOCKING_RANDOM "Enable this switch only if /dev/urandom is totally broken on the target platform" OFF)
-option(SODIUM_PRETEND_TO_BE_CONFIGURED "Silence warnings about build system not being properly configured" OFF)
+option(SODIUM_PRETEND_TO_BE_CONFIGURED "Silence warnings about build system not being properly configured" ON)
 
 set (SODIUM_SRC_BASE ${LIBSODIUM_REPOSITORY_DIR}/src/libsodium)
 

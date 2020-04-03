@@ -4,7 +4,7 @@
 #include "convert.hpp"
 
 namespace PublicKeyJsonFieldName {
-  const std::string publicKeyBytesAsHexDigits = "publicKeyBytesAsHexDigits";
+  const std::string publicKeyBytesAsHexDigits = "keyBytes";
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 

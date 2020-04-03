@@ -58,7 +58,7 @@ SodiumBuffer FixedOutputLengthHashFunction::hash(
 			SodiumBuffer block(block_size_in_bytes);
 			hash_block(block.data, message, message_length);
 			SodiumBuffer result(hash_length_in_bytes);
-			memcpy_s(result.data, result.length, block.data, block.length);
+			memcpy(result.data, block.data, result.length);
 			return result;
 		} else if (hash_length_in_bytes == block_size_in_bytes) {
 			// When less than a block of bytes is needed, generate one block
@@ -94,8 +94,9 @@ SodiumBuffer FixedOutputLengthHashFunction::hash(
 				// out the number of bytes needed.
 				SodiumBuffer h2(block_size_in_bytes);
 				hash_block(h2.data, h1.data, h1.length);
-				memcpy_s(result.data + bytes_written, result.length - bytes_written, h2.data, h2.length);
+				memcpy(result.data + bytes_written, h2.data, result.length - bytes_written);
 			}
+			return result;
 		}
 	}
 

@@ -2,10 +2,10 @@
 
 #pragma warning( disable : 26812 )
 #include <cassert>
-#include "hash-functions.hpp"
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
 #include "./externally-generated/key-derivation-parameters.hpp"
+#include "hash-functions.hpp"
 
 /**
  * Exception classes for key derivation
