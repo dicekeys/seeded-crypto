@@ -4,6 +4,7 @@
 #include "sodium.h"
 #include <memory.h>
 #include <vector>
+#include <string>
 
 class SodiumBuffer {
   public:
@@ -16,7 +17,10 @@ class SodiumBuffer {
 
   SodiumBuffer(const SodiumBuffer &other);
 
+  static SodiumBuffer fromHexString(const std::string hexStr);
+
   ~SodiumBuffer();
 
   const std::vector<unsigned char> toVector() const;
+  const std::string toHexString() const;
 };

@@ -56,8 +56,5 @@ public:
     return keyDerivationOptionsJson; 
   }
 
-protected:
-  static PublicKey create(const std::string &publicKeyAsJson);
-
 };
 

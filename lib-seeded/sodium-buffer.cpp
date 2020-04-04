@@ -1,8 +1,10 @@
-#include "sodium-buffer.hpp"
-#include "sodium-initializer.hpp"
 #include <sodium.h>
 #include <memory.h>
 #include <vector>
+#include <stdexcept>
+#include "sodium-buffer.hpp"
+#include "sodium-initializer.hpp"
+#include "convert.hpp"
 
 /*
 Wrap sodium_malloc to ensure that memory is allocated on an 8-byte boundary
@@ -47,3 +49,32 @@ const std::vector<unsigned char> SodiumBuffer::toVector() const {
     return v;
 }
 
+const std::string SodiumBuffer::toHexString() const {
+    constexpr char hexDigits[] = {
+      '0', '1', '2', '3', '4', '5', '6', '7',
+      '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+    };
+
+  std::string hexString(length * 2, ' ');
+  for (int i = 0; i < length; i++) {
+    unsigned char b = data[i];
+    hexString[2 * i] = hexDigits[b >> 4];
+    hexString[2 * i + 1] = hexDigits[b & 0xf];
+  }
+  return hexString;
+}
+
+SodiumBuffer SodiumBuffer::fromHexString(const std::string hexStr) {
+    if (hexStr.length() >= 2 && hexStr[1] == 'x' && hexStr[0] == '0') {
+        // Ignore prefix '0x'
+        return hexStrToByteVector(hexStr.substr(2));
+    }
+    if (hexStr.length() % 2 == 1) {
+        throw std::invalid_argument("Invalid hex string length");
+    }
+    SodiumBuffer buffer(hexStr.length() / 2);
+    for (size_t i = 0; i < buffer.length; i++) {
+        buffer.data[i] = (parseHexChar(hexStr[2 * i]) << 4) | parseHexChar(hexStr[2 * i + 1]);
+    }
+    return buffer;
+}

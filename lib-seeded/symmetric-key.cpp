@@ -20,19 +20,29 @@ void _crypto_secretbox_nonce_salted(
     crypto_generichash_final(&st, nonce, crypto_box_NONCEBYTES);
 }
 
-SymmetricKey::  SymmetricKey(
-  const SodiumBuffer& _key
-) : key(_key) {
-  if (key.length != crypto_secretbox_KEYBYTES) {
+SymmetricKey::SymmetricKey(
+  const SodiumBuffer& _keyBytes,
+  const std::string _keyDerivationOptionsJson
+) : keyBytes(_keyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
+  if (keyBytes.length != crypto_secretbox_KEYBYTES) {
     throw std::invalid_argument("Invalid key length");
   }
 }
 
 SymmetricKey::SymmetricKey(
+  const SymmetricKey &other
+) : SymmetricKey(other.keyBytes, other.keyDerivationOptionsJson) {}
+
+SymmetricKey::SymmetricKey(
   const std::string& seedString,
   const std::string& _keyDerivationOptionsJson
 ) : SymmetricKey(
-  generateSeed(seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::KeyType::Symmetric,crypto_secretbox_KEYBYTES)
+  generateSeed(
+    seedString,
+    _keyDerivationOptionsJson,
+    KeyDerivationOptionsJson::KeyType::Symmetric,crypto_secretbox_KEYBYTES
+  ),
+  _keyDerivationOptionsJson
 ) {}
 
 const std::vector<unsigned char> SymmetricKey::seal(
@@ -51,7 +61,7 @@ const std::vector<unsigned char> SymmetricKey::seal(
 
   // Write a nonce derived from the message and symmeetric key
   _crypto_secretbox_nonce_salted(
-    noncePtr, key.data, message, messageLength,
+    noncePtr, keyBytes.data, message, messageLength,
     postDecryptionInstructionsJson.c_str(), postDecryptionInstructionsJson.length());
   
   // Create the ciphertext as a secret box
@@ -60,7 +70,7 @@ const std::vector<unsigned char> SymmetricKey::seal(
     message,
     messageLength,
     noncePtr,
-    key.data
+    keyBytes.data
   );
 
   return ciphertext;
@@ -87,11 +97,11 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
   const unsigned char* secretBoxStartPtr = noncePtr + crypto_secretbox_NONCEBYTES;
 
   const int result = crypto_secretbox_open_easy(
-        plaintextBuffer.data,
-        secretBoxStartPtr,
+    plaintextBuffer.data,
+    secretBoxStartPtr,
         ciphertextLength - crypto_secretbox_NONCEBYTES,
-        noncePtr,
-        key.data
+    noncePtr,
+    keyBytes.data
       );
    if (result != 0) {
      throw CryptographicVerificationFailure("Symmetric key unseal failed: the key or post-decryption instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
@@ -101,7 +111,7 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
   // postDecryptionInstructionsJson is valid 
   unsigned char recalculatedNonce[crypto_secretbox_NONCEBYTES];
   _crypto_secretbox_nonce_salted(
-    recalculatedNonce, key.data, plaintextBuffer.data, plaintextBuffer.length,
+    recalculatedNonce, keyBytes.data, plaintextBuffer.data, plaintextBuffer.length,
     postDecryptionInstructionsJson.c_str(), postDecryptionInstructionsJson.length()
   );
   if (memcmp(recalculatedNonce, noncePtr, crypto_secretbox_NONCEBYTES) != 0) {
@@ -125,3 +135,39 @@ const SodiumBuffer SymmetricKey::unseal(
 ) const {
   return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructionsJson);
 }
+
+
+namespace SymmetricKeyJsonField {
+  const std::string keyBytes = "keyBytes";
+  const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+}
+
+SymmetricKey constructSymmetricKeyFromJson(
+  const std::string& symmetricKeyAsJson
+) {
+  try {
+    nlohmann::json jsonObject = nlohmann::json::parse(symmetricKeyAsJson);
+    return SymmetricKey(
+      SodiumBuffer::fromHexString(jsonObject.value(SymmetricKeyJsonField::keyBytes, "")),
+      jsonObject.value(SymmetricKeyJsonField::keyDerivationOptionsJson, "")
+    );
+  } catch (std::exception e) {
+    throw JsonParsingException(e.what());
+  }
+}
+
+SymmetricKey::SymmetricKey(
+  const std::string& _symmetricKeyAsJson
+) : SymmetricKey(constructSymmetricKeyFromJson(_symmetricKeyAsJson)) {}
+
+const std::string SymmetricKey::toJson(
+  int indent,
+  const char indent_char
+) const {
+  nlohmann::json asJson;
+  asJson[SymmetricKeyJsonField::keyBytes] = keyBytes.toHexString();
+  if (keyDerivationOptionsJson.size() > 0) {
+    asJson[SymmetricKeyJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
+  }
+  return asJson.dump(indent, indent_char);
+};

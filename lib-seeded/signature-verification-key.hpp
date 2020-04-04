@@ -75,8 +75,5 @@ public:
     return keyDerivationOptionsJson; 
   }
 
-  
-  protected:
-    static SignatureVerificationKey create(const std::string &signatureVerificationKeyAsJson);
 };
 

@@ -1,5 +1,5 @@
-#include "public-key.hpp"
 #include "github-com-nlohmann-json/json.hpp"
+#include "public-key.hpp"
 #include "crypto_box_seal_salted.h"
 #include "convert.hpp"
 #include "lib-seeded.hpp"
@@ -18,23 +18,21 @@ PublicKey::PublicKey(
     }
   }
 
-PublicKey::PublicKey(const std::string &publicKeyAsJson) :
-  PublicKey(create(publicKeyAsJson)) {}
-
-PublicKey PublicKey::create(const std::string &publicKeyAsJson) {
+PublicKey constructPublicKeyFromJson(const std::string &publicKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
-    const std::string publicKeyBytesAsHexDigits = jsonObject.value<std::string>(
-      PublicKeyJsonFieldName::publicKeyBytesAsHexDigits, "");
-    const std::vector<unsigned char> publicKeyBytes = hexStrToByteVector(publicKeyBytesAsHexDigits);
-    const std::string keyDerivationOptionsJson = jsonObject.value<std::string>(
-      PublicKeyJsonFieldName::keyDerivationOptionsJson, ""
+    return PublicKey(
+      hexStrToByteVector(jsonObject.value<std::string>(PublicKeyJsonFieldName::publicKeyBytesAsHexDigits, "")),
+      jsonObject.value<std::string>(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
-    return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
   } catch (std::exception e) {
     throw JsonParsingException(e.what());
   }
 }
+
+PublicKey::PublicKey(const std::string &publicKeyAsJson) :
+  PublicKey(constructPublicKeyFromJson(publicKeyAsJson)) {}
+
 
 const std::string PublicKey::toJson(
   int indent,

@@ -4,12 +4,22 @@
 #include "sodium-buffer.hpp"
 
 class SymmetricKey {
-  SodiumBuffer key;
 
   public:
+  const SodiumBuffer keyBytes;
+  const std::string keyDerivationOptionsJson;
 
   SymmetricKey(
-    const SodiumBuffer& _key
+    const SodiumBuffer& _key,
+    std::string keyDerivationOptionsJson
+  );
+
+  SymmetricKey(
+    const SymmetricKey &other
+  );
+
+  SymmetricKey(
+    const std::string& symmetricKeyAsJson
   );
 
   SymmetricKey(
@@ -50,6 +60,11 @@ class SymmetricKey {
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
     const std::string& postDecryptionInstructionsJson = ""
+  ) const;
+
+  const std::string toJson(
+    int indent = -1,
+    const char indent_char = ' '
   ) const;
 
 protected:

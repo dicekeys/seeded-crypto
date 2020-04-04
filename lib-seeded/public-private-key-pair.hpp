@@ -1,14 +1,14 @@
 #pragma once
 
+#include "sodium-buffer.hpp"
 #include "public-key.hpp"
 
 class PublicPrivateKeyPair {
-protected:
+public:
   const SodiumBuffer secretKey;
   const std::vector<unsigned char> publicKeyBytes;
   const std::string keyDerivationOptionsJson;
 
-public:
   PublicPrivateKeyPair(
     const SodiumBuffer secretKey,
     const std::vector<unsigned char> publicKeyBytes,
@@ -25,6 +25,8 @@ public:
     const std::string& keyDerivationOptionsJson
   );
 
+  PublicPrivateKeyPair(const std::string &publicPrivateKeyPairAsJson);
+
   PublicPrivateKeyPair(
     const PublicPrivateKeyPair& other
   );
@@ -40,6 +42,11 @@ public:
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
     const std::string& postDecryptionInstructionsJson = ""
+  ) const;
+
+  const std::string toJson(
+    int indent = -1,
+    const char indent_char = ' '
   ) const;
 
 };

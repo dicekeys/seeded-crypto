@@ -1,7 +1,9 @@
+#include "github-com-nlohmann-json/json.hpp"
 #include "public-private-key-pair.hpp"
 #include "crypto_box_seal_salted.h"
 #include "key-derivation-options.hpp"
 #include "generate-seed.hpp"
+#include "convert.hpp"
 
 PublicPrivateKeyPair::PublicPrivateKeyPair(
     const SodiumBuffer _secretKey,
@@ -12,7 +14,6 @@ PublicPrivateKeyPair::PublicPrivateKeyPair(
     publicKeyBytes(_publicKeyBytes),
     keyDerivationOptionsJson(_keyDerivationOptionsJson)
     {}
-
 
 PublicPrivateKeyPair::PublicPrivateKeyPair(
   const SodiumBuffer &seedBuffer,
@@ -76,3 +77,41 @@ const SodiumBuffer PublicPrivateKeyPair::unseal(
 const PublicKey PublicPrivateKeyPair::getPublicKey() const {
   return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
 }
+
+
+/////
+//  JSON
+////
+namespace PublicPrivateKeyPairJsonField {
+  const std::string publicKeyBytes = "publicKeyBytes";
+  const std::string secretKeyBytes = "secretKeyBytes";
+  const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+}
+
+PublicPrivateKeyPair constructPublicPrivateKeyPairFromJson(
+  const std::string &publicPrivateKeyPairAsJson
+) {
+  try {
+    nlohmann::json jsonObject = nlohmann::json::parse(publicPrivateKeyPairAsJson);
+    return PublicPrivateKeyPair(
+      SodiumBuffer::fromHexString(jsonObject.value(PublicPrivateKeyPairJsonField::secretKeyBytes, "")),
+      hexStrToByteVector(jsonObject.value(PublicPrivateKeyPairJsonField::publicKeyBytes, "")),
+      jsonObject.value(PublicPrivateKeyPairJsonField::keyDerivationOptionsJson, ""));
+  } catch (std::exception e) {
+    throw JsonParsingException(e.what());
+  }
+}
+
+PublicPrivateKeyPair::PublicPrivateKeyPair(const std::string &publicPrivateKeyPairAsJson) :
+  PublicPrivateKeyPair(constructPublicPrivateKeyPairFromJson(publicPrivateKeyPairAsJson)) {}
+
+const std::string PublicPrivateKeyPair::toJson(
+  int indent,
+  const char indent_char
+) const {
+  nlohmann::json asJson;
+  asJson[PublicPrivateKeyPairJsonField::secretKeyBytes] = secretKey.toHexString();
+  asJson[PublicPrivateKeyPairJsonField::publicKeyBytes] = toHexStr(publicKeyBytes);
+  asJson[PublicPrivateKeyPairJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
+  return asJson.dump(indent, indent_char);
+};

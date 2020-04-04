@@ -5,10 +5,12 @@
 
 class SigningKey {
 protected:
-  const SodiumBuffer signingKey;
-  const std::string keyDerivationOptionsJson;
+  std::vector<unsigned char> signatureVerificationKeyBytes;
 
 public:
+  const SodiumBuffer signingKeyBytes;
+  const std::string keyDerivationOptionsJson;
+
   SigningKey(
     const SigningKey& other
   );
@@ -19,9 +21,21 @@ public:
   );
 
   SigningKey(
+    const SodiumBuffer &signingKey,
+    const std::vector<unsigned char> &signatureVerificationKey,
+    const std::string &keyDerivationOptionsJson
+  );
+
+  SigningKey(
     const std::string& seedString,
     const std::string& keyDerivationOptionsJson
   );
+
+  SigningKey(
+    const std::string& signingKeyAsJson
+  );
+
+  const std::vector<unsigned char> getSignatureVerificationKeyBytes();
 
   const SignatureVerificationKey getSignatureVerificationKey() const;
 
@@ -33,5 +47,12 @@ public:
   const std::vector<unsigned char> generateSignature(
     const std::vector<unsigned char> &message
   ) const;
+
+  const std::string toJson(
+    bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater = true,
+    int indent = -1,
+    const char indent_char = ' '
+  ) const;
+
 
 };
