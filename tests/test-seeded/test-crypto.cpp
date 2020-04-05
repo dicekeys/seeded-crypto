@@ -96,13 +96,14 @@ TEST(PublicPrivateKeyPair, ConvertsToJsonAndBack) {
 	const PublicPrivateKeyPair replica(json);
 	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPublicPrivateKeyPair.publicKeyBytes));
+	ASSERT_EQ(replica.secretKey.toHexString(), testPublicPrivateKeyPair.secretKey.toHexString());
 }
 
 
 TEST(PublicKey, ConvertsToJsonAndBack) {
 	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
 	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
-
+	
 	const std::string gpkJson = testPublicKey.toJson(1, '\t');
 	const PublicKey gpk2(gpkJson);
 	ASSERT_EQ(gpk2.getKeyDerivationOptionsJson(), defaultTestPublicKeyDerivationOptionsJson);
@@ -124,31 +125,32 @@ TEST(PublicKey, EncryptsAndDecrypts) {
 
 
 TEST(SigningKey, GetsSigningKey) {
-	const SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	ASSERT_EQ(testSignatureVerificationKey.getKeyBytesAsHexDigits().length(), 64);
 }
 
 TEST(SigningKey, GetsSigningKeyFromEmptyOptions) {
-	const SigningKey testSigningKey(orderedTestKey, "{}");
+	SigningKey testSigningKey(orderedTestKey, "{}");
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	ASSERT_EQ(testSignatureVerificationKey.getKeyBytesAsHexDigits().length(), 64);
 }
 
-TEST(SigningKey, SigningKeyConvertsToJsonAndBack) {
-	const SigningKey testKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+TEST(SigningKey, ConvertsToJsonAndBack) {
+	SigningKey testKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
 
-	const std::string json = testKey.toJson(1, '\t');
-	const SigningKey gpk2(json);
+	const std::string json = testKey.toJson(true, 1, '\t');
+	SigningKey gpk2(json);
 	ASSERT_EQ(gpk2.keyDerivationOptionsJson, defaultTestSigningKeyDerivationOptionsJson);
 	ASSERT_STREQ(gpk2.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
+	ASSERT_STREQ(toHexStr(gpk2.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 }
 
 
 TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
-	const SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	const std::string gpkJson = testSignatureVerificationKey.toJson(1, '\t');
@@ -158,7 +160,7 @@ TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
 }
 
 TEST(SigningKey, Verification) {
-	const SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };

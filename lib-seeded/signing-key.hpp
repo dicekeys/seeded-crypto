@@ -37,7 +37,7 @@ public:
 
   const std::vector<unsigned char> getSignatureVerificationKeyBytes();
 
-  const SignatureVerificationKey getSignatureVerificationKey() const;
+  const SignatureVerificationKey getSignatureVerificationKey();
 
   const std::vector<unsigned char> generateSignature(
     const unsigned char* message,

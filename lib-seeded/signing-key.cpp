@@ -86,10 +86,8 @@ const std::vector<unsigned char> SigningKey::getSignatureVerificationKeyBytes() 
   return signatureVerificationKeyBytes;
 }
 
-const SignatureVerificationKey SigningKey::getSignatureVerificationKey() const {
-  std::vector<unsigned char> pk(crypto_sign_PUBLICKEYBYTES);
-  crypto_sign_ed25519_sk_to_pk(pk.data(), signingKeyBytes.data);
-  return SignatureVerificationKey(pk, keyDerivationOptionsJson);
+const SignatureVerificationKey SigningKey::getSignatureVerificationKey() {
+  return SignatureVerificationKey(getSignatureVerificationKeyBytes(), keyDerivationOptionsJson);
 }
 
 
@@ -116,7 +114,8 @@ const std::string SigningKey::toJson(
 ) const {
   nlohmann::json asJson;
   asJson[SigningKeyJsonField::signingKeyBytes] = signingKeyBytes.toHexString();
-  if (!minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater) {
+  if (signatureVerificationKeyBytes.size() > 0 &&
+      !minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater) {
     asJson[SigningKeyJsonField::signatureVerificationKeyBytes] =
       toHexStr(signatureVerificationKeyBytes);
   }
