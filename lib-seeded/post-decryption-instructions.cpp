@@ -1,6 +1,7 @@
 
 #include <cassert>
 #include <exception>
+#include "exceptions.hpp"
 #include "post-decryption-instructions.hpp"
 
 PostDecryptionInstructions::PostDecryptionInstructions(
@@ -12,22 +13,27 @@ PostDecryptionInstructions::PostDecryptionInstructions(
   }
   // Use the nlohmann::json library to read the JSON-encoded
   // key generation options.
-  nlohmann::json decryptionOptionsObject =
-    nlohmann::json::parse(postDecryptionInstructionsJson);
+  try {
+    nlohmann::json decryptionOptionsObject =
+      nlohmann::json::parse(postDecryptionInstructionsJson);
+  
+    clientApplicationIdMustHavePrefix =
+      decryptionOptionsObject.value<const std::vector<std::string>>(
+        DecryptionRestrictionsJson::FieldNames::androidPackagePrefixesAllowed,
+        // Default to empty list containing the empty string, which is a prefix of all strings
+        {""}
+      );
 
-  clientApplicationIdMustHavePrefix =
-    decryptionOptionsObject.value<const std::vector<std::string>>(
-      DecryptionRestrictionsJson::FieldNames::androidPackagePrefixesAllowed,
-      // Default to empty list containing the empty string, which is a prefix of all strings
-      {""}
-    );
+    userMustAcknowledgeThisMessage =
+      decryptionOptionsObject.value<std::string>(
+        DecryptionRestrictionsJson::FieldNames::userMustAcknowledgeThisMessage,
+        // Default to empty string
+        ""
+      );
+  } catch (nlohmann::json::exception e) {
+    throw JsonParsingException(e.what());
+  }
 
-  userMustAcknowledgeThisMessage =
-    decryptionOptionsObject.value<std::string>(
-      DecryptionRestrictionsJson::FieldNames::userMustAcknowledgeThisMessage,
-      // Default to empty string
-      ""
-    );
 }
 
 PostDecryptionInstructions::PostDecryptionInstructions(

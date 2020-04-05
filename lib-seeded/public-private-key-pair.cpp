@@ -97,7 +97,7 @@ PublicPrivateKeyPair constructPublicPrivateKeyPairFromJson(
       SodiumBuffer::fromHexString(jsonObject.value(PublicPrivateKeyPairJsonField::secretKeyBytes, "")),
       hexStrToByteVector(jsonObject.value(PublicPrivateKeyPairJsonField::publicKeyBytes, "")),
       jsonObject.value(PublicPrivateKeyPairJsonField::keyDerivationOptionsJson, ""));
-  } catch (std::exception e) {
+  } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
 }

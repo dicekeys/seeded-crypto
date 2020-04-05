@@ -29,7 +29,7 @@ class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
 class InvalidKeyDerivationOptionValueException: public std::invalid_argument
 {
 	public:
-	InvalidKeyDerivationOptionValueException(const char* what) :
+	InvalidKeyDerivationOptionValueException(const char* what = "Invalid key derivation options") :
 		std::invalid_argument(what) {};
 };
 

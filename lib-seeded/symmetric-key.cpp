@@ -151,7 +151,7 @@ SymmetricKey SymmetricKey::fromJson(
       SodiumBuffer::fromHexString(jsonObject.value(SymmetricKeyJsonField::keyBytes, "")),
       jsonObject.value(SymmetricKeyJsonField::keyDerivationOptionsJson, "")
     );
-  } catch (std::exception e) {
+  } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
 }

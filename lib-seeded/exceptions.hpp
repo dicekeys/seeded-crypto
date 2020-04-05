@@ -5,13 +5,13 @@
 class CryptographicVerificationFailure: public std::invalid_argument
 {
 public:
-	CryptographicVerificationFailure(const char* what) :
-		std::invalid_argument(what) {};
+	CryptographicVerificationFailure(const char* m = NULL) :
+		std::invalid_argument(m ? m : "Cryptographic verification failure") {};
 };
 
 class JsonParsingException: public std::invalid_argument
 {
 public:
-	JsonParsingException(const char* what) :
-		std::invalid_argument(what) {};
+	JsonParsingException(const char* m = NULL) :
+		std::invalid_argument(m ? m : "Exception in parsing JSON") {};
 };

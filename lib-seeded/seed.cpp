@@ -34,7 +34,7 @@ Seed Seed::fromJson(const std::string &seedAsJson) {
       SodiumBuffer::fromHexString(jsonObject.value(SeedJsonFields::seedBytes, "")),
       jsonObject.value(SeedJsonFields::keyDerivationOptionsJson, "")
     );
-  } catch (std::exception e) {
+  } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
 }

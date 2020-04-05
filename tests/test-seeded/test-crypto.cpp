@@ -30,7 +30,7 @@ TEST(SeedGeneration, FidoUseCase) {
 		orderedTestKey,
 		kdo
 	);
-	const std::string seedAsHex = toHexStr(seed.reveal().toVector());
+	const std::string seedAsHex = toHexStr(seed.seedBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
 		"6a7c4bf1355de9689f1c7148c304eda43d5b92dabdf00d83b488ed1d3f054f55a7ff32bf05c2a8e030aa66780f983b989b29d376498a1100865c0ebc095c1982b3079645ad9329f80248a69880c74c9bf087ef39ccbbc0cd1cdf587f8a79c6a5"
@@ -78,14 +78,14 @@ TEST(PublicKey, GetsPublicKey) {
 	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
 	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
 
-	ASSERT_EQ(testPublicKey.getPublicKeyBytesAsHexDigits().length(), 64);
+	ASSERT_EQ(testPublicKey.getPublicKeyBytes().size(), 32);
 }
 
 TEST(PublicKey, GetsPublicKeyFromEmptyOptions) {
 	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, "{}");
 	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
 
-	ASSERT_EQ(testPublicKey.getPublicKeyBytesAsHexDigits().length(), 64);
+	ASSERT_EQ(toHexStr(testPublicKey.getPublicKeyBytes()).length(), 64);
 }
 
 TEST(PublicKey, ConvertsToJsonAndBack) {
@@ -95,7 +95,7 @@ TEST(PublicKey, ConvertsToJsonAndBack) {
 	const std::string gpkJson = testPublicKey.toJson(1, '\t');
 	const PublicKey gpk2(gpkJson);
 	ASSERT_EQ(gpk2.getKeyDerivationOptionsJson(), defaultTestPublicKeyDerivationOptionsJson);
-	ASSERT_EQ(gpk2.getPublicKeyBytesAsHexDigits(), testPublicKey.getPublicKeyBytesAsHexDigits());
+	ASSERT_EQ(toHexStr(gpk2.getPublicKeyBytes()), toHexStr(testPublicKey.getPublicKeyBytes()));
 }
 
 TEST(PublicKey, EncryptsAndDecrypts) {
@@ -126,7 +126,17 @@ TEST(SigningKey, GetsSigningKeyFromEmptyOptions) {
 	ASSERT_EQ(testSignatureVerificationKey.getKeyBytesAsHexDigits().length(), 64);
 }
 
-TEST(SigningKey, ConvertsToJsonAndBack) {
+TEST(SigningKey, SigningKeyConvertsToJsonAndBack) {
+	const SigningKey testKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+
+	const std::string json = testKey.toJson(1, '\t');
+	const SigningKey gpk2(json);
+	ASSERT_EQ(gpk2.keyDerivationOptionsJson, defaultTestSigningKeyDerivationOptionsJson);
+	ASSERT_STREQ(gpk2.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
+}
+
+
+TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
 	const SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
@@ -163,6 +173,16 @@ TEST(SymmetricKey, EncryptsAndDecryptsWithoutPostDecryptionInstructions) {
 }
 
 
+
+
+TEST(SymmetricKey, ConvertsToJsonAndBack) {
+	const SymmetricKey testKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+
+	const std::string json = testKey.toJson(1, '\t');
+	const SymmetricKey gpk2(json);
+	ASSERT_EQ(gpk2.keyDerivationOptionsJson, defaultTestSymmetricKeyDerivationOptionsJson);
+	ASSERT_STREQ(gpk2.keyBytes.toHexString().c_str(), testKey.keyBytes.toHexString().c_str());
+}
 
 TEST(SymmetricKey, EncryptsAndDecrypts) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);

@@ -1,14 +1,15 @@
 #pragma once
 
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include "sodium-buffer.hpp"
 
 
-class InvalidHexCharacterException: public std::invalid_argument
+class InvalidHexCharacterException : public std::invalid_argument
 {
   public:
-  InvalidHexCharacterException(const char* what =
+  explicit InvalidHexCharacterException(const char* what =
     "Could not parse non-hex character"
   ) :
     std::invalid_argument(what) {}
@@ -27,4 +28,3 @@ inline unsigned char parseHexChar(char c) {
 
 std::string toHexStr(const std::vector<unsigned char> bytes);
 std::vector<unsigned char> hexStrToByteVector(const std::string hexStr);
-SodiumBuffer hexStrToSodiumBuffer(const std::string hexStr);

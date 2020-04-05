@@ -7,10 +7,12 @@
 
 class PublicKey {
 protected:
-  const std::vector<unsigned char> publicKeyBytes;
-  const std::string keyDerivationOptionsJson;
+  static PublicKey fromJson(const std::string &publicKeyAsJson);
   
 public:
+  const std::vector<unsigned char> publicKeyBytes;
+  const std::string keyDerivationOptionsJson;
+
   PublicKey(
     const std::vector<unsigned char> &publicKeyBytes,
     const std::string &keyDerivationOptionsJson
@@ -49,8 +51,6 @@ public:
 
 
   const std::vector<unsigned char> getPublicKeyBytes() const;
-
-  const std::string getPublicKeyBytesAsHexDigits() const;
 
   const std::string getKeyDerivationOptionsJson() const {
     return keyDerivationOptionsJson; 

@@ -18,20 +18,20 @@ PublicKey::PublicKey(
     }
   }
 
-PublicKey constructPublicKeyFromJson(const std::string &publicKeyAsJson) {
+PublicKey PublicKey::fromJson(const std::string &publicKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
     return PublicKey(
       hexStrToByteVector(jsonObject.value<std::string>(PublicKeyJsonFieldName::keyBytes, "")),
       jsonObject.value<std::string>(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
-  } catch (std::exception e) {
+  } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
 }
 
 PublicKey::PublicKey(const std::string &publicKeyAsJson) :
-  PublicKey(constructPublicKeyFromJson(publicKeyAsJson)) {}
+  PublicKey(PublicKey::fromJson(publicKeyAsJson)) {}
 
 
 const std::string PublicKey::toJson(
@@ -39,8 +39,7 @@ const std::string PublicKey::toJson(
   const char indent_char
 ) const {
 	nlohmann::json asJson;  
-  asJson[PublicKeyJsonFieldName::keyBytes] =
-    getkeyBytes();
+  asJson[PublicKeyJsonFieldName::keyBytes] = toHexStr(publicKeyBytes);
   asJson[PublicKeyJsonFieldName::keyDerivationOptionsJson] =
     keyDerivationOptionsJson;
   return asJson.dump(indent, indent_char);
@@ -105,9 +104,4 @@ const std::vector<unsigned char> PublicKey::seal(
 const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
 ) const {
   return publicKeyBytes;
-}
-
-const std::string PublicKey::getkeyBytes(
-) const {
-  return toHexStr(publicKeyBytes);
 }

@@ -48,9 +48,10 @@ SigningKey constructSigningKeyFromJson(
       hexStrToByteVector(jsonObject.value(SigningKeyJsonField::signatureVerificationKeyBytes, "")),
       jsonObject.value(SigningKeyJsonField::keyDerivationOptionsJson, "")
     );
-  } catch (std::exception e) {
+  } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
+
 }
 
 SigningKey::SigningKey(
