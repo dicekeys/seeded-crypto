@@ -76,10 +76,10 @@ bool SignatureVerificationKey::verify(
   const size_t signatureLength
 ) {
   if (signatureVerificationKeyLength != crypto_sign_PUBLICKEYBYTES) {
-    throw std::invalid_argument("Invalid signature-verification key size");
+    throw KeyLengthException("Invalid signature-verification key size");
   }
   if (signatureLength != crypto_sign_BYTES) {
-    throw std::invalid_argument("Invalid signature size");
+    return false;
   }
   return crypto_sign_verify_detached(signature, message, messageLength, signatureVerificationKey) == 0;
 }

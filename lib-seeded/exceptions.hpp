@@ -9,6 +9,14 @@ public:
 		std::invalid_argument(m ? m : "Cryptographic verification failure") {};
 };
 
+class KeyLengthException: public std::invalid_argument
+{
+public:
+	KeyLengthException(const char* m = NULL) :
+		std::invalid_argument(m ? m : "Invalid key length") {};
+};
+
+
 class JsonParsingException: public std::invalid_argument
 {
 public:
