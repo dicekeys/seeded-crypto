@@ -5,7 +5,7 @@
 #include "lib-seeded.hpp"
 
 namespace PublicKeyJsonFieldName {
-  const std::string publicKeyBytesAsHexDigits = "keyBytes";
+  const std::string keyBytes = "keyBytes";
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
@@ -22,7 +22,7 @@ PublicKey constructPublicKeyFromJson(const std::string &publicKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
     return PublicKey(
-      hexStrToByteVector(jsonObject.value<std::string>(PublicKeyJsonFieldName::publicKeyBytesAsHexDigits, "")),
+      hexStrToByteVector(jsonObject.value<std::string>(PublicKeyJsonFieldName::keyBytes, "")),
       jsonObject.value<std::string>(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
   } catch (std::exception e) {
@@ -39,8 +39,8 @@ const std::string PublicKey::toJson(
   const char indent_char
 ) const {
 	nlohmann::json asJson;  
-  asJson[PublicKeyJsonFieldName::publicKeyBytesAsHexDigits] =
-    getPublicKeyBytesAsHexDigits();
+  asJson[PublicKeyJsonFieldName::keyBytes] =
+    getkeyBytes();
   asJson[PublicKeyJsonFieldName::keyDerivationOptionsJson] =
     keyDerivationOptionsJson;
   return asJson.dump(indent, indent_char);
@@ -107,7 +107,7 @@ const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
   return publicKeyBytes;
 }
 
-const std::string PublicKey::getPublicKeyBytesAsHexDigits(
+const std::string PublicKey::getkeyBytes(
 ) const {
   return toHexStr(publicKeyBytes);
 }
