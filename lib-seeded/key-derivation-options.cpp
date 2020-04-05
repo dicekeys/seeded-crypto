@@ -23,8 +23,8 @@
 // ) {}
 
 KeyDerivationOptions::~KeyDerivationOptions() {
-  if (hashFunctionImplemenation) {
-    delete hashFunctionImplemenation;
+  if (hashFunctionImplementation) {
+    delete hashFunctionImplementation;
   }
   // if (keyUseRestrictions) {
   //   delete keyUseRestrictions;
@@ -213,13 +213,13 @@ KeyDerivationOptions::KeyDerivationOptions(
   //   const auto jhashFunction = keyDerivationOptionsObject.at(KeyDerivationOptionsJson::FieldNames::hashFunction);
   //   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunction] = jhashFunction;
     if (hashFunction == KeyDerivationOptionsJson::HashFunction::SHA256) {
-      hashFunctionImplemenation = new HashFunctionSHA256();
+      hashFunctionImplementation = new HashFunctionSHA256();
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::BLAKE2b) {
-      hashFunctionImplemenation = new HashFunctionBlake2b();
+      hashFunctionImplementation = new HashFunctionBlake2b();
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Argon2id) {
-      hashFunctionImplemenation = new HashFunctionArgon2id(hashFunctionIterations, hashFunctionMemoryLimit);
+      hashFunctionImplementation = new HashFunctionArgon2id(hashFunctionIterations, hashFunctionMemoryLimit);
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Scrypt) {
-      hashFunctionImplemenation = new HashFunctionScrypt(hashFunctionIterations, hashFunctionMemoryLimit);
+      hashFunctionImplementation = new HashFunctionScrypt(hashFunctionIterations, hashFunctionMemoryLimit);
     } else {
       throw std::invalid_argument("Invalid hashFunction");
     }

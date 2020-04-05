@@ -46,7 +46,7 @@ public:
 	KeyDerivationOptionsJson::HashFunction hashFunction;
 //	KeyUseRestrictions* keyUseRestrictions;
 //	std::vector<std::string> restrictToClientApplicationsIdPrefixes;
-	HashFunction *hashFunctionImplemenation;
+	HashFunction *hashFunctionImplementation;
 //	bool includeOrientationOfFacesInKey;
 
 	~KeyDerivationOptions();

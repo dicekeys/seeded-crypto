@@ -59,7 +59,7 @@ const SodiumBuffer generateSeed(
 
   // Hash the preimage to create the seed
   SodiumBuffer derivedKey =
-    keyDerivationOptions.hashFunctionImplemenation->hash(
+    keyDerivationOptions.hashFunctionImplementation->hash(
         preimage.data,
         preimage.length,
         keyLengthInBytes
