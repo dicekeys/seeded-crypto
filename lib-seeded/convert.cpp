@@ -7,7 +7,7 @@ constexpr char hexDigits[] = {
   '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
 };
 
-std::string toHexStr(const std::vector<unsigned char> bytes)
+const std::string toHexStr(const std::vector<unsigned char> bytes)
 {
   std::string hexString(bytes.size() * 2, ' ');
   int i = 0;
@@ -18,7 +18,7 @@ std::string toHexStr(const std::vector<unsigned char> bytes)
   return hexString;
 }
 
-std::vector<unsigned char> hexStrToByteVector(const std::string hexStr)
+const std::vector<unsigned char> hexStrToByteVector(const std::string hexStr)
 {
   if (hexStr.length() >= 2 && hexStr[1] == 'x' && hexStr[0] == '0') {
     // Ignore prefix '0x'
@@ -27,7 +27,7 @@ std::vector<unsigned char> hexStrToByteVector(const std::string hexStr)
   if (hexStr.length() % 2 == 1) {
     throw std::invalid_argument("Invalid hex string length");
   }
-  std::vector<unsigned char> byteVector(hexStr.length() / 2);
+  std::vector<unsigned char> byteVector(hexStr.length() / 2, 0);
   for (size_t i = 0; i < byteVector.size(); i++) {
     byteVector[i] = (parseHexChar(hexStr[2 * i]) << 4) | parseHexChar(hexStr[2 * i + 1]);
   }

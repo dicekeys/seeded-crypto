@@ -26,5 +26,5 @@ inline unsigned char parseHexChar(char c) {
   throw InvalidHexCharacterException();
 }
 
-std::string toHexStr(const std::vector<unsigned char> bytes);
-std::vector<unsigned char> hexStrToByteVector(const std::string hexStr);
+const std::string toHexStr(const std::vector<unsigned char> bytes);
+const std::vector<unsigned char> hexStrToByteVector(const std::string hexStr);
