@@ -5,6 +5,7 @@
 
 
 #include "key-derivation-options.hpp"
+#include "exceptions.hpp"
 
 // KeyUseRestrictions::KeyUseRestrictions(
 //   std::vector<std::string> _androidPackagePrefixesAllowed,

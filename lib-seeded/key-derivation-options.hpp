@@ -10,29 +10,6 @@
 /**
  * Exception classes for key derivation
  */
-class ClientNotAuthorizedException: public std::invalid_argument
-{
-	public:
-	ClientNotAuthorizedException(const char* what =
-    "The client is not authorized to use this key"
-  ): std::invalid_argument(what) {};
-};
-
-class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
-{
-	public:
-	InvalidKeyDerivationOptionsJsonException(const char* what =
-		"Invalid JSON key derivation options"
-	):
-		std::invalid_argument(what) {};
-};
-class InvalidKeyDerivationOptionValueException: public std::invalid_argument
-{
-	public:
-	InvalidKeyDerivationOptionValueException(const char* what = "Invalid key derivation options") :
-		std::invalid_argument(what) {};
-};
-
 
 // class KeyUseRestrictions {
 // public:

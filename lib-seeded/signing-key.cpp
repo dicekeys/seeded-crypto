@@ -5,13 +5,22 @@
 #include "convert.hpp"
 
 SigningKey::SigningKey(
-  const SodiumBuffer& _signingKey,
+  const SodiumBuffer& _signingKeyBytes,
   const std::string& _keyDerivationOptionsJson
 ) :
   keyDerivationOptionsJson(_keyDerivationOptionsJson),
-  signingKeyBytes(_signingKey),
+  signingKeyBytes(_signingKeyBytes),
   signatureVerificationKeyBytes(0)
-  {}
+{
+  if (signatureVerificationKeyBytes.size() > 0 &&
+      signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES
+  ) {
+    throw InvalidKeyDerivationOptionValueException("Invalid signature-verification key size");
+  }
+  if (signingKeyBytes.length != crypto_sign_SECRETKEYBYTES) {
+    throw InvalidKeyDerivationOptionValueException("Invalid signing key size");
+  }
+}
 
 SigningKey::SigningKey(
   const SodiumBuffer &_signingKey,

@@ -13,7 +13,14 @@ PublicPrivateKeyPair::PublicPrivateKeyPair(
     secretKey(_secretKey),
     publicKeyBytes(_publicKeyBytes),
     keyDerivationOptionsJson(_keyDerivationOptionsJson)
-    {}
+    {
+    if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
+      throw InvalidKeyDerivationOptionValueException("Invalid public key size");
+    }
+    if (secretKey.length != crypto_box_SECRETKEYBYTES) {
+      throw InvalidKeyDerivationOptionValueException("Invalid private key size for public/private key pair");
+    }
+  }
 
 PublicPrivateKeyPair::PublicPrivateKeyPair(
   const SodiumBuffer &seedBuffer,

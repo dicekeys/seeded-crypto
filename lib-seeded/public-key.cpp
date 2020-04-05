@@ -3,6 +3,7 @@
 #include "crypto_box_seal_salted.h"
 #include "convert.hpp"
 #include "lib-seeded.hpp"
+#include "exceptions.hpp"
 
 namespace PublicKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
@@ -10,11 +11,11 @@ namespace PublicKeyJsonFieldName {
 }
 
 PublicKey::PublicKey(
-    const std::vector<unsigned char> &publicKeyBytes,
-    const std::string &keyDerivationOptionsJson
-  ) : publicKeyBytes(publicKeyBytes), keyDerivationOptionsJson(keyDerivationOptionsJson) {
+    const std::vector<unsigned char> &_publicKeyBytes,
+    const std::string &_keyDerivationOptionsJson
+  ) : publicKeyBytes(_publicKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw std::invalid_argument("Invalid key size exception");
+      throw InvalidKeyDerivationOptionValueException("Invalid key size exception");
     }
   }
 
@@ -22,8 +23,8 @@ PublicKey PublicKey::fromJson(const std::string &publicKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
     return PublicKey(
-      hexStrToByteVector(jsonObject.value<std::string>(PublicKeyJsonFieldName::keyBytes, "")),
-      jsonObject.value<std::string>(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
+      hexStrToByteVector(jsonObject.value(PublicKeyJsonFieldName::keyBytes, "")),
+      jsonObject.value(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
