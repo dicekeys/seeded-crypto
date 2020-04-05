@@ -142,7 +142,7 @@ namespace SymmetricKeyJsonField {
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
-SymmetricKey constructSymmetricKeyFromJson(
+SymmetricKey SymmetricKey::fromJson(
   const std::string& symmetricKeyAsJson
 ) {
   try {
@@ -158,7 +158,7 @@ SymmetricKey constructSymmetricKeyFromJson(
 
 SymmetricKey::SymmetricKey(
   const std::string& _symmetricKeyAsJson
-) : SymmetricKey(constructSymmetricKeyFromJson(_symmetricKeyAsJson)) {}
+) : SymmetricKey(SymmetricKey::fromJson(_symmetricKeyAsJson)) {}
 
 const std::string SymmetricKey::toJson(
   int indent,

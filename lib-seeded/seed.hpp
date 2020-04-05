@@ -4,13 +4,21 @@
 #include <string>
 
 class Seed {
-private:
-  SodiumBuffer seed;
-
 public:
+  const SodiumBuffer seedBytes;
+  const std::string& keyDerivationOptionsJson;
 
   Seed(
-    const SodiumBuffer& seed
+    const Seed &other
+  );
+
+  Seed(
+    const std::string& seedAsJson
+  );
+
+  Seed(
+    const SodiumBuffer& _seedBytes,
+    const std::string& keyDerivationOptionsJson = ""
   );
 
   Seed(
@@ -18,7 +26,16 @@ public:
     const std::string& keyDerivationOptionsJson
   );
 
-  const SodiumBuffer reveal(
+  const std::string toJson(
+    int indent = -1,
+    const char indent_char = ' '
   ) const;
+
+protected:
+
+  // Used by the JSON constructor
+  static Seed fromJson(
+    const std::string& seedAsJson
+  );
 
 };

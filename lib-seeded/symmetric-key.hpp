@@ -68,6 +68,10 @@ class SymmetricKey {
   ) const;
 
 protected:
+
+  static SymmetricKey fromJson(
+    const std::string& symmetricKeyAsJson
+  );
   
   const SodiumBuffer unsealMessageContents(
     const unsigned char* ciphertext,
