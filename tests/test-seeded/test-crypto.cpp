@@ -88,6 +88,17 @@ TEST(PublicKey, GetsPublicKeyFromEmptyOptions) {
 	ASSERT_EQ(toHexStr(testPublicKey.getPublicKeyBytes()).length(), 64);
 }
 
+
+TEST(PublicPrivateKeyPair, ConvertsToJsonAndBack) {
+	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+
+	const std::string json = testPublicPrivateKeyPair.toJson(1, '\t');
+	const PublicPrivateKeyPair replica(json);
+	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
+	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPublicPrivateKeyPair.publicKeyBytes));
+}
+
+
 TEST(PublicKey, ConvertsToJsonAndBack) {
 	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
 	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
