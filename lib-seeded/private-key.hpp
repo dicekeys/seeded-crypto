@@ -93,6 +93,8 @@ public:
    * @param postDecryptionInstructionsJson If this optional value was
    * set during the PublicKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
+   * It can be used to pair a secret (sealed) message with public instructions
+   * about what should happen after the message is unsealed.
    * @return const SodiumBuffer 
    * 
    * @exception CryptographicVerificationFailureException Thrown if the ciphertext

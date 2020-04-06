@@ -108,7 +108,8 @@ class SymmetricKey {
    * @param message The plaintxt message to seal 
    * @param postDecryptionInstructionsJson If this optional string is
    * passed, the same string must be passed to unseal the message.
-   * RefPDI.
+   * It can be used to pair a sealed message with public instructions
+   * about what should happen after the message is unsealed.
    * @return const std::vector<unsigned char> 
    */  
   const std::vector<unsigned char> seal(
@@ -125,6 +126,8 @@ class SymmetricKey {
    * @param postDecryptionInstructionsJson If this optional value was
    * set during the SymmetricKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
+   * It can be used to pair a secret (sealed) message with public instructions
+   * about what should happen after the message is unsealed.
    * @return const SodiumBuffer 
    * 
    * @exception CryptographicVerificationFailureException Thrown if the ciphertext

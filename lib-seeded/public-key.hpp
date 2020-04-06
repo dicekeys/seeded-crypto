@@ -132,8 +132,9 @@ public:
    * @param message The plaintxt message to seal 
    * @param messageLength The length of the plaintext message in bytes
    * @param postDecryptionInstructionsJson If this optional string
-   * in @ref post_decryption_instructions_format is
-   * passed, the same string must be passed to unseal the message.
+   * is passed, the same string must be passed to unseal the message.
+   * It can be used to pair a secret (sealed) message with public instructions
+   * about what should happen after the message is unsealed.
    * @return const std::vector<unsigned char> 
    */
   const std::vector<unsigned char> seal(
