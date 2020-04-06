@@ -44,6 +44,15 @@ public:
     const std::string& postDecryptionInstructionsJson = ""
   ) const;
 
+  /**
+   * @brief Serialize this object to a JSON-formatted string
+   * 
+   * It can be reconstituted by calling the constructor with this string.
+   * 
+   * @param indent The number of characters to indent the JSON (optional)
+   * @param indent_char The character with which to indent the JSON (optional)
+   * @return const std::string
+   */
   const std::string toJson(
     int indent = -1,
     const char indent_char = ' '
