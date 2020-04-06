@@ -3,12 +3,17 @@
 #include <stdexcept>
 
 /**
- * @brief Thrown when a cryptoraphic operation fails
+ * @brief Thrown when a cryptographic operation fails
  * due to keys or data being corrupted, modified, or of incorrect length.
  */
 class CryptographicVerificationFailure: public std::invalid_argument
 {
 public:
+	/**
+	 * @brief Construct by throwing, passing an optional exception message
+	 * 
+	 * @param m The exception message
+	 */
 	CryptographicVerificationFailure(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Cryptographic verification failure") {};
 };
@@ -19,6 +24,11 @@ public:
 class KeyLengthException: public std::invalid_argument
 {
 public:
+	/**
+	 * @brief Construct by throwing, passing an optional exception message
+	 * 
+	 * @param m The exception message
+	 */
 	KeyLengthException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid key length") {};
 };
@@ -29,16 +39,14 @@ public:
 class JsonParsingException: public std::invalid_argument
 {
 public:
+	/**
+	 * @brief Construct by throwing, passing an optional exception message
+	 * 
+	 * @param m The exception message
+	 */
 	JsonParsingException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Exception in parsing JSON") {};
 };
-
-// class ClientNotAuthorizedException: public std::invalid_argument
-// {
-// 	public:
-// 	ClientNotAuthorizedException(const char* m = NULL) :
-// 		std::invalid_argument(m ? m : "The client is not authorized to use this key") {};
-// };
 
 /**
  * @brief Thrown when a keyDerivationOptionsJson string is not in
@@ -47,6 +55,11 @@ public:
 class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
 {
 	public:
+	/**
+	 * @brief Construct by throwing, passing an optional exception message
+	 * 
+	 * @param m The exception message
+	 */
 	InvalidKeyDerivationOptionsJsonException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid JSON key derivation options") {};
 };
@@ -58,6 +71,11 @@ class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
 class InvalidKeyDerivationOptionValueException: public std::invalid_argument
 {
 	public:
+	/**
+	 * @brief Construct by throwing, passing an optional exception message
+	 * 
+	 * @param m The exception message
+	 */
 	InvalidKeyDerivationOptionValueException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid key derivation options") {};
 };

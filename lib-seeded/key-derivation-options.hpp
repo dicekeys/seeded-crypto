@@ -7,32 +7,12 @@
 #include "./externally-generated/key-derivation-parameters.hpp"
 #include "hash-functions.hpp"
 
-/**
- * Exception classes for key derivation
- */
 
-// class KeyUseRestrictions {
-// public:
-// 	std::vector<std::string> androidPackagePrefixesAllowed;
-//   	std::vector<std::string> urlPrefixesAllowed;
-
-// 	KeyUseRestrictions(
-// 		std::vector<std::string> androidPackagePrefixesAllowed,
-// 	  	std::vector<std::string> urlPrefixesAllowed
-// 	);
-
-// 	KeyUseRestrictions(
-// 		const nlohmann::json keyUseRestrictionsObject
-// 	);
-
-// };
-
-
+class KeyDerivationOptions {
 /**
  * This class represents key generation options,
  * provided in JSON format, as an immutable class.
  */
-class KeyDerivationOptions {
 
 private:
 	nlohmann::json keyDerivationOptionsExplicit;

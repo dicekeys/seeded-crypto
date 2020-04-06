@@ -134,7 +134,6 @@ public:
    * this message was, in fact, signed by this key.
    * 
    * @param message The message to _sign_ by generating the signature 
-   * @param messageLength The length of the message.
    * @return const std::vector<unsigned char> A signature, which can
    * be used with the SignatureVerificationKey to prove that this
    * act of signing (this call to generateSignature) took place.

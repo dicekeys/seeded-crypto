@@ -32,6 +32,11 @@
  */
 class PublicKey {
 protected:
+  /**
+   * @brief Internal helper for constructing a PublicKey from a JSON string
+   * 
+   * @param publicKeyAsJson The JSON encoding of a PublicKey
+   */
   static PublicKey fromJson(const std::string &publicKeyAsJson);
   
 public:
@@ -138,7 +143,7 @@ public:
   ) const;
 
   /**
-   * @copydoc PublicKey::seal(const unsigned char*,const size_t,const std::string&) const
+   * @brief Seal a plaintext message
    * 
    * @param message The plaintext message to seal
    * @param postDecryptionInstructionsJson If this optional string is

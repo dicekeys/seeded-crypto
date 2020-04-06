@@ -6,11 +6,11 @@
 // Must come after json.hpp
 #include "./externally-generated/key-derivation-parameters.hpp"
 
+class PostDecryptionInstructions {
 /**
  * This class represents key generation options,
  * provided in JSON format, as an immutable class.
  */
-class PostDecryptionInstructions {
 
 public:
 	std::vector<std::string> clientApplicationIdMustHavePrefix;

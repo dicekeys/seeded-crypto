@@ -82,7 +82,7 @@ class SymmetricKey {
    * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
    */
   SymmetricKey(
-    const std::string& seed,
+    const std::string& seedString,
     const std::string &keyDerivationOptionsJson
   );
 
@@ -169,10 +169,16 @@ class SymmetricKey {
 
 protected:
 
+  /**
+   * @brief Internal implementation of JSON parser for the JSON contructor
+   */
   static SymmetricKey fromJson(
     const std::string& symmetricKeyAsJson
   );
-  
+
+  /**
+   * @brief Internal implementation of unseal
+   */
   const SodiumBuffer unsealMessageContents(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,

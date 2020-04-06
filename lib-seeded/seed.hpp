@@ -64,7 +64,7 @@ public:
    * @brief Derive a seed from an existing secret seed string and a set of
    * key-derivation options in JSON format. RefKDO
    * 
-   * @param secretSeedBytes The secret seed string from which this seed should be
+   * @param secretSeedString The secret seed string from which this seed should be
    * derived. Once the seed is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this seed.
    * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
@@ -90,7 +90,9 @@ public:
 
 protected:
 
-  // Used by the JSON constructor
+  /**
+   * @brief An internal help function to re-constitute a Seed from JSON format
+   */
   static Seed fromJson(
     const std::string& seedAsJson
   );
