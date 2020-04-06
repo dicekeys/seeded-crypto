@@ -6,7 +6,7 @@
  * @brief Thrown when a cryptographic operation fails
  * due to keys or data being corrupted, modified, or of incorrect length.
  */
-class CryptographicVerificationFailure: public std::invalid_argument
+class CryptographicVerificationFailureException: public std::invalid_argument
 {
 public:
 	/**
@@ -14,7 +14,7 @@ public:
 	 * 
 	 * @param m The exception message
 	 */
-	CryptographicVerificationFailure(const char* m = NULL) :
+	CryptographicVerificationFailureException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Cryptographic verification failure") {};
 };
 

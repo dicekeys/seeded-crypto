@@ -127,7 +127,7 @@ class SymmetricKey {
    * be provided to unseal the message or the operation will fail.
    * @return const SodiumBuffer 
    * 
-   * @exception CryptographicVerificationFailure Thrown if the ciphertext
+   * @exception CryptographicVerificationFailureException Thrown if the ciphertext
    * is not valid and cannot be unsealed.
    */
   const SodiumBuffer unseal(
@@ -145,7 +145,7 @@ class SymmetricKey {
    * be provided to unseal the message or the operation will fail.
    * @return const SodiumBuffer 
    * 
-   * @exception CryptographicVerificationFailure Thrown if the ciphertext
+   * @exception CryptographicVerificationFailureException Thrown if the ciphertext
    * is not valid and cannot be unsealed.
    */
   const SodiumBuffer unseal(
