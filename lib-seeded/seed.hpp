@@ -6,7 +6,7 @@
 /**
  * @brief A seed/secret, which is itself (re)derived from another
  * secret seed and set of key-derivation specified options in
- * JSON format. RefKDO.
+ *  @ref key_derivation_options_format.
  * 
  * Because seed derivation uses a one-way function, this seed can be shared without revealing the
  * secret used to derive it.
@@ -20,9 +20,9 @@ public:
    */
   const SodiumBuffer seedBytes;
     /**
-   * @brief A JSON string storing the options that were used by the
-   * constructor to derive the seedBytes from the original secret seed.
-   * RefKDO
+   * @brief A string in  @ref key_derivation_options_format string
+   * which specifies how the constructor will derive the
+   * seedBytes from the original secret seed.
    */
   const std::string& keyDerivationOptionsJson;
 
@@ -48,12 +48,12 @@ public:
 
   /**
    * @brief Derive a seed from an existing secret seed and a set of
-   * key-derivation options in JSON format. RefKDO
+   * key-derivation options in @ref key_derivation_options_format.
    * 
    * @param secretSeedBytes The secret seed from which this seed should be
    * derived. Once the seed is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this seed.
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   Seed(
     const SodiumBuffer& secretSeedBytes,
@@ -62,12 +62,12 @@ public:
 
   /**
    * @brief Derive a seed from an existing secret seed string and a set of
-   * key-derivation options in JSON format. RefKDO
+   * key-derivation options in @ref key_derivation_options_format.
    * 
    * @param secretSeedString The secret seed string from which this seed should be
    * derived. Once the seed is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this seed.
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   Seed(
     const std::string& secretSeedString,

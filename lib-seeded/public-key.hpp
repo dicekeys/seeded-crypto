@@ -10,7 +10,7 @@
  * PrivateKey which can _unseal_ them.
  * The key pair of this PublicKey and the matching PrivateKey are generated
  * from a seed and a set of key-derivation specified options in JSON format
- * RefKDO.
+ * @ref key_derivation_options_format.
  * 
  * To derive a public key from a seed, first derive the corresponding
  * PrivateKey and then call PrivateKey::getPublicKey.
@@ -45,7 +45,7 @@ public:
    */
   const std::vector<unsigned char> publicKeyBytes;
   /**
-   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
    */
   const std::string keyDerivationOptionsJson;
 
@@ -131,9 +131,9 @@ public:
    * 
    * @param message The plaintxt message to seal 
    * @param messageLength The length of the plaintext message in bytes
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructionsJson If this optional string
+   * in @ref post_decryption_instructions_format is
    * passed, the same string must be passed to unseal the message.
-   * RefPDI.
    * @return const std::vector<unsigned char> 
    */
   const std::vector<unsigned char> seal(
@@ -167,7 +167,7 @@ public:
    * @brief Get the JSON-formatted key-derivation options string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string RefKDO
+   * @return const std::string in  @ref key_derivation_options_format
    */
   const std::string getKeyDerivationOptionsJson() const {
     return keyDerivationOptionsJson; 

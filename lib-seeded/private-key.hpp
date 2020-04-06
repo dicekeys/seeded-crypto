@@ -7,8 +7,8 @@
  * @brief A PrivateKey is used to _unseal_ messages sealed with its
  * corressponding PublicKey.
  * The PrivateKey and PublicKey are generated
- * from a seed and a set of key-derivation specified options in JSON format
- * RefKDO.
+ * from a seed and a set of key-derivation specified options in
+ * @ref key_derivation_options_format.
  * 
  * The PrivateKey includes a copy of the PublicKey, which can be
  * reconstituted as a PublicKey object via the getPublicKey method.
@@ -24,7 +24,7 @@ public:
    */
   const std::vector<unsigned char> publicKeyBytes;
   /**
-   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
    */
   const std::string keyDerivationOptionsJson;
 
@@ -40,10 +40,10 @@ public:
   /**
    * @brief Construct a new PrivateKey by deriving a public/private
    * key pair from a seedBuffer and a set of key-derivation options
-   * in JSON format. RefKDO
+   * in @ref key_derivation_options_format.
    * 
    * @param seedBuffer The seed as sequence of bytes
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   PrivateKey(
     const SodiumBuffer& seedBuffer,
@@ -53,12 +53,12 @@ public:
   /**
    * @brief Construct a new PrivateKey by deriving a public/private
    * key pair from a seed string and a set of key-derivation options
-   * in JSON format. RefKDO
+   * in @ref key_derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
    * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   PrivateKey(
     const std::string& seedString,

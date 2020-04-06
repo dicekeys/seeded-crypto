@@ -13,8 +13,8 @@
  * getSignatureVerificationKey.
  * 
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of key-derivation specified options in JSON format
- * RefKDO.
+ * from a seed and a set of key-derivation specified options in
+ *  @ref key_derivation_options_format.
  */
 class SigningKey {
 protected:
@@ -42,7 +42,7 @@ public:
    */
   const SodiumBuffer signingKeyBytes;
   /**
-   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
    */
   const std::string keyDerivationOptionsJson;
 
@@ -74,12 +74,12 @@ public:
 
     /**
    * @brief Construct a new SigningKey by deriving a signing key pair from a seed
-   * string and a set of key-derivation options in JSON format. RefKDO
+   * string and a set of key-derivation options in @ref key_derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
    * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   SigningKey(
     const std::string& seedString,

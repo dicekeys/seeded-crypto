@@ -6,7 +6,7 @@
 /**
  * @brief A SymmetricKey can be used to seal and unseal messages.
  * This SymmmetricKey class can be (re) derived from a seed using
- * set of key-derivation specified options in JSON format. RefKDO.
+ * set of key-derivation specified options in @ref key_derivation_options_format..
  * So, you can use this symmetric-key to seal a message, throw the
  * key away, and re-generate the key when you need to unseal the
  * message so long as you still have the original seed and
@@ -42,7 +42,7 @@ class SymmetricKey {
    */
   const SodiumBuffer keyBytes;
   /**
-   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
    */
   const std::string keyDerivationOptionsJson;
 
@@ -74,12 +74,12 @@ class SymmetricKey {
 
     /**
    * @brief Construct a new SymmetricKey by (re)deriving it from a seed string
-   * and a set of key-derivation options in JSON format. RefKDO
+   * and a set of key-derivation options in @ref key_derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key.
    * Anyone who knows (or can guess) this seed can re-generate the key
    * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in JSON format. RefKDO
+   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
    */
   SymmetricKey(
     const std::string& seedString,

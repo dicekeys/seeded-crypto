@@ -14,8 +14,8 @@
  * pair the SignatureVerificationKey can confirm that the message was
  * indeed signed using the SigningKey.
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of key-derivation specified options in JSON format
- * RefKDO.
+ * from a seed and a set of key-derivation specified options in
+ *  @ref key_derivation_options_format.
  * 
  * To derive a SignatureVerificationKey from a seed, first derive the
  * corresponding SigningKey and then call SigningKey::getSignatureVerificationKey.
@@ -27,7 +27,7 @@ public:
    */
   const std::vector<unsigned char> signatureVerificationKeyBytes;
   /**
-   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
    */
   const std::string keyDerivationOptionsJson;
  
@@ -202,7 +202,7 @@ public:
    * @brief Get the JSON-formatted key-derivation options string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string RefKDO
+   * @return const std::string in  @ref key_derivation_options_format
    */
   const std::string getKeyDerivationOptionsJson() const {
     return keyDerivationOptionsJson; 
