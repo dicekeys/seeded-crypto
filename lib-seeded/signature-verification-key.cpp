@@ -5,15 +5,15 @@
 #include <stdexcept>
 
 namespace SignatureVerificationKeyJsonFieldName {
-  const std::string verificationKeyBytesAsHexDigits = "keyBytes";
+  const std::string keyBytes = "keyBytes";
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
 SignatureVerificationKey::SignatureVerificationKey(
     const std::vector<unsigned char> &_verificationKeyBytes,
     const std::string &_keyDerivationOptionsJson
-  ) : verificationKeyBytes(_verificationKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
-    if (verificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES) {
+  ) : signatureVerificationKeyBytes(_verificationKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
+    if (signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES) {
       throw std::invalid_argument("Invalid key size exception");
     }
   }
@@ -23,7 +23,7 @@ SignatureVerificationKey createFrommJson(const std::string& signatureVerificatio
     nlohmann::json jsonObject = nlohmann::json::parse(signatureVerificationKeyAsJson);
     return SignatureVerificationKey(
       hexStrToByteVector(jsonObject.value<std::string>(
-        SignatureVerificationKeyJsonFieldName::verificationKeyBytesAsHexDigits, "")),
+        SignatureVerificationKeyJsonFieldName::keyBytes, "")),
       jsonObject.value<std::string>(
         SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
@@ -41,7 +41,7 @@ const std::string SignatureVerificationKey::toJson(
   const char indent_char
 ) const {
   nlohmann::json asJson;
-  asJson[SignatureVerificationKeyJsonFieldName::verificationKeyBytesAsHexDigits] =
+  asJson[SignatureVerificationKeyJsonFieldName::keyBytes] =
     toHexStr(getKeyBytes());
   asJson[SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson] =
     keyDerivationOptionsJson;
@@ -50,12 +50,12 @@ const std::string SignatureVerificationKey::toJson(
 
 const std::vector<unsigned char> SignatureVerificationKey::getKeyBytes(
 ) const {
-  return verificationKeyBytes;
+  return signatureVerificationKeyBytes;
 }
 
 const std::string SignatureVerificationKey::getKeyBytesAsHexDigits(
 ) const {
-  return toHexStr(verificationKeyBytes);
+  return toHexStr(signatureVerificationKeyBytes);
 }
 
 bool SignatureVerificationKey::verify(
@@ -102,19 +102,19 @@ bool SignatureVerificationKey::verify(
   const size_t messageLength,
   const std::vector<unsigned char>& signature
 ) const {
-  return verify(verificationKeyBytes, message, messageLength, signature);
+  return verify(signatureVerificationKeyBytes, message, messageLength, signature);
 }
 
 bool SignatureVerificationKey::verify(
   const std::vector<unsigned char>& message,
   const std::vector<unsigned char>& signature
 ) const {
-  return verify(verificationKeyBytes, message.data(), message.size(), signature);
+  return verify(signatureVerificationKeyBytes, message.data(), message.size(), signature);
 }
 
 bool SignatureVerificationKey::verify(
   const SodiumBuffer& message,
   const std::vector<unsigned char>& signature
 ) const {
-  return verify(verificationKeyBytes, message.data, message.length, signature);
+  return verify(signatureVerificationKeyBytes, message.data, message.length, signature);
 }

@@ -33,14 +33,6 @@
 class PublicKey {
 protected:
   static PublicKey fromJson(const std::string &publicKeyAsJson);
-
-  /**
-   * @brief Construct a new Public Key object by passing its members.
-   */
-  PublicKey(
-    const std::vector<unsigned char> &publicKeyBytes,
-    const std::string &keyDerivationOptionsJson
-  );
   
 public:
   /**
@@ -51,6 +43,14 @@ public:
    * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
    */
   const std::string keyDerivationOptionsJson;
+
+  /**
+   * @brief Construct a new Public Key object by passing its members.
+   */
+  PublicKey(
+    const std::vector<unsigned char>& publicKeyBytes,
+    const std::string& keyDerivationOptionsJson
+  );
 
   /**
    * @brief Construct (reconstitute) from serialized JSON format

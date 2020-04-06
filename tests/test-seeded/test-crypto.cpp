@@ -96,7 +96,7 @@ TEST(PrivateKey, ConvertsToJsonAndBack) {
 	const PrivateKey replica(json);
 	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPrivateKey.publicKeyBytes));
-	ASSERT_EQ(replica.privateKey.toHexString(), testPrivateKey.privateKey.toHexString());
+	ASSERT_EQ(replica.privateKeyBytes.toHexString(), testPrivateKey.privateKeyBytes.toHexString());
 }
 
 

@@ -25,13 +25,12 @@ public:
   /**
    * @brief The raw binary representation of the cryptographic key
    */
-  const std::vector<unsigned char> verificationKeyBytes;
+  const std::vector<unsigned char> signatureVerificationKeyBytes;
   /**
    * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
    */
   const std::string keyDerivationOptionsJson;
  
-protected:
   /**
   * @brief Construct by passing the classes members
   * 
@@ -43,7 +42,6 @@ protected:
     const std::string &keyDerivationOptionsJson
   );
 
-public:
   SignatureVerificationKey(const std::string &keyAsJson);
 
   /**

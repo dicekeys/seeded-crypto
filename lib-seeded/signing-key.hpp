@@ -30,11 +30,11 @@ protected:
    * However, when a SigningKey is encoded into JSON format, the default
    * representation elides the verificaiton key since it can be re-generated
    * if needed so that the encoding is more compact. If this signing-key
-   * is reconsistuted from JSON format, the signatureVerificationKeyBytesBytes
+   * is reconsistuted from JSON format, the signatureVerificationKeyBytes
    * will be empty (a zero-length vector) and it will only be re-generated
    * when getSignatureVerificationKeyBytes() is called.
    */
-  std::vector<unsigned char> signatureVerificationKeyBytesBytes;
+  std::vector<unsigned char> signatureVerificationKeyBytes;
 
 public:
   /**
