@@ -8,5 +8,5 @@
 #include "seed.hpp"
 #include "symmetric-key.hpp"
 #include "public-key.hpp"
-#include "public-private-key-pair.hpp"
+#include "private-key.hpp"
 #include "signing-key.hpp"

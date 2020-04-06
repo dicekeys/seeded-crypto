@@ -75,34 +75,34 @@ TEST(PostDecryptionInstructions, HandlesEmptyJsonObject) {
 //}
 
 TEST(PublicKey, GetsPublicKey) {
-	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
-	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	ASSERT_EQ(testPublicKey.getPublicKeyBytes().size(), 32);
 }
 
 TEST(PublicKey, GetsPublicKeyFromEmptyOptions) {
-	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, "{}");
-	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
+	const PrivateKey testPrivateKey(orderedTestKey, "{}");
+	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	ASSERT_EQ(toHexStr(testPublicKey.getPublicKeyBytes()).length(), 64);
 }
 
 
-TEST(PublicPrivateKeyPair, ConvertsToJsonAndBack) {
-	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+TEST(PrivateKey, ConvertsToJsonAndBack) {
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
 
-	const std::string json = testPublicPrivateKeyPair.toJson(1, '\t');
-	const PublicPrivateKeyPair replica(json);
+	const std::string json = testPrivateKey.toJson(1, '\t');
+	const PrivateKey replica(json);
 	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
-	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPublicPrivateKeyPair.publicKeyBytes));
-	ASSERT_EQ(replica.secretKey.toHexString(), testPublicPrivateKeyPair.secretKey.toHexString());
+	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPrivateKey.publicKeyBytes));
+	ASSERT_EQ(replica.privateKey.toHexString(), testPrivateKey.privateKey.toHexString());
 }
 
 
 TEST(PublicKey, ConvertsToJsonAndBack) {
-	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
-	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 	
 	const std::string gpkJson = testPublicKey.toJson(1, '\t');
 	const PublicKey gpk2(gpkJson);
@@ -111,14 +111,14 @@ TEST(PublicKey, ConvertsToJsonAndBack) {
 }
 
 TEST(PublicKey, EncryptsAndDecrypts) {
-	const PublicPrivateKeyPair testPublicPrivateKeyPair(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
-	const PublicKey testPublicKey = testPublicPrivateKeyPair.getPublicKey();
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
 	const std::string postDecryptionInstructionsJson = "{}";
 	SodiumBuffer messageBuffer(messageVector);
 	const auto sealedMessage = testPublicKey.seal(messageBuffer, postDecryptionInstructionsJson);
-	const auto unsealedMessage = testPublicPrivateKeyPair.unseal(sealedMessage, postDecryptionInstructionsJson);
+	const auto unsealedMessage = testPrivateKey.unseal(sealedMessage, postDecryptionInstructionsJson);
 	const auto unsealedPlaintext = unsealedMessage.toVector();
 	ASSERT_EQ(messageVector, unsealedPlaintext);
 }

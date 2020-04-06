@@ -1,60 +1,60 @@
 #include "github-com-nlohmann-json/json.hpp"
-#include "public-private-key-pair.hpp"
+#include "private-key.hpp"
 #include "crypto_box_seal_salted.h"
 #include "key-derivation-options.hpp"
 #include "generate-seed.hpp"
 #include "convert.hpp"
 
-PublicPrivateKeyPair::PublicPrivateKeyPair(
-    const SodiumBuffer _secretKey,
+PrivateKey::PrivateKey(
+    const SodiumBuffer _privateKeyBytes,
     const std::vector<unsigned char> _publicKeyBytes,
     const std::string _keyDerivationOptionsJson
   ) :
-    secretKey(_secretKey),
+    privateKeyBytes(_privateKeyBytes),
     publicKeyBytes(_publicKeyBytes),
     keyDerivationOptionsJson(_keyDerivationOptionsJson)
     {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
       throw InvalidKeyDerivationOptionValueException("Invalid public key size");
     }
-    if (secretKey.length != crypto_box_SECRETKEYBYTES) {
+    if (privateKeyBytes.length != crypto_box_SECRETKEYBYTES) {
       throw InvalidKeyDerivationOptionValueException("Invalid private key size for public/private key pair");
     }
   }
 
-PublicPrivateKeyPair::PublicPrivateKeyPair(
+PrivateKey::PrivateKey(
   const SodiumBuffer &seedBuffer,
   const std::string &_keyDerivationOptionsJson
-) : keyDerivationOptionsJson(_keyDerivationOptionsJson), publicKeyBytes(crypto_box_PUBLICKEYBYTES), secretKey(crypto_box_SECRETKEYBYTES) {
+) : keyDerivationOptionsJson(_keyDerivationOptionsJson), publicKeyBytes(crypto_box_PUBLICKEYBYTES), privateKeyBytes(crypto_box_SECRETKEYBYTES) {
   if (seedBuffer.length < crypto_box_SEEDBYTES){
     throw std::invalid_argument("Insufficient seed length");
   }
-  crypto_box_seed_keypair((unsigned char *) publicKeyBytes.data(), secretKey.data, seedBuffer.data);
+  crypto_box_seed_keypair((unsigned char *) publicKeyBytes.data(), privateKeyBytes.data, seedBuffer.data);
 }
 
-  PublicPrivateKeyPair::PublicPrivateKeyPair(
+  PrivateKey::PrivateKey(
     const std::string& _seedString,
     const std::string& _keyDerivationOptionsJson
-  ) : PublicPrivateKeyPair(
+  ) : PrivateKey(
       generateSeed(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::KeyType::Public, crypto_box_SEEDBYTES),
       _keyDerivationOptionsJson
   ) {}
 
-PublicPrivateKeyPair::PublicPrivateKeyPair(
-  const PublicPrivateKeyPair &other
+PrivateKey::PrivateKey(
+  const PrivateKey &other
 ):
   publicKeyBytes(other.publicKeyBytes), 
   keyDerivationOptionsJson(other.keyDerivationOptionsJson),
-  secretKey(other.secretKey)
+  privateKeyBytes(other.privateKeyBytes)
   {}
 
-const SodiumBuffer PublicPrivateKeyPair::unseal(
+const SodiumBuffer PrivateKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
   const std::string &postDecryptionInstructionsJson
 ) const {
   if (ciphertextLength <= crypto_box_SEALBYTES) {
-    throw std::invalid_argument("Invalid message length");
+    throw CryptographicVerificationFailure("Public/Private unseal failed: Invalid message length");
   }
   SodiumBuffer plaintext(ciphertextLength -crypto_box_SEALBYTES);
 
@@ -63,7 +63,7 @@ const SodiumBuffer PublicPrivateKeyPair::unseal(
     ciphertext,
     ciphertextLength,
     publicKeyBytes.data(),
-    secretKey.data,
+    privateKeyBytes.data,
     postDecryptionInstructionsJson.c_str(),
     postDecryptionInstructionsJson.length()
   );
@@ -73,7 +73,7 @@ const SodiumBuffer PublicPrivateKeyPair::unseal(
   return plaintext;
 }
 
-const SodiumBuffer PublicPrivateKeyPair::unseal(
+const SodiumBuffer PrivateKey::unseal(
   const std::vector<unsigned char> &ciphertext,
   const std::string& postDecryptionInstructionsJson
 ) const {
@@ -81,7 +81,7 @@ const SodiumBuffer PublicPrivateKeyPair::unseal(
   );
 };
 
-const PublicKey PublicPrivateKeyPair::getPublicKey() const {
+const PublicKey PrivateKey::getPublicKey() const {
   return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
 }
 
@@ -89,36 +89,36 @@ const PublicKey PublicPrivateKeyPair::getPublicKey() const {
 /////
 //  JSON
 ////
-namespace PublicPrivateKeyPairJsonField {
+namespace PrivateKeyJsonField {
   const std::string publicKeyBytes = "publicKeyBytes";
-  const std::string secretKeyBytes = "secretKeyBytes";
+  const std::string privateKeyBytes = "privateKeyBytes";
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
-PublicPrivateKeyPair constructPublicPrivateKeyPairFromJson(
-  const std::string &publicPrivateKeyPairAsJson
+PrivateKey constructPrivateKeyFromJson(
+  const std::string &PrivateKeyAsJson
 ) {
   try {
-    nlohmann::json jsonObject = nlohmann::json::parse(publicPrivateKeyPairAsJson);
-    return PublicPrivateKeyPair(
-      SodiumBuffer::fromHexString(jsonObject.value(PublicPrivateKeyPairJsonField::secretKeyBytes, "")),
-      hexStrToByteVector(jsonObject.value(PublicPrivateKeyPairJsonField::publicKeyBytes, "")),
-      jsonObject.value(PublicPrivateKeyPairJsonField::keyDerivationOptionsJson, ""));
+    nlohmann::json jsonObject = nlohmann::json::parse(PrivateKeyAsJson);
+    return PrivateKey(
+      SodiumBuffer::fromHexString(jsonObject.value(PrivateKeyJsonField::privateKeyBytes, "")),
+      hexStrToByteVector(jsonObject.value(PrivateKeyJsonField::publicKeyBytes, "")),
+      jsonObject.value(PrivateKeyJsonField::keyDerivationOptionsJson, ""));
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
 }
 
-PublicPrivateKeyPair::PublicPrivateKeyPair(const std::string &publicPrivateKeyPairAsJson) :
-  PublicPrivateKeyPair(constructPublicPrivateKeyPairFromJson(publicPrivateKeyPairAsJson)) {}
+PrivateKey::PrivateKey(const std::string &PrivateKeyAsJson) :
+  PrivateKey(constructPrivateKeyFromJson(PrivateKeyAsJson)) {}
 
-const std::string PublicPrivateKeyPair::toJson(
+const std::string PrivateKey::toJson(
   int indent,
   const char indent_char
 ) const {
   nlohmann::json asJson;
-  asJson[PublicPrivateKeyPairJsonField::secretKeyBytes] = secretKey.toHexString();
-  asJson[PublicPrivateKeyPairJsonField::publicKeyBytes] = toHexStr(publicKeyBytes);
-  asJson[PublicPrivateKeyPairJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
+  asJson[PrivateKeyJsonField::privateKeyBytes] = privateKeyBytes.toHexString();
+  asJson[PrivateKeyJsonField::publicKeyBytes] = toHexStr(publicKeyBytes);
+  asJson[PrivateKeyJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };

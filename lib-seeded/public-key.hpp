@@ -6,58 +6,56 @@
 #include "sodium-buffer.hpp"
 
 /**
- * @brief A public key is used in combination with a private (secret) key.
- * The public key is used to _seal_ a message or other data (a _plaintext_)
- * to create a _ciphertext_.  The corresponding private key is required to
- * _unseal_ the ciphertext to recover the original plaintext.
- * The key pair of this public key and the matching private key are generated
+ * @brief A PublicKey is used to _seal_ messages, in combination with a
+ * PrivateKey which can _unseal_ them.
+ * The key pair of this PublicKey and the matching PrivateKey are generated
  * from a seed and a set of key-derivation specified options in JSON format
  * RefKDO.
+ * 
+ * To derive a public key from a seed, first derive the corresponding
+ * PrivateKey and then call PrivateKey::getPublicKey.
  *
- * Sealing provides both encryption, which ensures the contents of the
- * message are confidential, and authentication, which ensures
- * that the message has not been modified since being sealed.
+ * Sealing a message (_plaintext_) creates a _ciphertext which contains
+ * the message but from which observers who do not have the PrivateKey
+ * cannot discern the contents of the message.
+ * Sealing also provides integrity-protection, which will preven the
+ * message from being unsealed if it is modified.
  * We use the verbs seal and unseal, rather than encrypt and decrypt,
  * because the encrypting alone does not confer that the message includes
- * an authentication (integrity) code to prove that it has not been tampered with.
+ * an integrity (message authentication) code to prove that the ciphertext
+ * has not been tampered with.
  * 
  * Note that sealing data does not prevent attackers who capture a sealed message
  * (ciphertext) in transit with another validly-sealed message. A SigningKey
  * can be used to sign messages that another party can verify that the
  * message has not been forged or modified since the signer approved it.
- * 
  */
 class PublicKey {
 protected:
   static PublicKey fromJson(const std::string &publicKeyAsJson);
-  
-public:
-  /**
-   * @brief The libsodium public key used for encryption
-   */
-  const std::vector<unsigned char> publicKeyBytes;
-  /**
-   * @brief A JSON string storing the options used to derive the public key from a seed
-   * 
-   * RefKDO
-   */
-  const std::string keyDerivationOptionsJson;
 
   /**
-   * @brief Construct a new Public Key object by passing its two members.
-   * 
-   * @param publicKeyBytes 
-   * @param keyDerivationOptionsJson 
+   * @brief Construct a new Public Key object by passing its members.
    */
   PublicKey(
     const std::vector<unsigned char> &publicKeyBytes,
     const std::string &keyDerivationOptionsJson
   );
+  
+public:
+  /**
+   * @brief The binary representation of the public key used for sealing
+   */
+  const std::vector<unsigned char> publicKeyBytes;
+  /**
+   * @brief A JSON string storing the options used to derive the key from a seed. RefKDO
+   */
+  const std::string keyDerivationOptionsJson;
 
   /**
    * @brief Construct (reconstitute) from serialized JSON format
    * 
-   * @param publicKeyAsJson A public key serialized in JSON format via a previous call to toJson()
+   * @param publicKeyAsJson A PublicKey serialized in JSON format via a previous call to toJson
    */
   PublicKey(const std::string &publicKeyAsJson);
 
@@ -164,7 +162,7 @@ public:
    * @brief Get the JSON-formatted key-derivation options string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string 
+   * @return const std::string RefKDO
    */
   const std::string getKeyDerivationOptionsJson() const {
     return keyDerivationOptionsJson; 

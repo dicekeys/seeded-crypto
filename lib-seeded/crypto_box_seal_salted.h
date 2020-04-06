@@ -5,6 +5,8 @@
  * post-decryption instructions
  */
 
+#pragma once
+
 int crypto_box_salted_seal(
   unsigned char* c, const unsigned char* m,
   unsigned long long mlen, const unsigned char* pk,
