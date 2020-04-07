@@ -18,7 +18,7 @@
  * Sealing a message (_plaintext_) creates a _ciphertext which contains
  * the message but from which observers who do not have the PrivateKey
  * cannot discern the contents of the message.
- * Sealing also provides integrity-protection, which will preven the
+ * Sealing also provides integrity-protection, which will prevent the
  * message from being unsealed if it is modified.
  * We use the verbs seal and unseal, rather than encrypt and decrypt,
  * because the encrypting alone does not confer that the message includes

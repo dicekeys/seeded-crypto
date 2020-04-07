@@ -5,7 +5,7 @@
 
 /**
  * @brief A PrivateKey is used to _unseal_ messages sealed with its
- * corressponding PublicKey.
+ * corresponding PublicKey.
  * The PrivateKey and PublicKey are generated
  * from a seed and a set of key-derivation specified options in
  * @ref key_derivation_options_format.

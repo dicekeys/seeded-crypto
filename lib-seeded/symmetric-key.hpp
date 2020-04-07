@@ -5,8 +5,8 @@
 
 /**
  * @brief A SymmetricKey can be used to seal and unseal messages.
- * This SymmmetricKey class can be (re) derived from a seed using
- * set of key-derivation specified options in @ref key_derivation_options_format..
+ * This SymmetricKey class can be (re) derived from a seed using
+ * set of key-derivation options specified in @ref key_derivation_options_format.
  * So, you can use this symmetric-key to seal a message, throw the
  * key away, and re-generate the key when you need to unseal the
  * message so long as you still have the original seed and

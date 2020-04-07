@@ -129,7 +129,7 @@ public:
   ) const;
 
   /**
-   * @brief Generate a signature for a message which can be used
+   * @brief Generate a signature for a message, which can be used
    * by the corresponding public SignatureVerificationKey to verify that
    * this message was, in fact, signed by this key.
    * 

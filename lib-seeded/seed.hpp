@@ -11,7 +11,7 @@
  * Because seed derivation uses a one-way function, this seed can be shared without revealing the
  * secret used to derive it.
  * It can then be used and, if lost, re-derived from the original seed and
- * keyDerviationOptionsJson that were first used to derive it.
+ * keyDerivationOptionsJson that were first used to derive it.
  */
 class Seed {
 public:
