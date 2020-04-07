@@ -24,10 +24,7 @@ public:
 	size_t hashFunctionMemoryLimit;
 	size_t hashFunctionIterations;
 	KeyDerivationOptionsJson::HashFunction hashFunction;
-//	KeyUseRestrictions* keyUseRestrictions;
-//	std::vector<std::string> restrictToClientApplicationsIdPrefixes;
 	HashFunction *hashFunctionImplementation;
-//	bool includeOrientationOfFacesInKey;
 
 	~KeyDerivationOptions();
 
@@ -40,24 +37,6 @@ public:
 		const KeyDerivationOptionsJson::KeyType keyTypeExpected =
 			KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
 	);
-
-
-	// static KeyDerivationOptions fromJson(
-	// 	const std::string &keyDerivationOptionsJson,
-	// 	const KeyDerivationOptionsJson::KeyType keyTypeExpected =
-	// 		KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
-	// );
-
-	//const void validate(const std::string applicationId) const;
-
-	//KeyDerivationOptions(
-	//	const std::string &keyDerivationOptionsJson,
-	//	//const std::string applicationId,
-	//	const KeyDerivationOptionsJson::KeyType keyTypeExpected = KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
-	//) : KeyDerivationOptions(keyDerivationOptionsJson, keyTypeExpected) {
-	//	//validate(applicationId);
-	//}
-
 
 	const std::string keyDerivationOptionsJsonWithAllOptionalParametersSpecified(
 		int indent = -1,

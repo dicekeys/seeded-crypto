@@ -54,7 +54,7 @@ The `algorithm` field should never be set for `"keyType": "Seed"`.
 "keyLengthInBytes"?: number // e.g. "keyLengthInBytes": 32
 ```
 
-Set this value when using `"KeyType": "Seed"` to set the size of the seed to be generated (in bytes, as the name implies). If set for other `keyType`s, it must
+Set this value when using `"KeyType": "Seed"` to set the size of the seed to be derived (in bytes, as the name implies). If set for other `keyType`s, it must
 match the keyLengthInBytes of that algorithm (32 bytes for the current algorithms).
 
 If this library is extended to support `algorithm` values with multiple key-length
@@ -87,7 +87,7 @@ For example:
 
 In addition to the fields specified by this library, this format can be extended to support additional fields.  This library will ignore those fields when processing the JSON format, but since those fields are part of the JSON string, they will be part of the seed used to derive the output.  No matter how small the change to the JSON string, whether the insertion of a new field or the insertion of a white-space character, will cause an entirely different key to be derived.
 
-So, for example, an arbitrary salt could be extended when generating a SymmetricKey as illustred by this key-derivation options JSON string:
+So, for example, an arbitrary salt could be extended when deriving a SymmetricKey as illustred by this key-derivation options JSON string:
 ```
 {
     "keyType": "SymmetricKey",
@@ -100,7 +100,7 @@ The following extension field is used by DiceKeys, but not parsed or processed b
 
 #### restrictions
 
-The DiceKeys app will restrict access to generated seeds or keys to apps that are specifically allowed.
+The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.
 
 ```
     "restrictions: {
@@ -124,4 +124,20 @@ For example:
         ]
     }
 }
+```
+
+#### excludeOrientationOfFaces
+
+When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:
+ * The uppercase letter on the die
+ * The digit on the die
+ * The orientation relative to the top of the square in canonical form
+
+If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be excluded
+resulting in a 50-character seed.
+The advantage of this settig is that, should a user manually transcribe the contents of a DiceKey, incorrectly record and orientation,
+and not verify that the copy is correct, the mistake will not prevent them from correctly re-deriving the seed for this key in the future.
+
+```
+    "excludeOrientationOfFaces"?: true | false // default false
 ```
