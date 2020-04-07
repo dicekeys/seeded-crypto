@@ -7,7 +7,7 @@ Its value must be either a valid JSON object specification, enclosed in braces (
 All fields are optional and have defaults specified, and so an empty object "{}" will indicate that he defaults for all fields should be used.
 Any empty string ("") is treated the same as an empty object ("{}).
 
-## Fields Specified by this Library
+## Fields Specified by this library
 
 The following fields are used by the seeded-crypto C++ library.
 
@@ -63,14 +63,16 @@ use.
 
 #### hashFunction
 ```
-"hashFunction"?: "BLAKE2b" | "SHA256" | "Argon2id" | "Scrypt"
+"hashFunction"?: "BLAKE2b" | "SHA256" | "Argon2id" | "Scrypt" // default "SHA256"
 ```
 
-Specifies the hash function used to derive the key.  If "Argoin2id" or "Scrypt" are used, you can specify the memory limit and ops (iterations) via
+Specifies the hash function used to derive the key.  If `"Argoin2id"` or `"Scrypt"` are used, you can specify the memory limit and ops (iterations) via
+two additional fields, which are ignored for  `"BLAKE2b"` and `"SHA256"`.
 ```
 "hashFunctionMemoryLimit": number // default 67108864
-"hashFunctionIterations": number // default 2
+"hashFunctionIterations": number // default 2, has no effect if algorithm is "BLAKE2b" | "SHA256" 
 ```
+
 
 For example:
 ```
@@ -82,6 +84,25 @@ For example:
     "hashFunctionIterations": 4
 }
 ```
+
+##### Hash defaults and recommendations
+
+The default hash function is `SHA256` as this library was designed for DiceKeys,
+which are sufficiently random seeds (~196 bits) so as not to require
+brute-force prevention with a costly key-derivation function like `Scrypt`
+or `Argon2id`.  The default ensures that keys can be re-derived cheaply
+on just about any hardware platform.
+
+Applcations that need a more expensive key derivation to protect against
+brute-forcing of the key-derivation algorithm will want to use
+`Scrypt` if and only if keys will always be derived on hardware where
+no untrusted code will run during the derivation process.
+If keys may sometimes be derived on hardware shared with untrusted code,
+even if that code is sanboxed, we recommend using `Argon2id`.
+
+We purposely chose _not_ to support multiple iterations of `BLAKE2b` or `SHA256`
+via the `hashFunctionIterations` field, as applications that want to increase the
+cost of key derviation to prevent brute forcing should use `Argon2id` or `Scrypt`.
 
 ## Extension fields
 
