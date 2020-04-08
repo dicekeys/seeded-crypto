@@ -56,12 +56,12 @@ public:
     const std::string& keyDerivationOptionsJson
   );
 
-  /**
-   * @brief Construct (reconstitute) from serialized JSON format
-   * 
-   * @param publicKeyAsJson A PublicKey serialized in JSON format via a previous call to toJson
-   */
-  PublicKey(const std::string &publicKeyAsJson);
+  // /**
+  //  * @brief Construct (reconstitute) from serialized JSON format
+  //  * 
+  //  * @param publicKeyAsJson A PublicKey serialized in JSON format via a previous call to toJson
+  //  */
+  // PublicKey(const std::string &publicKeyAsJson);
 
   /**
    * @brief Serialize this object to a JSON-formatted string

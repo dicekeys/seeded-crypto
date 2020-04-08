@@ -31,8 +31,8 @@ PublicKey PublicKey::fromJson(const std::string &publicKeyAsJson) {
   }
 }
 
-PublicKey::PublicKey(const std::string &publicKeyAsJson) :
-  PublicKey(PublicKey::fromJson(publicKeyAsJson)) {}
+// PublicKey::PublicKey(const std::string &publicKeyAsJson) :
+//   PublicKey(PublicKey::fromJson(publicKeyAsJson)) {}
 
 
 const std::string PublicKey::toJson(

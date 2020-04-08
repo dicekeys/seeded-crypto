@@ -166,9 +166,9 @@ SymmetricKey SymmetricKey::fromJson(
   }
 }
 
-SymmetricKey::SymmetricKey(
-  const std::string& _symmetricKeyAsJson
-) : SymmetricKey(SymmetricKey::fromJson(_symmetricKeyAsJson)) {}
+// SymmetricKey::SymmetricKey(
+//   const std::string& _symmetricKeyAsJson
+// ) : SymmetricKey(SymmetricKey::fromJson(_symmetricKeyAsJson)) {}
 
 const std::string SymmetricKey::toJson(
   int indent,

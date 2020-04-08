@@ -47,7 +47,7 @@ namespace SigningKeyJsonField {
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
-SigningKey constructSigningKeyFromJson(
+SigningKey SigningKey::fromJson(
   const std::string& signingKeyAsJson
 ) {
   try {
@@ -63,9 +63,9 @@ SigningKey constructSigningKeyFromJson(
 
 }
 
-SigningKey::SigningKey(
-  const std::string& signingKeyAsJson
-) : SigningKey( constructSigningKeyFromJson(signingKeyAsJson)) {}
+// SigningKey::SigningKey(
+//   const std::string& signingKeyAsJson
+// ) : SigningKey( constructSigningKeyFromJson(signingKeyAsJson)) {}
 
 SigningKey::SigningKey(
   const std::string& seedString,

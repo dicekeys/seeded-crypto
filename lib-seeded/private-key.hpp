@@ -70,7 +70,12 @@ public:
    * 
    * @param PrivateKeyAsJson 
    */
-  PrivateKey(const std::string &PrivateKeyAsJson);
+  static PrivateKey PrivateKey::fromJson(
+    const std::string &PrivateKeyAsJson
+  );
+
+  // PrivateKey(const std::string &PrivateKeyAsJson);
+
 
   /**
    * @brief Construct by copying another PrivateKey

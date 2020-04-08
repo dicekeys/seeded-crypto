@@ -20,7 +20,7 @@ Seed::Seed(
 
 Seed::Seed(const Seed &other) : Seed(other.seedBytes, other.keyDerivationOptionsJson) {}
 
-Seed::Seed(const std::string &seedAsJson) : Seed(Seed::fromJson(seedAsJson)) {}
+// Seed::Seed(const std::string &seedAsJson) : Seed(Seed::fromJson(seedAsJson)) {}
 
 // JSON field names
 namespace SeedJsonFields {

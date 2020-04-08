@@ -35,16 +35,9 @@ public:
     const Seed &other
   );
 
-  /**
-   * @brief Construct (reconstitute) a Seed from its JSON
-   * representation.
-   * 
-   * @param seedAsJson A Seed serialized in JSON format
-   * via a previous call to toJson.
-   */
-  Seed(
-    const std::string& seedAsJson
-  );
+  // Seed(
+  //   const std::string& seedAsJson
+  // );
 
   /**
    * @brief Derive a seed from an existing secret seed and a set of
@@ -106,11 +99,12 @@ public:
    */
   static Seed fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
 
-
-protected:
-
   /**
-   * @brief An internal help function to re-constitute a Seed from JSON format
+   * @brief Construct (reconstitute) a Seed from its JSON
+   * representation.
+   * 
+   * @param seedAsJson A Seed serialized in JSON format
+   * via a previous call to toJson.
    */
   static Seed fromJson(
     const std::string& seedAsJson

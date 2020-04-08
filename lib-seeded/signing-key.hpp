@@ -86,6 +86,19 @@ public:
     const std::string& keyDerivationOptionsJson
   );
 
+  // /**
+  //  * @brief Construct (reconsitute) the SigningKey from JSON format.
+  //  * The JSON object may or may not contain the signatureVerificationKeyBytes.
+  //  * If it does not, an empty byte vector will be stored and the verification
+  //  * key bytes will be re-derived from the signing key by
+  //  * getSignatureVerificationKeyBytes if they are needed.
+  //  * 
+  //  * @param signingKeyAsJson 
+  //  */
+  // SigningKey(
+  //   const std::string& signingKeyAsJson
+  // );
+
   /**
    * @brief Construct (reconsitute) the SigningKey from JSON format.
    * The JSON object may or may not contain the signatureVerificationKeyBytes.
@@ -94,9 +107,10 @@ public:
    * getSignatureVerificationKeyBytes if they are needed.
    * 
    * @param signingKeyAsJson 
+
    */
-  SigningKey(
-    const std::string& signingKeyAsJson
+  static SigningKey SigningKey::fromJson(
+   const std::string& signingKeyAsJson
   );
 
   /**

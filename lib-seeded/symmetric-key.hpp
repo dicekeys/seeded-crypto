@@ -62,16 +62,16 @@ class SymmetricKey {
     const SymmetricKey &other
   );
 
-  /**
-   * @brief Construct (reconstitute) a SymmetricKey from its JSON
-   * representation
-   * 
-   * @param symmetricKeyAsJson A SymmetricKey serialized in JSON format
-   * via a previous call to toJson
-   */
-  SymmetricKey(
-    const std::string& symmetricKeyAsJson
-  );
+  // /**
+  //  * @brief Construct (reconstitute) a SymmetricKey from its JSON
+  //  * representation
+  //  * 
+  //  * @param symmetricKeyAsJson A SymmetricKey serialized in JSON format
+  //  * via a previous call to toJson
+  //  */
+  // SymmetricKey(
+  //   const std::string& symmetricKeyAsJson
+  // );
 
     /**
    * @brief Construct a new SymmetricKey by (re)deriving it from a seed string
@@ -199,14 +199,14 @@ class SymmetricKey {
    */
   static SymmetricKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
 
-protected:
-
   /**
    * @brief Internal implementation of JSON parser for the JSON contructor
    */
   static SymmetricKey fromJson(
     const std::string& symmetricKeyAsJson
   );
+
+protected:
 
   /**
    * @brief Internal implementation of unseal

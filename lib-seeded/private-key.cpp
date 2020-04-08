@@ -95,7 +95,7 @@ namespace PrivateKeyJsonField {
   const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
-PrivateKey constructPrivateKeyFromJson(
+PrivateKey PrivateKey::fromJson(
   const std::string &PrivateKeyAsJson
 ) {
   try {
@@ -109,8 +109,8 @@ PrivateKey constructPrivateKeyFromJson(
   }
 }
 
-PrivateKey::PrivateKey(const std::string &privateKeyAsJson) :
-  PrivateKey(constructPrivateKeyFromJson(privateKeyAsJson)) {}
+// PrivateKey::PrivateKey(const std::string &privateKeyAsJson) :
+//   PrivateKey(constructPrivateKeyFromJson(privateKeyAsJson)) {}
 
 const std::string PrivateKey::toJson(
   int indent,

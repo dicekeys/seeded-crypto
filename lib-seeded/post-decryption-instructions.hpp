@@ -16,11 +16,11 @@ public:
 	std::vector<std::string> clientApplicationIdMustHavePrefix;
 	std::string userMustAcknowledgeThisMessage;
 
-  /**
-   * Create a PostDecryptionInstructions class from the JSON representation
-   * of the key generation options.
-   **/
-  PostDecryptionInstructions(
+	/**
+	 * Create a PostDecryptionInstructions class from the JSON representation
+	 * of the key generation options.
+	 **/
+	PostDecryptionInstructions(
 		const std::string &postDecryptionInstructionsJson
 	);
 

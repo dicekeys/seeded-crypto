@@ -18,7 +18,7 @@ SignatureVerificationKey::SignatureVerificationKey(
     }
   }
 
-SignatureVerificationKey createFrommJson(const std::string& signatureVerificationKeyAsJson) {
+SignatureVerificationKey SignatureVerificationKey::fromJson(const std::string& signatureVerificationKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(signatureVerificationKeyAsJson);
     return SignatureVerificationKey(
@@ -32,8 +32,8 @@ SignatureVerificationKey createFrommJson(const std::string& signatureVerificatio
   }
 }
 
-SignatureVerificationKey::SignatureVerificationKey(const std::string &verificationKeyAsJson) :
- SignatureVerificationKey(createFrommJson(verificationKeyAsJson)) {}
+// SignatureVerificationKey::SignatureVerificationKey(const std::string &verificationKeyAsJson) :
+//  SignatureVerificationKey(createFrommJson(verificationKeyAsJson)) {}
 
 
 const std::string SignatureVerificationKey::toJson(
