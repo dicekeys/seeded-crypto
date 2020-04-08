@@ -302,3 +302,28 @@ TEST(SymmetricKey, EncrypsUsingMessageAndDecrypts) {
 	ASSERT_EQ(messageVector, unsealedPlaintext);
 }
 
+
+
+TEST(PackagedSealedMessage, ConvertsToSerializedFormAndBack) {
+	std::vector<unsigned char> testCiphertext({ 42 });
+	PackagedSealedMessage message(testCiphertext, "no", "way");
+	auto serialized = message.toSerializedBinaryForm();
+	auto replica = PackagedSealedMessage::fromSerializedBinaryForm(serialized);
+	
+	ASSERT_EQ(replica.ciphertext.size(), 1);
+	ASSERT_EQ(replica.ciphertext.data()[0], 42);
+	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
+	ASSERT_STREQ(replica.postDecryptionInstructionJson.c_str(), message.postDecryptionInstructionJson.c_str());
+}
+
+TEST(PackagedSealedMessage, ConvertsToJsonAndBack) {
+	std::vector<unsigned char> testCiphertext({ 42 });
+	PackagedSealedMessage message(testCiphertext, "no", "way");
+	auto serialized = message.toJson();
+	auto replica = PackagedSealedMessage::fromJson(serialized);
+
+	ASSERT_EQ(replica.ciphertext.size(), 1);
+	ASSERT_EQ(replica.ciphertext.data()[0], 42);
+	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
+	ASSERT_STREQ(replica.postDecryptionInstructionJson.c_str(), message.postDecryptionInstructionJson.c_str());
+}
