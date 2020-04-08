@@ -80,7 +80,7 @@ SodiumBuffer FixedOutputLengthHashFunction::hash(
 				bytes_written += block_size_in_bytes;
 
 				// increment h1
-				for (int i=block_size_in_bytes-1; i > 0; i--) {
+				for (size_t i = block_size_in_bytes -1; i > 0; i--) {
 					if (++(h1.data[i]) != 0) {
 						// only increment the more-significant byte in big-endian memory
 						// order (the previous byte) if this byte overflowed from 255 to 0.

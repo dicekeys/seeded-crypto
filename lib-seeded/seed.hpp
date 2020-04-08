@@ -57,7 +57,7 @@ public:
    */
   Seed(
     const SodiumBuffer& secretSeedBytes,
-    const std::string& keyDerivationOptionsJson = ""
+    const std::string& keyDerivationOptionsJson = {}
   );
 
   /**

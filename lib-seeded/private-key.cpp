@@ -109,8 +109,8 @@ PrivateKey constructPrivateKeyFromJson(
   }
 }
 
-PrivateKey::PrivateKey(const std::string &PrivateKeyAsJson) :
-  PrivateKey(constructPrivateKeyFromJson(PrivateKeyAsJson)) {}
+PrivateKey::PrivateKey(const std::string &privateKeyAsJson) :
+  PrivateKey(constructPrivateKeyFromJson(privateKeyAsJson)) {}
 
 const std::string PrivateKey::toJson(
   int indent,

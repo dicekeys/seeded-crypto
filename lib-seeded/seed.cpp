@@ -31,10 +31,10 @@ namespace SeedJsonFields {
 Seed Seed::fromJson(const std::string &seedAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(seedAsJson);
-    auto kdo = jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, std::string());
+    auto kdo = jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, "");
     return Seed(
       SodiumBuffer::fromHexString(jsonObject.at(SeedJsonFields::seedBytes)),
-      jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, std::string())
+      jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -56,7 +56,6 @@ const char indent_char
 
 
 const SodiumBuffer Seed::toSerializedBinaryForm() const {
-  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &seedBytes,
     &SodiumBuffer(keyDerivationOptionsJson)

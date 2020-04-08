@@ -31,15 +31,14 @@
  * message has not been forged or modified since the signer approved it.
  */
 class PublicKey {
-protected:
+public:
   /**
-   * @brief Internal helper for constructing a PublicKey from a JSON string
+   * @brief Construct a PublicKey from a JSON string
    * 
    * @param publicKeyAsJson The JSON encoding of a PublicKey
    */
   static PublicKey fromJson(const std::string &publicKeyAsJson);
   
-public:
   /**
    * @brief The binary representation of the public key used for sealing
    */

@@ -26,7 +26,7 @@ public:
 
 	PostDecryptionInstructions(
 		std::vector<std::string> clientApplicationIdMustHavePrefix,
-		std::string userMustAcknowledgeThisMessage = ""
+		std::string userMustAcknowledgeThisMessage = {}
 	);
 
 	bool isApplicationIdAllowed(const std::string &applicationId) const;

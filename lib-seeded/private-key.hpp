@@ -120,7 +120,7 @@ public:
    */
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
-    const std::string& postDecryptionInstructionsJson = ""
+    const std::string& postDecryptionInstructionsJson = {}
   ) const;
 
   /**

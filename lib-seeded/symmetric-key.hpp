@@ -2,6 +2,7 @@
 
 #include <string>
 #include "sodium-buffer.hpp"
+#include "packaged-sealed-message.hpp"
 
 /**
  * @brief A SymmetricKey can be used to seal and unseal messages.
@@ -99,7 +100,7 @@ class SymmetricKey {
   const std::vector<unsigned char> seal(
     const unsigned char* message,
     const size_t messageLength,
-    const std::string &postDecryptionInstructionsJson = ""
+    const std::string &postDecryptionInstructionsJson = {}
   ) const;
 
   /**
@@ -114,9 +115,18 @@ class SymmetricKey {
    */  
   const std::vector<unsigned char> seal(
     const SodiumBuffer& message,
-    const std::string& postDecryptionInstructionsJson = ""
+    const std::string& postDecryptionInstructionsJson = {}
   ) const;
 
+  const PackagedSealedMessage sealAndPackage(
+    const SodiumBuffer& message,
+    const std::string& postDecryptionInstructionsJson = {}
+  ) const;
+
+  static SodiumBuffer unseal(
+    const PackagedSealedMessage &packagedSealedMessage,
+    std::string seedString 
+  );
 
   /**
    * @brief Unseal a message 

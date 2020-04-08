@@ -83,6 +83,16 @@ const std::vector<unsigned char> SymmetricKey::seal(
   return seal(message.data, message.length, postDecryptionInstructionsJson);
 }
 
+const PackagedSealedMessage SymmetricKey::sealAndPackage(
+  const SodiumBuffer& message,
+  const std::string& postDecryptionInstructionsJson
+) const {
+  return PackagedSealedMessage(
+    seal(message, postDecryptionInstructionsJson),
+    keyDerivationOptionsJson,
+    postDecryptionInstructionsJson
+  );
+}
 
 const SodiumBuffer SymmetricKey::unsealMessageContents(
   const unsigned char* ciphertext,
@@ -184,4 +194,12 @@ const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
 SymmetricKey SymmetricKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SymmetricKey(fields[0], fields[1].toUtf8String());
+}
+
+SodiumBuffer SymmetricKey::unseal(
+  const PackagedSealedMessage &packagedSealedMessage,
+  std::string seedString 
+) {
+  return SymmetricKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
+    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
 }

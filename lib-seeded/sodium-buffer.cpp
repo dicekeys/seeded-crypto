@@ -27,7 +27,7 @@ SodiumBuffer::SodiumBuffer(size_t _length, const unsigned char* bufferData):
     length(_length),
     data((unsigned char*) sodium_malloc_aligned(_length))
 {
-    if (bufferData != NULL & _length > 0) {
+    if (bufferData != NULL && _length > 0) {
         memcpy(data, bufferData, _length);
     }
 };

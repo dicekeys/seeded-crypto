@@ -1,7 +1,6 @@
 #pragma once
 
 #pragma warning( disable : 26812 )
-#include <cassert>
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
 #include "./externally-generated/key-derivation-parameters.hpp"
