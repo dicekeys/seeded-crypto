@@ -98,7 +98,7 @@ public:
   static const std::vector<unsigned char> seal(
     const SodiumBuffer& message,
     const std::vector<unsigned char>& publicKey,
-    const std::string& postDecryptionInstructionsJson = ""
+    const std::string& postDecryptionInstructionsJson = {}
   );
 
   /**
@@ -123,7 +123,7 @@ public:
     const unsigned char* message,
     const size_t messageLength,
     const std::vector<unsigned char> &publicKey,
-    const std::string &postDecryptionInstructionsJson = ""
+    const std::string &postDecryptionInstructionsJson = {}
   );
 
   /**
@@ -140,7 +140,7 @@ public:
   const std::vector<unsigned char> seal(
     const unsigned char* message,
     const size_t messageLength,
-    const std::string& postDecryptionInstructionsJson = ""
+    const std::string& postDecryptionInstructionsJson = {}
   ) const;
 
   /**
@@ -154,7 +154,7 @@ public:
    */
   const std::vector<unsigned char> seal(
     const SodiumBuffer &message,
-    const std::string &postDecryptionInstructionsJson = ""
+    const std::string &postDecryptionInstructionsJson = {}
   ) const;
 
   /**
@@ -173,6 +173,24 @@ public:
   const std::string getKeyDerivationOptionsJson() const {
     return keyDerivationOptionsJson; 
   }
+
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (publicKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  const SodiumBuffer toSerializedBinaryForm() const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (publicKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static PublicKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
 
 };
 

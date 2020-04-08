@@ -136,7 +136,7 @@ class SymmetricKey {
   const SodiumBuffer unseal(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string &postDecryptionInstructionsJson = ""
+    const std::string &postDecryptionInstructionsJson = {}
   ) const;
 
   /**
@@ -153,7 +153,7 @@ class SymmetricKey {
    */
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
-    const std::string& postDecryptionInstructionsJson = ""
+    const std::string& postDecryptionInstructionsJson = {}
   ) const;
 
   /**
@@ -170,6 +170,25 @@ class SymmetricKey {
     const char indent_char = ' '
   ) const;
 
+
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (keyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  const SodiumBuffer toSerializedBinaryForm() const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (keyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static SymmetricKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+
 protected:
 
   /**
@@ -185,7 +204,7 @@ protected:
   const SodiumBuffer unsealMessageContents(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string &postDecryptionInstructionsJson = ""
+    const std::string &postDecryptionInstructionsJson = {}
   ) const;
 
 };

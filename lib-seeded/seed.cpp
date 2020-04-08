@@ -8,13 +8,14 @@ Seed::Seed(
 
 Seed::Seed(
   const std::string& seedString,
-  const std::string& keyDerivationOptionsJson
+  const std::string& _keyDerivationOptionsJson
 ) : Seed(
   generateSeed(
     seedString,
-    keyDerivationOptionsJson,
+    _keyDerivationOptionsJson,
     KeyDerivationOptionsJson::KeyType::Seed
-  )
+  ),
+  _keyDerivationOptionsJson
 ) {}
 
 Seed::Seed(const Seed &other) : Seed(other.seedBytes, other.keyDerivationOptionsJson) {}
@@ -30,9 +31,10 @@ namespace SeedJsonFields {
 Seed Seed::fromJson(const std::string &seedAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(seedAsJson);
+    auto kdo = jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, std::string());
     return Seed(
-      SodiumBuffer::fromHexString(jsonObject.value(SeedJsonFields::seedBytes, "")),
-      jsonObject.value(SeedJsonFields::keyDerivationOptionsJson, "")
+      SodiumBuffer::fromHexString(jsonObject.at(SeedJsonFields::seedBytes)),
+      jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, std::string())
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -50,4 +52,18 @@ const char indent_char
     asJson[SeedJsonFields::keyDerivationOptionsJson] = keyDerivationOptionsJson;
   }
   return asJson.dump(indent, indent_char);
+}
+
+
+const SodiumBuffer Seed::toSerializedBinaryForm() const {
+  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  return SodiumBuffer::combineFixedLengthList({
+    &seedBytes,
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+Seed Seed::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(2);
+  return Seed(fields[0], fields[1].toUtf8String());
 }

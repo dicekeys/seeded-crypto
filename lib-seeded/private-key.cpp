@@ -101,8 +101,8 @@ PrivateKey constructPrivateKeyFromJson(
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(PrivateKeyAsJson);
     return PrivateKey(
-      SodiumBuffer::fromHexString(jsonObject.value(PrivateKeyJsonField::privateKeyBytes, "")),
-      hexStrToByteVector(jsonObject.value(PrivateKeyJsonField::publicKeyBytes, "")),
+      SodiumBuffer::fromHexString(jsonObject.at(PrivateKeyJsonField::privateKeyBytes)),
+      hexStrToByteVector(jsonObject.at(PrivateKeyJsonField::publicKeyBytes)),
       jsonObject.value(PrivateKeyJsonField::keyDerivationOptionsJson, ""));
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -122,3 +122,18 @@ const std::string PrivateKey::toJson(
   asJson[PrivateKeyJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };
+
+
+const SodiumBuffer PrivateKey::toSerializedBinaryForm() const {
+  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  return SodiumBuffer::combineFixedLengthList({
+    &privateKeyBytes,
+    &SodiumBuffer(publicKeyBytes),
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+PrivateKey PrivateKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(3);
+  return PrivateKey(fields[0], fields[1].toVector(), fields[2].toUtf8String());
+}

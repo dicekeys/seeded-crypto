@@ -164,5 +164,31 @@ public:
     const char indent_char = ' '
   ) const;
 
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (keyBytes, signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   *
+   * @param minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater
+   * If set to true (the default), an empty buffer will be passed for the 
+   * signatureVerificationKeyBytes. After the object is deserialized, the
+   * replica can re-generate a signature-verification key from the signing key,
+   * which takes a little computation in return for the 28 bytes saved in this format.
+   */
+  const SodiumBuffer toSerializedBinaryForm(
+    bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater = true
+  ) const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (keyBytes, signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static SigningKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+
 
 };

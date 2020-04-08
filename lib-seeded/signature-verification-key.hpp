@@ -208,5 +208,23 @@ public:
     return keyDerivationOptionsJson; 
   }
 
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  const SodiumBuffer toSerializedBinaryForm() const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static SignatureVerificationKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+
 };
 

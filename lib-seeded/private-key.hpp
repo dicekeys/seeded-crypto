@@ -137,4 +137,23 @@ public:
     const char indent_char = ' '
   ) const;
 
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (privateKeyBytes, publicKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  const SodiumBuffer toSerializedBinaryForm() const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (privateKeyBytes, publicKeyBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static PrivateKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+
+
 };

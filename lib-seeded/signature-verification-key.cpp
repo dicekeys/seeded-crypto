@@ -118,3 +118,20 @@ bool SignatureVerificationKey::verify(
 ) const {
   return verify(signatureVerificationKeyBytes, message.data, message.length, signature);
 }
+
+
+const SodiumBuffer SignatureVerificationKey::toSerializedBinaryForm() const {
+  return SodiumBuffer::combineFixedLengthList({
+    &SodiumBuffer(signatureVerificationKeyBytes),
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+SignatureVerificationKey SignatureVerificationKey::fromSerializedBinaryForm(
+  SodiumBuffer serializedBinaryForm
+) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(2);
+  return SignatureVerificationKey(
+    fields[0].toVector(), fields[1].toUtf8String()
+  );
+}

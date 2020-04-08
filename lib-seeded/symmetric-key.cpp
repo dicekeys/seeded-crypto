@@ -148,7 +148,7 @@ SymmetricKey SymmetricKey::fromJson(
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(symmetricKeyAsJson);
     return SymmetricKey(
-      SodiumBuffer::fromHexString(jsonObject.value(SymmetricKeyJsonField::keyBytes, "")),
+      SodiumBuffer::fromHexString(jsonObject.at(SymmetricKeyJsonField::keyBytes)),
       jsonObject.value(SymmetricKeyJsonField::keyDerivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
@@ -171,3 +171,17 @@ const std::string SymmetricKey::toJson(
   }
   return asJson.dump(indent, indent_char);
 };
+
+
+const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
+  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  return SodiumBuffer::combineFixedLengthList({
+    &keyBytes,
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+SymmetricKey SymmetricKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(2);
+  return SymmetricKey(fields[0], fields[1].toUtf8String());
+}

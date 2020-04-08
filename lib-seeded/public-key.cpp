@@ -23,7 +23,7 @@ PublicKey PublicKey::fromJson(const std::string &publicKeyAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
     return PublicKey(
-      hexStrToByteVector(jsonObject.value(PublicKeyJsonFieldName::keyBytes, "")),
+      hexStrToByteVector(jsonObject.at(PublicKeyJsonFieldName::keyBytes)),
       jsonObject.value(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
@@ -105,4 +105,17 @@ const std::vector<unsigned char> PublicKey::seal(
 const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
 ) const {
   return publicKeyBytes;
+}
+
+const SodiumBuffer PublicKey::toSerializedBinaryForm() const {
+  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  return SodiumBuffer::combineFixedLengthList({
+    &SodiumBuffer(publicKeyBytes),
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+PublicKey PublicKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(2);
+  return PublicKey(fields[0].toVector(), fields[1].toUtf8String());
 }

@@ -53,7 +53,7 @@ SigningKey constructSigningKeyFromJson(
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(signingKeyAsJson);
     return SigningKey(
-      SodiumBuffer::fromHexString(jsonObject.value(SigningKeyJsonField::signingKeyBytes, "")),
+      SodiumBuffer::fromHexString(jsonObject.at(SigningKeyJsonField::signingKeyBytes)),
       hexStrToByteVector(jsonObject.value(SigningKeyJsonField::signatureVerificationKeyBytes, "")),
       jsonObject.value(SigningKeyJsonField::keyDerivationOptionsJson, "")
     );
@@ -131,3 +131,25 @@ const std::string SigningKey::toJson(
   asJson[SigningKeyJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };
+
+const SodiumBuffer SigningKey::toSerializedBinaryForm(
+  bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater
+) const {
+  // SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  return SodiumBuffer::combineFixedLengthList({
+    &signingKeyBytes,
+    minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater ?
+    NULL : &SodiumBuffer(signatureVerificationKeyBytes),
+    &SodiumBuffer(keyDerivationOptionsJson)
+  });
+}
+
+SigningKey SigningKey::fromSerializedBinaryForm(
+  SodiumBuffer serializedBinaryForm
+) {
+  const auto fields = serializedBinaryForm.splitFixedLengthList(3);
+  return SigningKey(
+    fields[0], fields[1].toVector(), fields[2].toUtf8String()
+  );
+}
+
