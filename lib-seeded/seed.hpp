@@ -24,7 +24,7 @@ public:
    * which specifies how the constructor will derive the
    * seedBytes from the original secret seed.
    */
-  const std::string& keyDerivationOptionsJson;
+  const std::string keyDerivationOptionsJson;
 
   /**
    * @brief Construct this object as a copy of another object
@@ -87,6 +87,25 @@ public:
     int indent = -1,
     const char indent_char = ' '
   ) const;
+
+  /**
+   * @brief Serialize to byte array as a list of:
+   *   (seedBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  const SodiumBuffer toSerializedBinaryForm() const;
+
+  /**
+   * @brief Deserialize from a byte array stored as a list of:
+   *   (seedBytes, keyDerivationOptionsJson)
+   * 
+   * Stored in SodiumBuffer's fixed-length list format.
+   * Strings are stored as UTF8 byte arrays.
+   */
+  static Seed fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+
 
 protected:
 
