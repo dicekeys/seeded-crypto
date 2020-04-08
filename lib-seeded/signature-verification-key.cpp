@@ -121,9 +121,11 @@ bool SignatureVerificationKey::verify(
 
 
 const SodiumBuffer SignatureVerificationKey::toSerializedBinaryForm() const {
+  SodiumBuffer _signatureVerificationKeyBytes(signatureVerificationKeyBytes);
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
-    &SodiumBuffer(signatureVerificationKeyBytes),
-    &SodiumBuffer(keyDerivationOptionsJson)
+    &_signatureVerificationKeyBytes,
+    &_keyDerivationOptionsJson
   });
 }
 

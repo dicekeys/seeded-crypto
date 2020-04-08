@@ -126,10 +126,12 @@ const std::string PrivateKey::toJson(
 
 const SodiumBuffer PrivateKey::toSerializedBinaryForm() const {
   SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer _publicKeyBytes(publicKeyBytes);
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &privateKeyBytes,
-    &SodiumBuffer(publicKeyBytes),
-    &SodiumBuffer(keyDerivationOptionsJson)
+    &_publicKeyBytes,
+    &_keyDerivationOptionsJson
   });
 }
 

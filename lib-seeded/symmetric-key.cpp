@@ -1,6 +1,7 @@
 #include <exception>
 #include "symmetric-key.hpp"
 #include "generate-seed.hpp"
+#include "packaged-sealed-message.hpp"
 
 void _crypto_secretbox_nonce_salted(
   unsigned char *nonce,
@@ -184,10 +185,10 @@ const std::string SymmetricKey::toJson(
 
 
 const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
-  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer _keyDerivationOptionsJson = SodiumBuffer(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &keyBytes,
-    &SodiumBuffer(keyDerivationOptionsJson)
+    &_keyDerivationOptionsJson
   });
 }
 

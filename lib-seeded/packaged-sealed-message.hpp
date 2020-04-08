@@ -7,24 +7,44 @@
 class PackagedSealedMessage {
 
 public:
+    /**
+     * @brief The sealed message as a raw array of bytes
+     */
     const std::vector<unsigned char> ciphertext;
+    /**
+     * @brief The key-derivation options used to generate the
+     * encryption/decryption keys.
+     */
     const std::string keyDerivationOptionsJson;
+    /**
+     * @brief Optional public instructions that the sealer
+     * requests the unsealer to follow as a condition of unsealing.
+     */
     const std::string postDecryptionInstructionJson;
 
     /**
      * @brief Construct directly from the constituent members
      * 
-     * @param ciphertext 
-     * @param keyDerivationOptionsJson 
-     * @param postDecryptionInstructionJson 
+     * @param ciphertext  The binary sealed message
+     * @param keyDerivationOptionsJson  The key-derivation options used to generate the
+     * encryption/decryption keys.
+     * @param postDecryptionInstructionJson Optional public instructions that the sealer
+     * requests the unsealer to follow as a condition of unsealing.
      */
     PackagedSealedMessage(
-        const std::vector<unsigned char> ciphertext,
-        const std::string keyDerivationOptionsJson,
-        const std::string postDecryptionInstructionJson
+        const std::vector<unsigned char>& ciphertext,
+        const std::string& keyDerivationOptionsJson,
+        const std::string& postDecryptionInstructionJson
     );
 
     /**
+     * The copy constructor
+     * @param other An object of the same time to copy.
+     */
+    PackagedSealedMessage(const PackagedSealedMessage &other);
+
+
+  /**
    * @brief Serialize to byte array as a list of:
    *   (keyBytes, keyDerivationOptionsJson)
    * 

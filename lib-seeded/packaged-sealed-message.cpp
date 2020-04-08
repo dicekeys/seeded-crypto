@@ -11,20 +11,29 @@ namespace PackagedSealedMessageJsonFields {
 }
 
 PackagedSealedMessage::PackagedSealedMessage(
-        const std::vector<unsigned char> _ciphertext,
-        const std::string _keyDerivationOptionsJson,
-        const std::string _postDecryptionInstructionJson
+        const std::vector<unsigned char>& _ciphertext,
+        const std::string& _keyDerivationOptionsJson,
+        const std::string& _postDecryptionInstructionJson
 ) : 
     ciphertext(_ciphertext),
     keyDerivationOptionsJson(_keyDerivationOptionsJson),
     postDecryptionInstructionJson(_postDecryptionInstructionJson)
     {}
 
+PackagedSealedMessage::PackagedSealedMessage(const PackagedSealedMessage &other) :
+  ciphertext(other.ciphertext),
+  keyDerivationOptionsJson(other.keyDerivationOptionsJson),
+  postDecryptionInstructionJson(other.postDecryptionInstructionJson)
+  {}
+
 const SodiumBuffer PackagedSealedMessage::toSerializedBinaryForm() const {
+  SodiumBuffer _ciphertext(ciphertext);
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
+  SodiumBuffer _postDecryptionInstructionJson(postDecryptionInstructionJson);
   return SodiumBuffer::combineFixedLengthList({
-    &SodiumBuffer(ciphertext),
-    &SodiumBuffer(keyDerivationOptionsJson),
-    &SodiumBuffer(postDecryptionInstructionJson)
+    &_ciphertext,
+    &_keyDerivationOptionsJson,
+    &_postDecryptionInstructionJson
   });
 }
 

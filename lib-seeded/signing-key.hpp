@@ -109,7 +109,7 @@ public:
    * @param signingKeyAsJson 
 
    */
-  static SigningKey SigningKey::fromJson(
+  static SigningKey fromJson(
    const std::string& signingKeyAsJson
   );
 

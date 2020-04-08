@@ -50,7 +50,7 @@ public:
    * 
    * @param signatureVerificationKeyAsJson 
    */
-  static SignatureVerificationKey SignatureVerificationKey::fromJson(
+  static SignatureVerificationKey fromJson(
     const std::string& signatureVerificationKeyAsJson
   );
 

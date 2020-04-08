@@ -56,9 +56,10 @@ const char indent_char
 
 
 const SodiumBuffer Seed::toSerializedBinaryForm() const {
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &seedBytes,
-    &SodiumBuffer(keyDerivationOptionsJson)
+    &_keyDerivationOptionsJson
   });
 }
 

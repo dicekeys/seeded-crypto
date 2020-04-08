@@ -109,9 +109,11 @@ const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
 
 const SodiumBuffer PublicKey::toSerializedBinaryForm() const {
   SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer _publicKeyBytes(publicKeyBytes);
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
-    &SodiumBuffer(publicKeyBytes),
-    &SodiumBuffer(keyDerivationOptionsJson)
+    &_publicKeyBytes,
+    &_keyDerivationOptionsJson
   });
 }
 

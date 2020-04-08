@@ -135,12 +135,13 @@ const std::string SigningKey::toJson(
 const SodiumBuffer SigningKey::toSerializedBinaryForm(
   bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater
 ) const {
-  // SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer _signatureVerificationKeyBytes(signatureVerificationKeyBytes);
+  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &signingKeyBytes,
     minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater ?
-    NULL : &SodiumBuffer(signatureVerificationKeyBytes),
-    &SodiumBuffer(keyDerivationOptionsJson)
+    NULL : &_signatureVerificationKeyBytes,
+    &_keyDerivationOptionsJson
   });
 }
 
