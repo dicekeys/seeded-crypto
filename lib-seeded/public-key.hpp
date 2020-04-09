@@ -4,6 +4,7 @@
 #include <string>
 #include <sodium.h>
 #include "sodium-buffer.hpp"
+#include "packaged-sealed-message.hpp"
 
 /**
  * @brief A PublicKey is used to _seal_ messages, in combination with a
@@ -148,12 +149,27 @@ public:
    * @param message The plaintext message to seal
    * @param postDecryptionInstructionsJson If this optional string is
    * passed, the same string must be passed to unseal the message.
-   * RefPDI.
    * @return const std::vector<unsigned char> 
    */
   const std::vector<unsigned char> seal(
     const SodiumBuffer &message,
     const std::string &postDecryptionInstructionsJson = {}
+  ) const;
+
+
+  /**
+   * @brief Seal a plaintext message and then package the results
+   * along with its keyDerivationOptionsJson and postDecryptionInstructionsJson
+   * into a SealedPackagedMessage.
+   * 
+   * @param message The plaintext message to seal
+   * @param postDecryptionInstructionsJson If this optional string is
+   * passed, the same string must be passed to unseal the message.
+   * @return const PackagedSealedMessage 
+   */
+  const PackagedSealedMessage sealAndPackage(
+    const SodiumBuffer& message,
+    const std::string &postDecryptionInstructionsJson
   ) const;
 
   /**

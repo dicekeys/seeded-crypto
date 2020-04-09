@@ -100,6 +100,17 @@ const std::vector<unsigned char> PublicKey::seal(
   return seal(message.data, message.length, postDecryptionInstructionsJson);
 }
 
+const PackagedSealedMessage PublicKey::sealAndPackage(
+  const SodiumBuffer& message,
+  const std::string &postDecryptionInstructionsJson
+) const {
+  return PackagedSealedMessage(
+    seal(message.data, message.length, postDecryptionInstructionsJson),
+    keyDerivationOptionsJson,
+    postDecryptionInstructionsJson
+  );
+}
+
 
 
 const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
