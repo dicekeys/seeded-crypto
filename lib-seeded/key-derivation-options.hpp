@@ -32,7 +32,7 @@ public:
 	 * of the key generation options.
 	 **/
 	KeyDerivationOptions(
-		const std::string &keyDerivationOptionsJson,
+		const std::string& keyDerivationOptionsJson,
 		const KeyDerivationOptionsJson::KeyType keyTypeExpected =
 			KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
 	);

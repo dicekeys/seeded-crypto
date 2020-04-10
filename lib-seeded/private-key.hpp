@@ -71,10 +71,8 @@ public:
    * @param PrivateKeyAsJson 
    */
   static PrivateKey fromJson(
-    const std::string &PrivateKeyAsJson
+    const std::string& PrivateKeyAsJson
   );
-
-  // PrivateKey(const std::string &PrivateKeyAsJson);
 
 
   /**
@@ -108,7 +106,7 @@ public:
   const SodiumBuffer unseal(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string &postDecryptionInstructionsJson
+    const std::string& postDecryptionInstructionsJson
   ) const;
 
   /**
@@ -127,6 +125,34 @@ public:
     const std::vector<unsigned char> &ciphertext,
     const std::string& postDecryptionInstructionsJson = {}
   ) const;
+
+  /**
+   * @brief Unseal a message from packaged format, ignoring the
+   * keyDerivationOptionsJson since this PrivateKey has been
+   * instantiated. (If it's the wrong key, the unseal will fail.)
+   * 
+   * @param packagedSealedMessage The message to be unsealed
+   * @return const SodiumBuffer The plaintesxt message that had been sealed
+   */
+  const SodiumBuffer unseal(
+    const PackagedSealedMessage& packagedSealedMessage
+  ) const;
+
+  /**
+   * @brief Unseal a message by re-deriving the PrivateKey from its seed. 
+   * 
+   * @param packagedSealedMessage The message to be unsealed
+   * @param seedString The seed string used to generate the key pair of the
+   * PublicKey used to seal this message and the PrivateKey needed to unseal it.
+   * @return const SodiumBuffer The plaintesxt message that had been sealed
+   */
+  static const SodiumBuffer unseal(
+    const PackagedSealedMessage &packagedSealedMessage,
+      const std::string& seedString
+  ) {
+    return PrivateKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
+      .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+  }
 
   /**
    * @brief Serialize this object to a JSON-formatted string

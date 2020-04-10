@@ -59,7 +59,7 @@ public:
    */
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
-    const std::string &KeyDerivationOptionsJson
+    const std::string& KeyDerivationOptionsJson
   );
 
   /**
@@ -69,7 +69,7 @@ public:
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
     const std::vector<unsigned char> &signatureVerificationKeyBytes,
-    const std::string &keyDerivationOptionsJson
+    const std::string& keyDerivationOptionsJson
   );
 
     /**
@@ -85,19 +85,6 @@ public:
     const std::string& seedString,
     const std::string& keyDerivationOptionsJson
   );
-
-  // /**
-  //  * @brief Construct (reconsitute) the SigningKey from JSON format.
-  //  * The JSON object may or may not contain the signatureVerificationKeyBytes.
-  //  * If it does not, an empty byte vector will be stored and the verification
-  //  * key bytes will be re-derived from the signing key by
-  //  * getSignatureVerificationKeyBytes if they are needed.
-  //  * 
-  //  * @param signingKeyAsJson 
-  //  */
-  // SigningKey(
-  //   const std::string& signingKeyAsJson
-  // );
 
   /**
    * @brief Construct (reconsitute) the SigningKey from JSON format.

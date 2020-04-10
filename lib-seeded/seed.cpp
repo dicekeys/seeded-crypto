@@ -20,7 +20,7 @@ Seed::Seed(
 
 Seed::Seed(const Seed &other) : Seed(other.seedBytes, other.keyDerivationOptionsJson) {}
 
-// Seed::Seed(const std::string &seedAsJson) : Seed(Seed::fromJson(seedAsJson)) {}
+// Seed::Seed(const std::string& seedAsJson) : Seed(Seed::fromJson(seedAsJson)) {}
 
 // JSON field names
 namespace SeedJsonFields {
@@ -28,7 +28,7 @@ namespace SeedJsonFields {
   static const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
 }
 
-Seed Seed::fromJson(const std::string &seedAsJson) {
+Seed Seed::fromJson(const std::string& seedAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(seedAsJson);
     auto kdo = jsonObject.value<std::string>(SeedJsonFields::keyDerivationOptionsJson, "");

@@ -11,7 +11,7 @@ namespace SignatureVerificationKeyJsonFieldName {
 
 SignatureVerificationKey::SignatureVerificationKey(
     const std::vector<unsigned char> &_verificationKeyBytes,
-    const std::string &_keyDerivationOptionsJson
+    const std::string& _keyDerivationOptionsJson
   ) : signatureVerificationKeyBytes(_verificationKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
     if (signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES) {
       throw std::invalid_argument("Invalid key size exception");
@@ -32,7 +32,7 @@ SignatureVerificationKey SignatureVerificationKey::fromJson(const std::string& s
   }
 }
 
-// SignatureVerificationKey::SignatureVerificationKey(const std::string &verificationKeyAsJson) :
+// SignatureVerificationKey::SignatureVerificationKey(const std::string& verificationKeyAsJson) :
 //  SignatureVerificationKey(createFrommJson(verificationKeyAsJson)) {}
 
 

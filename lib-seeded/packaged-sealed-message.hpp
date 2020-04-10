@@ -82,6 +82,6 @@ public:
    * @param packagedSealedMessageAsJson The JSON encoding of this object generated
    * by a call to toJson
    */
-  static PackagedSealedMessage fromJson(const std::string &packagedSealedMessageAsJson);
+  static PackagedSealedMessage fromJson(const std::string& packagedSealedMessageAsJson);
 
 };

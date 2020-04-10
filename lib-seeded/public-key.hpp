@@ -38,7 +38,7 @@ public:
    * 
    * @param publicKeyAsJson The JSON encoding of a PublicKey
    */
-  static PublicKey fromJson(const std::string &publicKeyAsJson);
+  static PublicKey fromJson(const std::string& publicKeyAsJson);
   
   /**
    * @brief The binary representation of the public key used for sealing
@@ -56,13 +56,6 @@ public:
     const std::vector<unsigned char>& publicKeyBytes,
     const std::string& keyDerivationOptionsJson
   );
-
-  // /**
-  //  * @brief Construct (reconstitute) from serialized JSON format
-  //  * 
-  //  * @param publicKeyAsJson A PublicKey serialized in JSON format via a previous call to toJson
-  //  */
-  // PublicKey(const std::string &publicKeyAsJson);
 
   /**
    * @brief Serialize this object to a JSON-formatted string
@@ -95,7 +88,7 @@ public:
    * RefPDI.
    * @return const std::vector<unsigned char> The sealed message (ciphertext)
    */
-  static const std::vector<unsigned char> seal(
+  static const std::vector<unsigned char> sealToCiphertextOnly(
     const SodiumBuffer& message,
     const std::vector<unsigned char>& publicKey,
     const std::string& postDecryptionInstructionsJson = {}
@@ -119,11 +112,11 @@ public:
    * RefPDI.
    * @return const std::vector<unsigned char> The sealed message (ciphertext)
    */
-  static const std::vector<unsigned char> seal(
+  static const std::vector<unsigned char> sealToCiphertextOnly(
     const unsigned char* message,
     const size_t messageLength,
     const std::vector<unsigned char> &publicKey,
-    const std::string &postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructionsJson = {}
   );
 
   /**
@@ -137,7 +130,7 @@ public:
    * about what should happen after the message is unsealed.
    * @return const std::vector<unsigned char> 
    */
-  const std::vector<unsigned char> seal(
+  const std::vector<unsigned char> sealToCiphertextOnly(
     const unsigned char* message,
     const size_t messageLength,
     const std::string& postDecryptionInstructionsJson = {}
@@ -151,9 +144,9 @@ public:
    * passed, the same string must be passed to unseal the message.
    * @return const std::vector<unsigned char> 
    */
-  const std::vector<unsigned char> seal(
+  const std::vector<unsigned char> sealToCiphertextOnly(
     const SodiumBuffer &message,
-    const std::string &postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructionsJson = {}
   ) const;
 
 
@@ -165,11 +158,50 @@ public:
    * @param message The plaintext message to seal
    * @param postDecryptionInstructionsJson If this optional string is
    * passed, the same string must be passed to unseal the message.
-   * @return const PackagedSealedMessage 
+   * @return const PackagedSealedMessage Everything needed to re-derive
+   * the PrivateKey from the seed (except the seed string iteslf)
+   * and unseal the message.
    */
-  const PackagedSealedMessage sealAndPackage(
+  const PackagedSealedMessage seal(
     const SodiumBuffer& message,
-    const std::string &postDecryptionInstructionsJson
+    const std::string& postDecryptionInstructionsJson
+  ) const;
+
+  /**
+   * @brief Seal a plaintext message and then package the results
+   * along with its keyDerivationOptionsJson and postDecryptionInstructionsJson
+   * into a SealedPackagedMessage.
+   * 
+   * @param message The plaintext message to seal
+   * @param postDecryptionInstructionsJson If this optional string is
+   * passed, the same string must be passed to unseal the message.
+   * @return const PackagedSealedMessage Everything needed to re-derive
+   * the PrivateKey from the seed (except the seed string iteslf)
+   * and unseal the message.
+   */
+  const PackagedSealedMessage seal(
+    const std::vector<unsigned char>& message,
+    const std::string& postDecryptionInstructionsJson
+  ) const;
+
+
+  /**
+   * @brief Seal a plaintext message and then package the results
+   * along with its keyDerivationOptionsJson and postDecryptionInstructionsJson
+   * into a SealedPackagedMessage.
+   * 
+   * @param message The plaintext message to seal
+   * @param messageLength The length of the plaintext to seal
+   * @param postDecryptionInstructionsJson If this optional string is
+   * passed, the same string must be passed to unseal the message.
+   * @return const PackagedSealedMessage Everything needed to re-derive
+   * the PrivateKey from the seed (except the seed string iteslf)
+   * and unseal the message.
+   */
+  const PackagedSealedMessage seal(
+    const unsigned char* message,
+    const size_t messageLength,
+    const std::string& postDecryptionInstructionsJson
   ) const;
 
   /**

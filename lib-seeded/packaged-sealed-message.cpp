@@ -57,7 +57,7 @@ const std::string PackagedSealedMessage::toJson(
   return asJson.dump(indent, indent_char);
 }
   
-PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string &packagedSealedMessageAsJson) {
+PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string& packagedSealedMessageAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(packagedSealedMessageAsJson);
     auto kdo = jsonObject.value<std::string>(PackagedSealedMessageJsonFields::keyDerivationOptionsJson, "");

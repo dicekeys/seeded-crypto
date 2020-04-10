@@ -39,10 +39,8 @@ public:
   */
   SignatureVerificationKey(
     const std::vector<unsigned char> &keyBytes,
-    const std::string &keyDerivationOptionsJson
+    const std::string& keyDerivationOptionsJson
   );
-
-//SignatureVerificationKey(const std::string &signatureVerificationKeyAsJson);
 
   /**
    * @brief Construct (reconstitute) a SignatureVerificationKey from JSON format,

@@ -25,7 +25,7 @@ SigningKey::SigningKey(
 SigningKey::SigningKey(
   const SodiumBuffer &_signingKey,
   const std::vector<unsigned char> &_signatureVerificationKey,
-  const std::string &_keyDerivationOptionsJson
+  const std::string& _keyDerivationOptionsJson
 ) :
   keyDerivationOptionsJson(_keyDerivationOptionsJson),
   signingKeyBytes(_signingKey),
@@ -62,10 +62,6 @@ SigningKey SigningKey::fromJson(
   }
 
 }
-
-// SigningKey::SigningKey(
-//   const std::string& signingKeyAsJson
-// ) : SigningKey( constructSigningKeyFromJson(signingKeyAsJson)) {}
 
 SigningKey::SigningKey(
   const std::string& seedString,

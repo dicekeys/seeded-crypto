@@ -48,7 +48,7 @@ nlohmann::json parseJsonWithKeyDerviationOptionsExceptions(std::string json) {
 // We make heavy use of the library's enum conversion, as documented at:
 //   https://github.com/nlohmann/json#specializing-enum-conversion
 KeyDerivationOptions::KeyDerivationOptions(
-  const std::string &_keyDerivationOptionsJson,
+  const std::string& _keyDerivationOptionsJson,
   const KeyDerivationOptionsJson::KeyType keyTypeExpected
 ) : keyDerivationOptionsJson(_keyDerivationOptionsJson) {
   const nlohmann::json& keyDerivationOptionsObject = parseJsonWithKeyDerviationOptionsExceptions(

@@ -24,7 +24,7 @@ PrivateKey::PrivateKey(
 
 PrivateKey::PrivateKey(
   const SodiumBuffer &seedBuffer,
-  const std::string &_keyDerivationOptionsJson
+  const std::string& _keyDerivationOptionsJson
 ) : keyDerivationOptionsJson(_keyDerivationOptionsJson), publicKeyBytes(crypto_box_PUBLICKEYBYTES), privateKeyBytes(crypto_box_SECRETKEYBYTES) {
   if (seedBuffer.length < crypto_box_SEEDBYTES){
     throw std::invalid_argument("Insufficient seed length");
@@ -51,7 +51,7 @@ PrivateKey::PrivateKey(
 const SodiumBuffer PrivateKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
   if (ciphertextLength <= crypto_box_SEALBYTES) {
     throw CryptographicVerificationFailureException("Public/Private unseal failed: Invalid message length");
@@ -81,6 +81,12 @@ const SodiumBuffer PrivateKey::unseal(
   );
 };
 
+const SodiumBuffer PrivateKey::unseal(
+  const PackagedSealedMessage &packagedSealedMessage
+) const {
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+}
+
 const PublicKey PrivateKey::getPublicKey() const {
   return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
 }
@@ -96,7 +102,7 @@ namespace PrivateKeyJsonField {
 }
 
 PrivateKey PrivateKey::fromJson(
-  const std::string &PrivateKeyAsJson
+  const std::string& PrivateKeyAsJson
 ) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(PrivateKeyAsJson);
@@ -108,9 +114,6 @@ PrivateKey PrivateKey::fromJson(
     throw JsonParsingException(e.what());
   }
 }
-
-// PrivateKey::PrivateKey(const std::string &privateKeyAsJson) :
-//   PrivateKey(constructPrivateKeyFromJson(privateKeyAsJson)) {}
 
 const std::string PrivateKey::toJson(
   int indent,

@@ -21,7 +21,7 @@ public:
 	 * of the key generation options.
 	 **/
 	PostDecryptionInstructions(
-		const std::string &postDecryptionInstructionsJson
+		const std::string& postDecryptionInstructionsJson
 	);
 
 	PostDecryptionInstructions(
@@ -29,8 +29,8 @@ public:
 		std::string userMustAcknowledgeThisMessage = {}
 	);
 
-	bool isApplicationIdAllowed(const std::string &applicationId) const;
-	void validateApplicationId(const std::string &applicationId) const;
+	bool isApplicationIdAllowed(const std::string& applicationId) const;
+	void validateApplicationId(const std::string& applicationId) const;
 
 	std::string	toJson(
 		int indent = -1,

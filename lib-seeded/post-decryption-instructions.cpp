@@ -5,7 +5,7 @@
 #include "post-decryption-instructions.hpp"
 
 PostDecryptionInstructions::PostDecryptionInstructions(
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) {
   if (postDecryptionInstructionsJson.size() == 0) {
     // Empty post-decryption instructions
@@ -55,7 +55,7 @@ std::string	PostDecryptionInstructions::toJson(int indent,
   return asJson.dump(indent, indent_char);
 }
 
-bool PostDecryptionInstructions::isApplicationIdAllowed(const std::string &applicationId) const {
+bool PostDecryptionInstructions::isApplicationIdAllowed(const std::string& applicationId) const {
   if (clientApplicationIdMustHavePrefix.size() == 0) {
     // The applicationId is not required to match a prefix 
     return true;
@@ -72,7 +72,7 @@ bool PostDecryptionInstructions::isApplicationIdAllowed(const std::string &appli
   return false;
 }
 
-void PostDecryptionInstructions::validateApplicationId(const std::string &applicationId) const {
+void PostDecryptionInstructions::validateApplicationId(const std::string& applicationId) const {
   if (!isApplicationIdAllowed(applicationId)) {
     throw std::invalid_argument( ("Invalid application ID: " + applicationId).c_str() );
   }

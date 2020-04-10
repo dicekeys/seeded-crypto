@@ -46,10 +46,10 @@ SymmetricKey::SymmetricKey(
   _keyDerivationOptionsJson
 ) {}
 
-const std::vector<unsigned char> SymmetricKey::seal(
+const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const unsigned char* message,
   const size_t messageLength,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
   if (messageLength <= 0) {
     throw std::invalid_argument("Invalid message length");
@@ -77,28 +77,52 @@ const std::vector<unsigned char> SymmetricKey::seal(
   return ciphertext;
 }
 
-const std::vector<unsigned char> SymmetricKey::seal(
+const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const SodiumBuffer &message,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
-  return seal(message.data, message.length, postDecryptionInstructionsJson);
+  return sealToCiphertextOnly(message.data, message.length, postDecryptionInstructionsJson);
 }
 
-const PackagedSealedMessage SymmetricKey::sealAndPackage(
+const PackagedSealedMessage SymmetricKey::seal(
   const SodiumBuffer& message,
   const std::string& postDecryptionInstructionsJson
 ) const {
   return PackagedSealedMessage(
-    seal(message, postDecryptionInstructionsJson),
+    sealToCiphertextOnly(message, postDecryptionInstructionsJson),
     keyDerivationOptionsJson,
     postDecryptionInstructionsJson
+  );
+}
+
+const PackagedSealedMessage SymmetricKey::seal(
+  const std::vector<unsigned char>& message,
+  const std::string& postDecryptionInstructionsJson
+) const {
+    return PackagedSealedMessage( 
+      sealToCiphertextOnly(message.data(), message.size(), postDecryptionInstructionsJson),
+      keyDerivationOptionsJson,
+      postDecryptionInstructionsJson
+  );
+}
+
+
+const PackagedSealedMessage SymmetricKey::seal(
+  const unsigned char* message,
+  const size_t messageLength,
+  const std::string& postDecryptionInstructionsJson
+) const {
+    return PackagedSealedMessage( 
+      sealToCiphertextOnly(message, messageLength, postDecryptionInstructionsJson),
+      keyDerivationOptionsJson,
+      postDecryptionInstructionsJson
   );
 }
 
 const SodiumBuffer SymmetricKey::unsealMessageContents(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
   if (ciphertextLength <= (crypto_secretbox_MACBYTES + crypto_secretbox_NONCEBYTES)) {
     throw std::invalid_argument("Invalid message length");
@@ -135,16 +159,30 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
 const SodiumBuffer SymmetricKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
   return unsealMessageContents(ciphertext, ciphertextLength, postDecryptionInstructionsJson);
 };
 
 const SodiumBuffer SymmetricKey::unseal(
   const std::vector<unsigned char> &ciphertext,
-  const std::string &postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructionsJson
 ) const {
   return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructionsJson);
+}
+
+const SodiumBuffer SymmetricKey::unseal(
+  const PackagedSealedMessage &packagedSealedMessage
+) const {
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+}
+
+/* static */const SodiumBuffer SymmetricKey::unseal(
+  const PackagedSealedMessage& packagedSealedMessage,
+  const std::string& seedString
+) {
+  return SymmetricKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
+    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
 }
 
 
@@ -166,10 +204,6 @@ SymmetricKey SymmetricKey::fromJson(
     throw JsonParsingException(e.what());
   }
 }
-
-// SymmetricKey::SymmetricKey(
-//   const std::string& _symmetricKeyAsJson
-// ) : SymmetricKey(SymmetricKey::fromJson(_symmetricKeyAsJson)) {}
 
 const std::string SymmetricKey::toJson(
   int indent,
@@ -195,12 +229,4 @@ const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
 SymmetricKey SymmetricKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SymmetricKey(fields[0], fields[1].toUtf8String());
-}
-
-SodiumBuffer SymmetricKey::unseal(
-  const PackagedSealedMessage &packagedSealedMessage,
-  std::string seedString 
-) {
-  return SymmetricKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
-    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
 }
