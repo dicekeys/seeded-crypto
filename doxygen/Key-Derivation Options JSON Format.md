@@ -162,3 +162,21 @@ and not verify that the copy is correct, the mistake will not prevent them from 
 ```
     "excludeOrientationOfFaces"?: true | false // default false
 ```
+
+
+#### clientMayRetrieveKey
+
+Set `"clientMayRetrieveKey"?: true` client application to retrieve the
+[PrivateKey] (`"keyType": "Public"`),
+[SigningKey] (`"KeyType": "Signing"`), or
+[SymmetricKey] (`"keyType": "Symmetric"`)
+subjec to any restrictions specified in the `"restrictions"` field.
+
+```
+    "clientMayRetrieveKey"?: true | false // default false
+```
+
+This allows client apps to derive keys that they can use
+private/signing/symmetric keys even when the seed is not present
+for re-derivation, but still have a key that is recoverable with
+the seed should it become necessary.
