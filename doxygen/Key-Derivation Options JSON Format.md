@@ -7,7 +7,7 @@ Its value must be either a valid JSON object specification, enclosed in braces (
 All fields are optional and have defaults specified, and so an empty object "{}" will indicate that he defaults for all fields should be used.
 Any empty string ("") is treated the same as an empty object ("{}).
 
-## Fields Specified by this library
+## Universal fields
 
 The following fields are used by the seeded-crypto C++ library.
 
@@ -104,11 +104,18 @@ We purposely chose _not_ to support multiple iterations of `BLAKE2b` or `SHA256`
 via the `hashFunctionIterations` field, as applications that want to increase the
 cost of key derviation to prevent brute forcing should use `Argon2id` or `Scrypt`.
 
-## Extension fields
+## Extensions
 
-In addition to the fields specified by this library, this format can be extended to support additional fields.  This library will ignore those fields when processing the JSON format, but since those fields are part of the JSON string, they will be part of the seed used to derive the output.  No matter how small the change to the JSON string, whether the insertion of a new field or the insertion of a white-space character, will cause an entirely different key to be derived.
+In addition to the fields used by the seeded cryptography library, this JSON format supports
+fields that this library makes no use of.
+When processing this JSON format, the seeded cryptography library will ignore any fields it does not use.
+Since those fields are part of the JSON string, they _will_ be part of the seed used to derive the output
+and so changes to those fields will change the key.
+(No matter how small the change to the JSON string, whether the insertion of a new field or the insertion of a white-space character, they are used to seed the key-derivation hash function and thus changes
+will cause an entirely different key to be derived.)
 
-So, for example, an arbitrary salt could be extended when deriving a SymmetricKey as illustred by this key-derivation options JSON string:
+Since any JSON object field outside the spec can be attached, one could, for example, use a
+field to salt the derivation of a SymmetricKey as illustred by this key-derivation options JSON string:
 ```
 {
     "keyType": "SymmetricKey",
@@ -117,8 +124,41 @@ So, for example, an arbitrary salt could be extended when deriving a SymmetricKe
 ```
 
 The following extension field is used by DiceKeys, but not parsed or processed by this specific library.
+These _extension_ fields are documented here, despite being ignored by this library,
+so that all key-derivation options can be found in one place.
 
+### Extensions for DiceKeys as seeds
 
+#### excludeOrientationOfFaces
+
+When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:
+ * The uppercase letter on the die
+ * The digit on the die
+ * The orientation relative to the top of the square in canonical form
+
+If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be excluded
+resulting in a 50-character seed.
+The advantage of this settig is that, should a user manually transcribe the contents of a DiceKey, incorrectly record and orientation,
+and not verify that the copy is correct, the mistake will not prevent them from correctly re-deriving the seed for this key in the future.
+
+```
+    "excludeOrientationOfFaces"?: true | false // default false
+```
+
+### Extensions for the DiceKeys app
+
+#### clientMayRetrieveKey
+
+```
+    "clientMayRetrieveKey": true | false // default false
+```
+
+The DiceKeys app will allow a client application to obtain a raw signing key, private key, or symmetric key
+if this is `clientMayRetrieveKey` is set to true. Otherwise, the DiceKeys app will perform operations
+with these keys on behalf of the client, but not share the keys themselves.
+Regardless, client will be forbidden from using or retrieving keys if `restrictions` field (see below)
+is in use and the client does not comply with those restrictions.
+ 
 #### restrictions
 
 The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.
@@ -147,18 +187,3 @@ For example:
 }
 ```
 
-#### excludeOrientationOfFaces
-
-When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:
- * The uppercase letter on the die
- * The digit on the die
- * The orientation relative to the top of the square in canonical form
-
-If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be excluded
-resulting in a 50-character seed.
-The advantage of this settig is that, should a user manually transcribe the contents of a DiceKey, incorrectly record and orientation,
-and not verify that the copy is correct, the mistake will not prevent them from correctly re-deriving the seed for this key in the future.
-
-```
-    "excludeOrientationOfFaces"?: true | false // default false
-```
