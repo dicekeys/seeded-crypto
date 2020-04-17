@@ -25,8 +25,22 @@ var NAVTREE =
   [ "DiceKeys Seeded Cryptography Library", "index.html", [
     [ "Introduction", "md__c_1__users_stuar_git_dicekeys-seeded-crypto_doxygen__introduction.html", null ],
     [ "Key-Derivation Options JSON format", "key_derivation_options_format.html", [
-      [ "Fields Specified by this library", "key_derivation_options_format.html#autotoc_md0", null ],
-      [ "Extension fields", "key_derivation_options_format.html#autotoc_md6", null ]
+      [ "Universal Fields Used by the Seeded Cryptography Library", "key_derivation_options_format.html#autotoc_md0", null ],
+      [ "Extensions", "key_derivation_options_format.html#autotoc_md6", [
+        [ "DiceKeys Hardware Fields", "key_derivation_options_format.html#autotoc_md7", [
+          [ "keyType", "key_derivation_options_format.html#autotoc_md1", null ],
+          [ "algorithm", "key_derivation_options_format.html#autotoc_md2", null ],
+          [ "keyLengthInBytes", "key_derivation_options_format.html#autotoc_md3", null ],
+          [ "hashFunction", "key_derivation_options_format.html#autotoc_md4", [
+            [ "Hash defaults and recommendations", "key_derivation_options_format.html#autotoc_md5", null ]
+          ] ],
+          [ "excludeOrientationOfFaces", "key_derivation_options_format.html#autotoc_md8", null ]
+        ] ],
+        [ "DiceKeys API Fields", "key_derivation_options_format.html#autotoc_md9", [
+          [ "clientMayRetrieveKey", "key_derivation_options_format.html#autotoc_md10", null ],
+          [ "restrictions", "key_derivation_options_format.html#autotoc_md11", null ]
+        ] ]
+      ] ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],

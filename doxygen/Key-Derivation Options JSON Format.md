@@ -1,15 +1,51 @@
 Key-Derivation Options JSON format {#key_derivation_options_format}
 ================
 
-This JSON-format for an object specifies how seeds and keys should be derived.
-Its value must be either a valid JSON object specification, enclosed in braces ("{}"), or an empty string.
+This JSON-format is used to specify how a key should be derived from a seed string.
 
-All fields are optional and have defaults specified, and so an empty object "{}" will indicate that he defaults for all fields should be used.
-Any empty string ("") is treated the same as an empty object ("{}).
+When the Seeded Cryptography Library derives a key from a seed string, the key-derivations
+options JSON string is used to salt the key derivation process.
+Thus, any change to this string no matter how tiny, even if just ordering or white space,
+will cause the library to derive a different key than for any other pair of
+seed strings and key-derivation options JSON string.
 
-## Universal fields
+The value of a key-derivation options JSON string must be either a valid JSON object specification,
+which is a set of fields enclosed in curly braces ("{}") per the JSON format,
+or an empty string.
 
-The following fields are used by the seeded-crypto C++ library.
+This specification defines default values for all fields, which are applied if a field is absent,
+and so a key-derviation options JSON string that is itself an empty string ("") or empty object ("{}")
+will use the default values for all fields.
+For example, If you are specifying derivation options for a SymmetricKey operation and pass an empty string,
+the `"keyType"` field will be inferred to be `Symmetric` and the `"algorithm"` will be the default
+algorithm for symmetric key cryptography (`XSalsa20Poly1305`).
+
+This specification breaks fields into three types:
+
+*Universal fields* are used by the Seeded Cryptography Library directly to derive keys.
+They are generalizable to any type of seed string, not just the DiceKeys use case
+for which the library was created.
+
+The Seeded Cryptogpraphy Library is oblivious to other fields, but since they are part of the
+JSON string any changes to them will cause the library to derive a different key.
+
+*DiceKeys Hardware fields* apply to keys seeded with a DiceKeys.
+
+*DiceKeys API fields* apply to keys generated through the DiceKeys API, which
+calls uses the DiceKeys app to generate keys and often to perform cryptographic
+operations. The DiceKeys app protects the keys so that other applications are not
+able to see the raw DiceKey, and these options specify which applications are
+allowed to generate keys and what they are allowed to do with them.
+
+The extensibility of underlying JSON format and the obliviousness of this
+library to non-universal fields allows other libraries to build
+on top of it without having to change this library.
+Any key-derivation options fields added will be ignored by this
+library for all purposes beyond salting the keys generated.
+
+## Universal Fields Used by the Seeded Cryptography Library
+
+The following fields are inspected and used by the seeded-crypto C++ library.
 
 #### keyType
 
@@ -127,7 +163,10 @@ The following extension field is used by DiceKeys, but not parsed or processed b
 These _extension_ fields are documented here, despite being ignored by this library,
 so that all key-derivation options can be found in one place.
 
-### Extensions for DiceKeys as seeds
+### DiceKeys Hardware Fields
+
+This Seeded Cryptography Library is oblivious to these fields, but they are documented
+here to keep the specification from being split into too many locations.
 
 #### excludeOrientationOfFaces
 
@@ -146,14 +185,16 @@ in copying an orientation, that error will not prevent them from re-deriving the
     "excludeOrientationOfFaces"?: true | false // default false
 ```
 
-### Extensions for the DiceKeys app
+### DiceKeys API Fields
+
+These fields specify who may generate keys and what they may do with them once generated.
 
 #### clientMayRetrieveKey
 
 Set `"clientMayRetrieveKey"?: true` to allow the client application to retrieve the
-[PrivateKey] (`"keyType": "Public"`),
-[SigningKey] (`"KeyType": "Signing"`), or
-[SymmetricKey] (`"keyType": "Symmetric"`)
+PrivateKey (`"keyType": "Public"`),
+SigningKey (`"KeyType": "Signing"`), or
+SymmetricKey (`"keyType": "Symmetric"`)
 subject to any restrictions specified in the `"restrictions"` field.
 
 ```
