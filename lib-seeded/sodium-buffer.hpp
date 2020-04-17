@@ -9,8 +9,9 @@
 // class SodiumBufferSerializationIterator;
 
 /**
- * @brief A buffer class which uses memory that is erased
- * before the memory is released for re-use by other objects.
+ * @brief A byte array containing a length and a pointer to memory (the data field),
+ * which ensures data is erased (replaced with zeros) before the memory it occupies
+ * is released for re-use by other objects.
  * 
  * Built on top of sodium_malloc and sodium_free from LibSodium.
  * 
