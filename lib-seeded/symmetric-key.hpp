@@ -33,6 +33,8 @@
  * (crypto_secretbox_MACBYTES = 16),
  * the composite ciphertext is is 40 bytes longer than the message length
  * (24 for then nonce, plus the 16 added to create the secret box)
+ * 
+ * @ingroup DerivedFromSeeds
  */
 class SymmetricKey {
 
@@ -81,6 +83,7 @@ class SymmetricKey {
    * Anyone who knows (or can guess) this seed can re-generate the key
    * by passing it along with the keyDerivationOptionsJson.
    * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+   * 
    */
   SymmetricKey(
     const std::string& seedString,
@@ -92,43 +95,43 @@ class SymmetricKey {
    * 
    * @param message The plaintxt message to seal 
    * @param messageLength The length of the plaintext message in bytes
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * @return const std::vector<unsigned char> The sealed _ciphertext_
    * without the additional context needed to unseal
    * (the keyDerivationOptionsJson required to re-derive the key and
-   * any postDecryptionInstructionsJson which must match on unsealing.)
+   * any postDecryptionInstructions which must match on unsealing.)
 
    */
   const std::vector<unsigned char> sealToCiphertextOnly(
     const unsigned char* message,
     const size_t messageLength,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
    * @brief Seal a plaintext message
    * 
    * @param message The plaintxt message to seal 
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * It can be used to pair a sealed message with public instructions
    * about what should happen after the message is unsealed.
    * @return const std::vector<unsigned char> The sealed _ciphertext_
    * without the additional context needed to unseal
    * (the keyDerivationOptionsJson required to re-derive the key and
-   * any postDecryptionInstructionsJson which must match on unsealing.)
+   * any postDecryptionInstructions which must match on unsealing.)
    */  
   const std::vector<unsigned char> sealToCiphertextOnly(
     const SodiumBuffer& message,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
    * @brief Seal a plaintext message
    * 
    * @param message The plaintxt message to seal 
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * It can be used to pair a sealed message with public instructions
    * about what should happen after the message is unsealed.
@@ -138,14 +141,31 @@ class SymmetricKey {
    */  
   const PackagedSealedMessage seal(
     const SodiumBuffer& message,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
+  ) const;
+
+    /**
+   * @brief Seal a plaintext message
+   * 
+   * @param message The plaintxt message to seal 
+   * @param postDecryptionInstructions If this optional string is
+   * passed, the same string must be passed to unseal the message.
+   * It can be used to pair a sealed message with public instructions
+   * about what should happen after the message is unsealed.
+   * @return PackagedSealedMessage Everything needed to re-derive
+   * the SymmetricKey from the seed (except the seed string iteslf)
+   * and unseal the message.
+   */  
+  const PackagedSealedMessage seal(
+    const std::string& message,
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
    * @brief Seal a plaintext message
    * 
    * @param message The plaintxt message to seal 
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * It can be used to pair a sealed message with public instructions
    * about what should happen after the message is unsealed.
@@ -155,7 +175,7 @@ class SymmetricKey {
    */  
   const PackagedSealedMessage seal(
     const std::vector<unsigned char>& message,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
 
@@ -164,7 +184,7 @@ class SymmetricKey {
    * 
    * @param message The plaintxt message to seal
    * @param messageLength The length of the plaintext message to seal
-   * @param postDecryptionInstructionsJson If this optional string is
+   * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * It can be used to pair a sealed message with public instructions
    * about what should happen after the message is unsealed.
@@ -175,7 +195,7 @@ class SymmetricKey {
   const PackagedSealedMessage seal(
     const unsigned char* message,
     const size_t messageLength,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
@@ -183,7 +203,7 @@ class SymmetricKey {
    * 
    * @param ciphertext The sealed message to be unsealed
    * @param ciphertextLength The length of the sealed message
-   * @param postDecryptionInstructionsJson If this optional value was
+   * @param postDecryptionInstructions If this optional value was
    * set during the SymmetricKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * It can be used to pair a secret (sealed) message with public instructions
@@ -196,14 +216,14 @@ class SymmetricKey {
   const SodiumBuffer unseal(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
    * @brief Unseal a message 
    * 
    * @param ciphertext The sealed message to be unsealed
-   * @param postDecryptionInstructionsJson If this optional value was
+   * @param postDecryptionInstructions If this optional value was
    * set during the SymmetricKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * @return const SodiumBuffer 
@@ -213,14 +233,12 @@ class SymmetricKey {
    */
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
   /**
    * @brief Unseal a message by re-deriving the SymmetricKey from a seed. 
    * 
-   * @param seedString The seed string used to generate the SymmetricKey that
-   * sealed this message
    * @param packagedSealedMessage The message to be unsealed
    * @return const SodiumBuffer The plaintesxt message that had been sealed
    */
@@ -290,7 +308,7 @@ protected:
   const SodiumBuffer unsealMessageContents(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string& postDecryptionInstructionsJson = {}
+    const std::string& postDecryptionInstructions = {}
   ) const;
 
 };

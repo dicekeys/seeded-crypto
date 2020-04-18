@@ -7,33 +7,33 @@
 namespace PackagedSealedMessageJsonFields {
   static const std::string ciphertext = "ciphertext";
   static const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
-  static const std::string postDecryptionInstructionJson = "postDecryptionInstructionJson";
+  static const std::string postDecryptionInstructions = "postDecryptionInstructions";
 }
 
 PackagedSealedMessage::PackagedSealedMessage(
         const std::vector<unsigned char>& _ciphertext,
         const std::string& _keyDerivationOptionsJson,
-        const std::string& _postDecryptionInstructionJson
+        const std::string& _postDecryptionInstructions
 ) : 
     ciphertext(_ciphertext),
     keyDerivationOptionsJson(_keyDerivationOptionsJson),
-    postDecryptionInstructionJson(_postDecryptionInstructionJson)
+    postDecryptionInstructions(_postDecryptionInstructions)
     {}
 
 PackagedSealedMessage::PackagedSealedMessage(const PackagedSealedMessage &other) :
   ciphertext(other.ciphertext),
   keyDerivationOptionsJson(other.keyDerivationOptionsJson),
-  postDecryptionInstructionJson(other.postDecryptionInstructionJson)
+  postDecryptionInstructions(other.postDecryptionInstructions)
   {}
 
 const SodiumBuffer PackagedSealedMessage::toSerializedBinaryForm() const {
   SodiumBuffer _ciphertext(ciphertext);
   SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
-  SodiumBuffer _postDecryptionInstructionJson(postDecryptionInstructionJson);
+  SodiumBuffer _postDecryptionInstructions(postDecryptionInstructions);
   return SodiumBuffer::combineFixedLengthList({
     &_ciphertext,
     &_keyDerivationOptionsJson,
-    &_postDecryptionInstructionJson
+    &_postDecryptionInstructions
   });
 }
 
@@ -51,8 +51,8 @@ const std::string PackagedSealedMessage::toJson(
   if (keyDerivationOptionsJson.size() > 0) {
     asJson[PackagedSealedMessageJsonFields::keyDerivationOptionsJson] = keyDerivationOptionsJson;
   }
-  if (postDecryptionInstructionJson.size() > 0) {
-    asJson[PackagedSealedMessageJsonFields::postDecryptionInstructionJson] = postDecryptionInstructionJson;
+  if (postDecryptionInstructions.size() > 0) {
+    asJson[PackagedSealedMessageJsonFields::postDecryptionInstructions] = postDecryptionInstructions;
   }
   return asJson.dump(indent, indent_char);
 }
@@ -64,7 +64,7 @@ PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string& package
     return PackagedSealedMessage(
       hexStrToByteVector(jsonObject.at(PackagedSealedMessageJsonFields::ciphertext)),
       jsonObject.value<std::string>(PackagedSealedMessageJsonFields::keyDerivationOptionsJson, ""),
-      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::postDecryptionInstructionJson, "")
+      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::postDecryptionInstructions, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());

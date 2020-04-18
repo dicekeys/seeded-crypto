@@ -5,9 +5,9 @@
 #include "post-decryption-instructions.hpp"
 
 PostDecryptionInstructions::PostDecryptionInstructions(
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) {
-  if (postDecryptionInstructionsJson.size() == 0) {
+  if (postDecryptionInstructions.size() == 0) {
     // Empty post-decryption instructions
     return;
   }
@@ -15,7 +15,7 @@ PostDecryptionInstructions::PostDecryptionInstructions(
   // key generation options.
   try {
     nlohmann::json decryptionOptionsObject =
-      nlohmann::json::parse(postDecryptionInstructionsJson);
+      nlohmann::json::parse(postDecryptionInstructions);
   
     clientApplicationIdMustHavePrefix =
       decryptionOptionsObject.value<const std::vector<std::string>>(

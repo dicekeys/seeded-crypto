@@ -15,6 +15,8 @@
  * The key pair of the SigningKey and SignatureVerificationKey is generated
  * from a seed and a set of key-derivation specified options in
  *  @ref key_derivation_options_format.
+ * 
+ * @ingroup DerivedFromSeeds
  */
 class SigningKey {
 protected:

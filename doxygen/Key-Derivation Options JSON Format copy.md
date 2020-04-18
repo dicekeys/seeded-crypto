@@ -1,5 +1,4 @@
-Key-Derivation Options JSON format {#key_derivation_options_format}
-================
+# Key-Derivation Options JSON Format {#key_derivation_options_format}
 
 This JSON-format is used to specify how a key should be derived from a seed string.
 
@@ -43,7 +42,19 @@ on top of it without having to change this library.
 Any key-derivation options fields added will be ignored by this
 library for all purposes beyond salting the keys generated.
 
-## Universal Fields Used by the Seeded Cryptography Library
+Since any JSON object field outside the spec can be attached, one could, for example, use a
+field to salt the derivation of a SymmetricKey like so:
+```TypeScript
+{
+    "keyType": "SymmetricKey",
+    "SaltWithThePhoneNumberForJenny": 8675309
+}
+```
+
+
+
+@anchor key_derivation_options_universal_fields
+### Universal Fields used by the Seeded Cryptography Library
 
 The following fields are inspected and used by the seeded-crypto C++ library.
 
@@ -52,7 +63,7 @@ The following fields are inspected and used by the seeded-crypto C++ library.
 Specify whether this JSON object should be used to construct an
 @ref Seed, @ref SymmetricKey, @ref PrivateKey, or @ref SigningKey.
 
-```
+```TypeScript
 "keyType"?:
     // For constructing a Seed object
     "Seed" |
@@ -73,7 +84,7 @@ a different `keyType`, the constructor will treat it as an exception.
 
 Specify the specific algorithm to use.
 
-```
+```TypeScript
 "algorithm"?: 
     // valid only for "keyType": "Symmetric"
     "XSalsa20Poly1305" | // the current default for SymmetricKey
@@ -86,7 +97,7 @@ Specify the specific algorithm to use.
 The `algorithm` field should never be set for `"keyType": "Seed"`.
 
 #### keyLengthInBytes
-```
+```TypeScript
 "keyLengthInBytes"?: number // e.g. "keyLengthInBytes": 32
 ```
 
@@ -98,7 +109,7 @@ options, this field can be used to specify which length varient of the algorithm
 use.
 
 #### hashFunction
-```
+```TypeScript
 "hashFunction"?: "BLAKE2b" | "SHA256" | "Argon2id" | "Scrypt" // default "SHA256"
 ```
 
@@ -111,7 +122,7 @@ two additional fields, which are ignored for  `"BLAKE2b"` and `"SHA256"`.
 
 
 For example:
-```
+```TypeScript
 {
     "keyType": "Seed",
     "keyLengthInBytes": 96,
@@ -139,29 +150,6 @@ even if that code is sanboxed, we recommend using `Argon2id`.
 We purposely chose _not_ to support multiple iterations of `BLAKE2b` or `SHA256`
 via the `hashFunctionIterations` field, as applications that want to increase the
 cost of key derviation to prevent brute forcing should use `Argon2id` or `Scrypt`.
-
-## Extensions
-
-In addition to the fields used by the seeded cryptography library, this JSON format supports
-fields that this library makes no use of.
-When processing this JSON format, the seeded cryptography library will ignore any fields it does not use.
-Since those fields are part of the JSON string, they _will_ be part of the seed used to derive the output
-and so changes to those fields will change the key.
-(No matter how small the change to the JSON string, whether the insertion of a new field or the insertion of a white-space character, they are used to seed the key-derivation hash function and thus changes
-will cause an entirely different key to be derived.)
-
-Since any JSON object field outside the spec can be attached, one could, for example, use a
-field to salt the derivation of a SymmetricKey as illustred by this key-derivation options JSON string:
-```
-{
-    "keyType": "SymmetricKey",
-    "SaltWithThePhoneNumberForJenny": 8675309
-}
-```
-
-The following extension field is used by DiceKeys, but not parsed or processed by this specific library.
-These _extension_ fields are documented here, despite being ignored by this library,
-so that all key-derivation options can be found in one place.
 
 ### DiceKeys Hardware Fields
 
@@ -210,15 +198,15 @@ the seed should it become necessary.
 
 The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.
 
-```
-    "restrictions: {
-        "androidPackagePrefixesAllowed": string[],
-        "urlPrefixesAllowed": string[]
+```TypeScript
+    "restrictions"?: {
+        "androidPackagePrefixesAllowed"?: string[],
+        "urlPrefixesAllowed"?: string[]
     }
 ```
 
 For example:
-```
+```TypeScript
 {
     "keyType": "Seed",
     "restrictions": {
@@ -233,3 +221,15 @@ For example:
     }
 }
 ```
+
+If the `"restrictions"` field is set, but the object it is set to does not contain an
+`"androidPackagePrefixesAllowed"` field, the API will forbid Android applications from
+generating the key.
+If the `"restrictions"` field is set, but the object it is set to does not contain a
+`"urlPrefixesAllowed"` field, the API will forbid iOS and other applications that
+rely on this field to generate the key.
+
+The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and
+and terminate client package IDs with dots, to prevent extension attacks.  In other words,
+if you set the prefix `com.example`, the API will treat it as `com.example.`, so that
+another party cannot register `com.exampleattacker` to match the `com.eaxmple` prefix.

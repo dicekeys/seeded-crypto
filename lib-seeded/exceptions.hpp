@@ -2,6 +2,11 @@
 
 #include <stdexcept>
 
+/** @defgroup exceptions Exceptions
+ *  Exceptions thrown by this library
+ *  @{
+ */
+
 /**
  * @brief Thrown when a cryptographic operation fails
  * due to keys or data being corrupted, modified, or of incorrect length.
@@ -79,3 +84,5 @@ class InvalidKeyDerivationOptionValueException: public std::invalid_argument
 	InvalidKeyDerivationOptionValueException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid key derivation options") {};
 };
+
+/** @} */ // end of Exceptions group

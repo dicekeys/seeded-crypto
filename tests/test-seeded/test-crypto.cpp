@@ -157,10 +157,10 @@ TEST(PublicKey, EncryptsAndDecrypts) {
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = "{}";
+	const std::string postDecryptionInstructions = "{}";
 	SodiumBuffer messageBuffer(messageVector);
-	const auto sealedMessage = testPublicKey.sealToCiphertextOnly(messageBuffer, postDecryptionInstructionsJson);
-	const auto unsealedMessage = testPrivateKey.unseal(sealedMessage, postDecryptionInstructionsJson);
+	const auto sealedMessage = testPublicKey.sealToCiphertextOnly(messageBuffer, postDecryptionInstructions);
+	const auto unsealedMessage = testPrivateKey.unseal(sealedMessage, postDecryptionInstructions);
 	const auto unsealedPlaintext = unsealedMessage.toVector();
 	ASSERT_EQ(messageVector, unsealedPlaintext);
 }
@@ -170,9 +170,9 @@ TEST(PublicKey, EncryptsAndDecryptsPackaged) {
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = "{}";
+	const std::string postDecryptionInstructions = "{}";
 	SodiumBuffer messageBuffer(messageVector);
-	const auto sealedMessage = testPublicKey.seal(messageBuffer, postDecryptionInstructionsJson);
+	const auto sealedMessage = testPublicKey.seal(messageBuffer, postDecryptionInstructions);
 	const auto unsealedMessage = PrivateKey::unseal(sealedMessage, orderedTestKey);
 	const auto unsealedPlaintext = unsealedMessage.toVector();
 	ASSERT_EQ(messageVector, unsealedPlaintext);
@@ -259,7 +259,7 @@ TEST(SymmetricKey, EncryptsAndDecryptsWithoutPostDecryptionInstructions) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = {};
+	const std::string postDecryptionInstructions = {};
 	SodiumBuffer messageBuffer(messageVector);
 	const auto sealedMessage = testSymmetricKey.sealToCiphertextOnly(messageBuffer);
 	const auto unsealedMessage = testSymmetricKey.unseal(sealedMessage);
@@ -291,11 +291,11 @@ TEST(SymmetricKey, EncryptsAndDecrypts) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
+	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
 	SodiumBuffer messageBuffer(messageVector);
 	
-	const auto sealedMessage = testSymmetricKey.sealToCiphertextOnly(messageBuffer, postDecryptionInstructionsJson);
-	const auto unsealedMessage = testSymmetricKey.unseal(sealedMessage, postDecryptionInstructionsJson);
+	const auto sealedMessage = testSymmetricKey.sealToCiphertextOnly(messageBuffer, postDecryptionInstructions);
+	const auto unsealedMessage = testSymmetricKey.unseal(sealedMessage, postDecryptionInstructions);
 	const std::vector<unsigned char> unsealedPlaintext = unsealedMessage.toVector();
 	ASSERT_EQ(messageVector, unsealedPlaintext);
 }
@@ -305,10 +305,10 @@ TEST(SymmetricKey, EncryptsAndDecryptsPackaged) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
+	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
 	SodiumBuffer messageBuffer(messageVector);
 
-	const auto sealedMessage = testSymmetricKey.seal(messageBuffer, postDecryptionInstructionsJson);
+	const auto sealedMessage = testSymmetricKey.seal(messageBuffer, postDecryptionInstructions);
 	const auto unsealedMessage = SymmetricKey::unseal(sealedMessage, orderedTestKey);
 	const std::vector<unsigned char> unsealedPlaintext = unsealedMessage.toVector();
 	ASSERT_EQ(messageVector, unsealedPlaintext);
@@ -320,10 +320,10 @@ TEST(SymmetricKey, EncryptsAndDecryptsPackagedAndDecryptsWithoutRederiving) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
 	
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
-	const std::string postDecryptionInstructionsJson = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
+	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
 	SodiumBuffer messageBuffer(messageVector);
 
-	const auto sealedMessage = testSymmetricKey.seal(messageBuffer, postDecryptionInstructionsJson);
+	const auto sealedMessage = testSymmetricKey.seal(messageBuffer, postDecryptionInstructions);
 	const auto unsealedMessage = testSymmetricKey.unseal(sealedMessage);
 
 	const std::vector<unsigned char> unsealedPlaintext = unsealedMessage.toVector();
@@ -341,7 +341,7 @@ TEST(PackagedSealedMessage, ConvertsToSerializedFormAndBack) {
 	ASSERT_EQ(replica.ciphertext.size(), 1);
 	ASSERT_EQ(replica.ciphertext.data()[0], 42);
 	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
-	ASSERT_STREQ(replica.postDecryptionInstructionJson.c_str(), message.postDecryptionInstructionJson.c_str());
+	ASSERT_STREQ(replica.postDecryptionInstructions.c_str(), message.postDecryptionInstructions.c_str());
 }
 
 TEST(PackagedSealedMessage, ConvertsToJsonAndBack) {
@@ -353,5 +353,5 @@ TEST(PackagedSealedMessage, ConvertsToJsonAndBack) {
 	ASSERT_EQ(replica.ciphertext.size(), 1);
 	ASSERT_EQ(replica.ciphertext.data()[0], 42);
 	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
-	ASSERT_STREQ(replica.postDecryptionInstructionJson.c_str(), message.postDecryptionInstructionJson.c_str());
+	ASSERT_STREQ(replica.postDecryptionInstructions.c_str(), message.postDecryptionInstructions.c_str());
 }

@@ -21,7 +21,7 @@ public:
 	 * of the key generation options.
 	 **/
 	PostDecryptionInstructions(
-		const std::string& postDecryptionInstructionsJson
+		const std::string& postDecryptionInstructions
 	);
 
 	PostDecryptionInstructions(

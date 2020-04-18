@@ -4,6 +4,13 @@
 #include <vector>
 #include "sodium-buffer.hpp"
 
+/**
+ * @brief When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson
+ * in @ref key_derivation_options_format, as well as any optional post-decryption instructions
+ * it was sealed with (postDecryptionInstructions).
+ * 
+ * @ingroup BuildingBlocks
+ */
 class PackagedSealedMessage {
 
 public:
@@ -20,7 +27,7 @@ public:
      * @brief Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
      */
-    const std::string postDecryptionInstructionJson;
+    const std::string postDecryptionInstructions;
 
     /**
      * @brief Construct directly from the constituent members
@@ -28,13 +35,13 @@ public:
      * @param ciphertext  The binary sealed message
      * @param keyDerivationOptionsJson  The key-derivation options used to generate the
      * encryption/decryption keys.
-     * @param postDecryptionInstructionJson Optional public instructions that the sealer
+     * @param postDecryptionInstructions Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
      */
     PackagedSealedMessage(
         const std::vector<unsigned char>& ciphertext,
         const std::string& keyDerivationOptionsJson,
-        const std::string& postDecryptionInstructionJson
+        const std::string& postDecryptionInstructions
     );
 
     /**

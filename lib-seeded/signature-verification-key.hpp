@@ -19,6 +19,8 @@
  * 
  * To derive a SignatureVerificationKey from a seed, first derive the
  * corresponding SigningKey and then call SigningKey::getSignatureVerificationKey.
+ * 
+ * @ingroup DerivedFromSeeds
  */
 class SignatureVerificationKey {
 public:

@@ -21,6 +21,8 @@
  *   1. guarantee if or when the object will be de-allocated an memory erased
  *   2. and it does not provide any bounds-checked operations.
  *      (though that feature should be on the to-do list.)
+ * 
+ * @ingroup BuildingBlocks
  */
 class SodiumBuffer {
 public:

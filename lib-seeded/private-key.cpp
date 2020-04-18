@@ -51,7 +51,7 @@ PrivateKey::PrivateKey(
 const SodiumBuffer PrivateKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
   if (ciphertextLength <= crypto_box_SEALBYTES) {
     throw CryptographicVerificationFailureException("Public/Private unseal failed: Invalid message length");
@@ -64,8 +64,8 @@ const SodiumBuffer PrivateKey::unseal(
     ciphertextLength,
     publicKeyBytes.data(),
     privateKeyBytes.data,
-    postDecryptionInstructionsJson.c_str(),
-    postDecryptionInstructionsJson.length()
+    postDecryptionInstructions.c_str(),
+    postDecryptionInstructions.length()
   );
   if (result != 0) {
     throw CryptographicVerificationFailureException("Public/Private unseal failed: the private key doesn't match the public key used to seal the message, the post-decryption instructions do not match those used to seal the message, or the ciphertext was modified/corrupted.");
@@ -75,16 +75,16 @@ const SodiumBuffer PrivateKey::unseal(
 
 const SodiumBuffer PrivateKey::unseal(
   const std::vector<unsigned char> &ciphertext,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
-  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructionsJson
+  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructions
   );
 };
 
 const SodiumBuffer PrivateKey::unseal(
   const PackagedSealedMessage &packagedSealedMessage
 ) const {
-  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
 }
 
 const PublicKey PrivateKey::getPublicKey() const {

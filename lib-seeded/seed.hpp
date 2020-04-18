@@ -12,6 +12,8 @@
  * secret used to derive it.
  * It can then be used and, if lost, re-derived from the original seed and
  * keyDerivationOptionsJson that were first used to derive it.
+ * 
+ * @ingroup DerivedFromSeeds
  */
 class Seed {
 public:

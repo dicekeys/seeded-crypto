@@ -7,21 +7,6 @@
 #include "key-derivation-options.hpp"
 #include "exceptions.hpp"
 
-// KeyUseRestrictions::KeyUseRestrictions(
-//   std::vector<std::string> _androidPackagePrefixesAllowed,
-//   std::vector<std::string> _urlPrefixesAllowed
-// ) :
-//   androidPackagePrefixesAllowed(_androidPackagePrefixesAllowed),
-//   urlPrefixesAllowed(_urlPrefixesAllowed)
-//   {}
-
-// KeyUseRestrictions::KeyUseRestrictions(
-//   const nlohmann::json keyUseRestrictionsObject
-// ) : KeyUseRestrictions(
-//   keyUseRestrictionsObject.value<std::vector<std::string>>(KeyUseRestrictionsJson::FieldNames::androidPackagePrefixesAllowed, std::vector<std::string>()),
-//   keyUseRestrictionsObject.value<std::vector<std::string>>(KeyUseRestrictionsJson::FieldNames::urlPrefixesAllowed, std::vector<std::string>())
-// ) {}
-
 KeyDerivationOptions::~KeyDerivationOptions() {
   if (hashFunctionImplementation) {
     delete hashFunctionImplementation;
@@ -174,18 +159,6 @@ KeyDerivationOptions::KeyDerivationOptions(
 		keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::keyLengthInBytes] = keyLengthInBytes;
 	}
 
-  // if (keyDerivationOptionsObject.contains(KeyDerivationOptionsJson::FieldNames::restrictions)) {
-  //   keyUseRestrictions = new KeyUseRestrictions(keyDerivationOptionsObject.at(KeyDerivationOptionsJson::FieldNames::restrictions));
-  // } else {
-  //   keyUseRestrictions = NULL;
-  // }
-  // if (keyUseRestrictions) {
-  //   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::restrictions] = nlohmann::json({
-  //     {KeyUseRestrictionsJson::FieldNames::androidPackagePrefixesAllowed, keyUseRestrictions->androidPackagePrefixesAllowed },
-  //     {KeyUseRestrictionsJson::FieldNames::urlPrefixesAllowed, keyUseRestrictions->urlPrefixesAllowed }
-  //   });
-  // }
-
   hashFunction = keyDerivationOptionsObject.value<KeyDerivationOptionsJson::HashFunction>(
       KeyDerivationOptionsJson::FieldNames::hashFunction,
       KeyDerivationOptionsJson::HashFunction::SHA256
@@ -203,15 +176,6 @@ KeyDerivationOptions::KeyDerivationOptions(
     keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunctionIterations] = hashFunctionIterations;
   }
 
-  //
-  // hashFunction
-  //
-  // if (!keyDerivationOptionsObject.contains(KeyDerivationOptionsJson::FieldNames::hashFunction)) {
-  //   hashFunction = new HashFunctionSHA256();    
-  //   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunction] = KeyDerivationOptionsJson::HashFunction::SHA256;
-  // } else {
-  //   const auto jhashFunction = keyDerivationOptionsObject.at(KeyDerivationOptionsJson::FieldNames::hashFunction);
-  //   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunction] = jhashFunction;
     if (hashFunction == KeyDerivationOptionsJson::HashFunction::SHA256) {
       hashFunctionImplementation = new HashFunctionSHA256();
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::BLAKE2b) {
@@ -223,49 +187,7 @@ KeyDerivationOptions::KeyDerivationOptions(
     } else {
       throw std::invalid_argument("Invalid hashFunction");
     }
-
-  //
-  // includeOrientationOfFacesInKey
-  //
-  // includeOrientationOfFacesInKey = keyDerivationOptionsObject.value<bool>(
-  //   KeyDerivationOptionsJson::FieldNames::includeOrientationOfFacesInKey,
-  //   true
-  // );
-  // keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::includeOrientationOfFacesInKey] =
-  //   includeOrientationOfFacesInKey;
-  //
-  // additionalSalt
-  //
-  // There's no need to read in the additionalSalt string, as it's already part
-  // of the KeyDerivationOptions json string from which keys are generated.
-  // const string additionalSalt = keyDerivationOptionsObject.value<std::string>(
-  // 		KeyDerivationOptionsJson::FieldNames::additionalSalt, "");
-  // if (keyDerivationOptionsObject.contains(KeyDerivationOptionsJson::FieldNames::additionalSalt)) {
-  //   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::additionalSalt] =
-  //     keyDerivationOptionsObject[KeyDerivationOptionsJson::FieldNames::additionalSalt];
-  // }
-
-};
-
-
-// const void KeyDerivationOptions::validate(
-//   const std::string applicationId
-// ) const {
-//   if (restrictToClientApplicationsIdPrefixes.size() > 0) {
-//     bool prefixFound = false;
-//     for (const std::string prefix : restrictToClientApplicationsIdPrefixes) {
-//       if (applicationId.substr(0, prefix.length()) == prefix) {
-//         prefixFound = true;
-//         break;
-//       }
-//     }
-//     if (!prefixFound) {
-//       throw ClientNotAuthorizedException();
-//     }
-//     bool noneMatched = true;
-//   }
-// }
-
+}
 
 
 const std::string KeyDerivationOptions::keyDerivationOptionsJsonWithAllOptionalParametersSpecified(

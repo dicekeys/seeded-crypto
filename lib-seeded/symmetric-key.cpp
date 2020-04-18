@@ -49,7 +49,7 @@ SymmetricKey::SymmetricKey(
 const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const unsigned char* message,
   const size_t messageLength,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
   if (messageLength <= 0) {
     throw std::invalid_argument("Invalid message length");
@@ -63,7 +63,7 @@ const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   // Write a nonce derived from the message and symmeetric key
   _crypto_secretbox_nonce_salted(
     noncePtr, keyBytes.data, message, messageLength,
-    postDecryptionInstructionsJson.c_str(), postDecryptionInstructionsJson.length());
+    postDecryptionInstructions.c_str(), postDecryptionInstructions.length());
   
   // Create the ciphertext as a secret box
   crypto_secretbox_easy(
@@ -79,30 +79,38 @@ const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
 
 const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const SodiumBuffer &message,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
-  return sealToCiphertextOnly(message.data, message.length, postDecryptionInstructionsJson);
+  return sealToCiphertextOnly(message.data, message.length, postDecryptionInstructions);
 }
 
 const PackagedSealedMessage SymmetricKey::seal(
   const SodiumBuffer& message,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
   return PackagedSealedMessage(
-    sealToCiphertextOnly(message, postDecryptionInstructionsJson),
+    sealToCiphertextOnly(message, postDecryptionInstructions),
     keyDerivationOptionsJson,
-    postDecryptionInstructionsJson
+    postDecryptionInstructions
   );
 }
 
+  const PackagedSealedMessage SymmetricKey::seal(
+    const std::string& message,
+    const std::string& postDecryptionInstructions
+  ) const {
+    return seal((const unsigned char*)message.c_str(), message.size(), postDecryptionInstructions);
+  }
+
+
 const PackagedSealedMessage SymmetricKey::seal(
   const std::vector<unsigned char>& message,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
     return PackagedSealedMessage( 
-      sealToCiphertextOnly(message.data(), message.size(), postDecryptionInstructionsJson),
+      sealToCiphertextOnly(message.data(), message.size(), postDecryptionInstructions),
       keyDerivationOptionsJson,
-      postDecryptionInstructionsJson
+      postDecryptionInstructions
   );
 }
 
@@ -110,19 +118,19 @@ const PackagedSealedMessage SymmetricKey::seal(
 const PackagedSealedMessage SymmetricKey::seal(
   const unsigned char* message,
   const size_t messageLength,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
     return PackagedSealedMessage( 
-      sealToCiphertextOnly(message, messageLength, postDecryptionInstructionsJson),
+      sealToCiphertextOnly(message, messageLength, postDecryptionInstructions),
       keyDerivationOptionsJson,
-      postDecryptionInstructionsJson
+      postDecryptionInstructions
   );
 }
 
 const SodiumBuffer SymmetricKey::unsealMessageContents(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
   if (ciphertextLength <= (crypto_secretbox_MACBYTES + crypto_secretbox_NONCEBYTES)) {
     throw std::invalid_argument("Invalid message length");
@@ -143,11 +151,11 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
    }
 
   // Recalculate nonce to validate that the provided
-  // postDecryptionInstructionsJson is valid 
+  // postDecryptionInstructions is valid 
   unsigned char recalculatedNonce[crypto_secretbox_NONCEBYTES];
   _crypto_secretbox_nonce_salted(
     recalculatedNonce, keyBytes.data, plaintextBuffer.data, plaintextBuffer.length,
-    postDecryptionInstructionsJson.c_str(), postDecryptionInstructionsJson.length()
+    postDecryptionInstructions.c_str(), postDecryptionInstructions.length()
   );
   if (memcmp(recalculatedNonce, noncePtr, crypto_secretbox_NONCEBYTES) != 0) {
      throw CryptographicVerificationFailureException("Symmetric key unseal failed: the key or post-decryption instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
@@ -159,22 +167,22 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
 const SodiumBuffer SymmetricKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
-  return unsealMessageContents(ciphertext, ciphertextLength, postDecryptionInstructionsJson);
+  return unsealMessageContents(ciphertext, ciphertextLength, postDecryptionInstructions);
 };
 
 const SodiumBuffer SymmetricKey::unseal(
   const std::vector<unsigned char> &ciphertext,
-  const std::string& postDecryptionInstructionsJson
+  const std::string& postDecryptionInstructions
 ) const {
-  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructionsJson);
+  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructions);
 }
 
 const SodiumBuffer SymmetricKey::unseal(
   const PackagedSealedMessage &packagedSealedMessage
 ) const {
-  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
 }
 
 /* static */const SodiumBuffer SymmetricKey::unseal(
@@ -182,7 +190,7 @@ const SodiumBuffer SymmetricKey::unseal(
   const std::string& seedString
 ) {
   return SymmetricKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
-    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructionJson);
+    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
 }
 
 

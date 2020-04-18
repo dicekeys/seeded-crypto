@@ -4,16 +4,40 @@
 #include <sodium.h>
 #include "sodium-buffer.hpp"
 
+/**
+ * @brief An abstract hash function implementation used to derive keys
+ * 
+ * @ingroup BuildingBlocks
+ */
 class HashFunction {
 	public:
+	/**
+	 * @brief Destroy the Hash Function object
+	 * 
+	 */
 	virtual ~HashFunction() {}
 
+	/**
+	 * @brief The hash implementation
+	 * 
+	 * @param message The byte array to hash
+	 * @param message_length The length of the byte array to hash
+	 * @param hash_length_in_bytes The length of hash that should be generated
+	 * @return SodiumBuffer 
+	 */
 	virtual SodiumBuffer hash(
 		const void* message,
 		unsigned long long message_length,
 		unsigned long long hash_length_in_bytes
 	) const = 0;
 
+	/**
+	 * @brief The hash implementation
+	 * 
+	 * @param message The data to hash
+	 * @param hash_length_in_bytes The length of hash that should be generated
+	 * @return SodiumBuffer 
+	 */
 	SodiumBuffer hash(
 		SodiumBuffer message,
 		unsigned long long hash_length_in_bytes
