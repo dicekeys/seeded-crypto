@@ -23,28 +23,14 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "DiceKeys Seeded Cryptography Library", "index.html", [
-    [ "Introduction", "md__c_1__users_stuar_git_dicekeys-seeded-crypto_doxygen__introduction.html", null ],
-    [ "Key-Derivation Options JSON format", "key_derivation_options_format.html", [
-      [ "Universal Fields Used by the Seeded Cryptography Library", "key_derivation_options_format.html#autotoc_md0", null ],
-      [ "Extensions", "key_derivation_options_format.html#autotoc_md6", [
-        [ "DiceKeys Hardware Fields", "key_derivation_options_format.html#autotoc_md7", [
-          [ "keyType", "key_derivation_options_format.html#autotoc_md1", null ],
-          [ "algorithm", "key_derivation_options_format.html#autotoc_md2", null ],
-          [ "keyLengthInBytes", "key_derivation_options_format.html#autotoc_md3", null ],
-          [ "hashFunction", "key_derivation_options_format.html#autotoc_md4", [
-            [ "Hash defaults and recommendations", "key_derivation_options_format.html#autotoc_md5", null ]
-          ] ],
-          [ "excludeOrientationOfFaces", "key_derivation_options_format.html#autotoc_md8", null ]
-        ] ],
-        [ "DiceKeys API Fields", "key_derivation_options_format.html#autotoc_md9", [
-          [ "clientMayRetrieveKey", "key_derivation_options_format.html#autotoc_md10", null ],
-          [ "restrictions", "key_derivation_options_format.html#autotoc_md11", null ]
-        ] ]
-      ] ]
-    ] ],
+    [ "Introduction", "introduction.html", null ],
+    [ "Key-Derivation Options JSON Format", "key_derivation_options_format.html", null ],
+    [ "Post-Decryption Instructions JSON Format", "post_decryption_instructions_format.html", null ],
+    [ "Modules", "modules.html", "modules" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ],

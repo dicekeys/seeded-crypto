@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_2',['data',['../class_sodium_buffer.html#a01fd6d9c134c0dac4d52a7431f274efe',1,'SodiumBuffer']]]
+  ['building_20blocks_1',['Building blocks',['../group___building_blocks.html',1,'']]]
 ];

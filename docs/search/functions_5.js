@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keylengthexception_75',['KeyLengthException',['../class_key_length_exception.html#a85c1841881e04f537378fe82ae98913c',1,'KeyLengthException']]]
+  ['jsonparsingexception_96',['JsonParsingException',['../class_json_parsing_exception.html#af8c13b6581f65d34f6a7baf0bbb4a565',1,'JsonParsingException']]]
 ];

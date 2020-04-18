@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_95',['data',['../class_sodium_buffer.html#a01fd6d9c134c0dac4d52a7431f274efe',1,'SodiumBuffer']]]
+  ['algorithm_121',['algorithm',['../class_key_derivation_options.html#a88855da90081d0e1633e8fc88e49572c',1,'KeyDerivationOptions']]]
 ];

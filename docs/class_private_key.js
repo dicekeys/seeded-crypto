@@ -8,8 +8,8 @@ var class_private_key =
     [ "toJson", "class_private_key.html#a3bc62baebbd24de7e3bffa136ecd4c2c", null ],
     [ "toSerializedBinaryForm", "class_private_key.html#ae39e5d4bdf66194922b24d793ae4ac28", null ],
     [ "unseal", "class_private_key.html#ab44c1e459feb6c6e968f6ac24f20a6e9", null ],
-    [ "unseal", "class_private_key.html#a9b545edb555d99e8991a53465713d5a5", null ],
-    [ "unseal", "class_private_key.html#a7b470b509a720839c2e18447f9bff1ff", null ],
+    [ "unseal", "class_private_key.html#a5541a60677cd7c51b04399a0a1c0fdf8", null ],
+    [ "unseal", "class_private_key.html#a466dc9b8d498154c73e18b97441c2e59", null ],
     [ "keyDerivationOptionsJson", "class_private_key.html#a0000e6b1410d849baedc3208f4ef6c0a", null ],
     [ "privateKeyBytes", "class_private_key.html#ac1fd4c1547ea9fd601c19410b0abda56", null ],
     [ "publicKeyBytes", "class_private_key.html#a6922ce207143013f32bbba9c59cc7718", null ]

@@ -1,7 +1,11 @@
 var searchData=
 [
-  ['key_2dderivation_20options_20json_20format_18',['Key-Derivation Options JSON format',['../key_derivation_options_format.html',1,'']]],
-  ['keybytes_19',['keyBytes',['../class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289',1,'SymmetricKey']]],
-  ['keyderivationoptionsjson_20',['keyDerivationOptionsJson',['../class_private_key.html#a0000e6b1410d849baedc3208f4ef6c0a',1,'PrivateKey::keyDerivationOptionsJson()'],['../class_public_key.html#abeb1c748bb7934461fd8e0d74e391f38',1,'PublicKey::keyDerivationOptionsJson()'],['../class_seed.html#a6ad0643100c877efa95f68dc7742ed7e',1,'Seed::keyDerivationOptionsJson()'],['../class_signature_verification_key.html#a992bf5e659b9b626d69d711607cfcddf',1,'SignatureVerificationKey::keyDerivationOptionsJson()'],['../class_signing_key.html#a80f4bdaae02d6babc39fb2811b98b3b7',1,'SigningKey::keyDerivationOptionsJson()'],['../class_symmetric_key.html#a23ece4a7abbb13aec2e0f87b0df3cdd8',1,'SymmetricKey::keyDerivationOptionsJson()']]],
-  ['keylengthexception_21',['KeyLengthException',['../class_key_length_exception.html',1,'KeyLengthException'],['../class_key_length_exception.html#a85c1841881e04f537378fe82ae98913c',1,'KeyLengthException::KeyLengthException()']]]
+  ['generatesignature_10',['generateSignature',['../class_signing_key.html#aa5ad409117fbbf4bf199fe6cf890d40d',1,'SigningKey::generateSignature(const unsigned char *message, const size_t messageLength) const'],['../class_signing_key.html#ad856e47b69b3a643eb2b4ecf2457a2b7',1,'SigningKey::generateSignature(const std::vector&lt; unsigned char &gt; &amp;message) const']]],
+  ['getkeybytes_11',['getKeyBytes',['../class_signature_verification_key.html#adf5a0d6207d2105845a8413a5e9e7535',1,'SignatureVerificationKey']]],
+  ['getkeybytesashexdigits_12',['getKeyBytesAsHexDigits',['../class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de',1,'SignatureVerificationKey']]],
+  ['getkeyderivationoptionsjson_13',['getKeyDerivationOptionsJson',['../class_public_key.html#a488900ad04bb867a0891963862981bea',1,'PublicKey::getKeyDerivationOptionsJson()'],['../class_signature_verification_key.html#a04583de53f878c7485dfaf85db4dd9da',1,'SignatureVerificationKey::getKeyDerivationOptionsJson()']]],
+  ['getpublickey_14',['getPublicKey',['../class_private_key.html#a808ca1477d3e74f986744578a78bf395',1,'PrivateKey']]],
+  ['getpublickeybytes_15',['getPublicKeyBytes',['../class_public_key.html#a02e36c4c9a03a54e02cdf9eae44cd3d3',1,'PublicKey']]],
+  ['getsignatureverificationkey_16',['getSignatureVerificationKey',['../class_signing_key.html#a5fdf0c3fc992f2c931711eabc3c7f526',1,'SigningKey']]],
+  ['getsignatureverificationkeybytes_17',['getSignatureVerificationKeyBytes',['../class_signing_key.html#a414c55c8b70ff01ac651ce668ad886ba',1,'SigningKey']]]
 ];

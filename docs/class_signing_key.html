@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('class_signing_key.html',''); initResiz
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_signing_key-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">SigningKey Class Reference</div>  </div>
+<div class="title">SigningKey Class Reference<div class="ingroups"><a class="el" href="group___derived_from_seeds.html">Keys derived from seeds</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -112,7 +112,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:aeb202728c57d2b7bfc4938bcd48eb9a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct from the objects members, excluding the signature-verification key. <br /></td></tr>
 <tr class="separator:aeb202728c57d2b7bfc4938bcd48eb9a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd6dcf3c6ae07427813020889a74a2bf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#abd6dcf3c6ae07427813020889a74a2bf">SigningKey</a> (const std::string &amp;seedString, const std::string &amp;<a class="el" href="class_signing_key.html#a80f4bdaae02d6babc39fb2811b98b3b7">keyDerivationOptionsJson</a>)</td></tr>
-<tr class="memdesc:abd6dcf3c6ae07427813020889a74a2bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> by deriving a signing key pair from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON format</a>.  <a href="class_signing_key.html#abd6dcf3c6ae07427813020889a74a2bf">More...</a><br /></td></tr>
+<tr class="memdesc:abd6dcf3c6ae07427813020889a74a2bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> by deriving a signing key pair from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  <a href="class_signing_key.html#abd6dcf3c6ae07427813020889a74a2bf">More...</a><br /></td></tr>
 <tr class="separator:abd6dcf3c6ae07427813020889a74a2bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a414c55c8b70ff01ac651ce668ad886ba"><td class="memItemLeft" align="right" valign="top"><a id="a414c55c8b70ff01ac651ce668ad886ba"></a>
 const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#a414c55c8b70ff01ac651ce668ad886ba">getSignatureVerificationKeyBytes</a> ()</td></tr>
@@ -152,7 +152,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
 <tr class="separator:ace2901409405775e50558dd922b4d206"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80f4bdaae02d6babc39fb2811b98b3b7"><td class="memItemLeft" align="right" valign="top"><a id="a80f4bdaae02d6babc39fb2811b98b3b7"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#a80f4bdaae02d6babc39fb2811b98b3b7">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:a80f4bdaae02d6babc39fb2811b98b3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON format</a> string used to specify how this key is derived. <br /></td></tr>
+<tr class="memdesc:a80f4bdaae02d6babc39fb2811b98b3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> string used to specify how this key is derived. <br /></td></tr>
 <tr class="separator:a80f4bdaae02d6babc39fb2811b98b3b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
@@ -164,7 +164,7 @@ Protected Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>SigningKeys generate <em>signatures</em> of messages which can then be used by the corresponding <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> to verify that a message was signed by can confirm that the message was indeed signed by the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and has not since been tampered with. </p>
 <p>The corresponding <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> can be obtained by calling getSignatureVerificationKey.</p>
-<p>The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON format</a>. </p>
+<p>The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abd6dcf3c6ae07427813020889a74a2bf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd6dcf3c6ae07427813020889a74a2bf">&#9670;&nbsp;</a></span>SigningKey()</h2>
@@ -192,11 +192,11 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Construct a new <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> by deriving a signing key pair from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON format</a>. </p>
+<p>Construct a new <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> by deriving a signing key pair from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">seedString</td><td>The private seed which is used to generate the key pair. Anyone who knows (or can guess) this seed can re-generate the key pair by passing it along with the keyDerivationOptionsJson. </td></tr>
-    <tr><td class="paramname">keyDerivationOptionsJson</td><td>The key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON format</a>. </td></tr>
+    <tr><td class="paramname">keyDerivationOptionsJson</td><td>The key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </td></tr>
   </table>
   </dd>
 </dl>

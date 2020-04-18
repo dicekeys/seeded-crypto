@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['privatekey_52',['PrivateKey',['../class_private_key.html',1,'']]],
-  ['publickey_53',['PublicKey',['../class_public_key.html',1,'']]]
+  ['keyderivationoptions_70',['KeyDerivationOptions',['../class_key_derivation_options.html',1,'']]],
+  ['keylengthexception_71',['KeyLengthException',['../class_key_length_exception.html',1,'']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DiceKeys Seeded Cryptography Library: Key-Derivation Options JSON format</title>
+<title>DiceKeys Seeded Cryptography Library: Key-Derivation Options JSON Format</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -82,7 +82,7 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Key-Derivation Options JSON format </div>  </div>
+<div class="title">Key-Derivation Options JSON Format </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This JSON-format is used to specify how a key should be derived from a seed string.</p>
@@ -95,8 +95,13 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 <p><em>DiceKeys Hardware fields</em> apply to keys seeded with a DiceKeys.</p>
 <p><em>DiceKeys API fields</em> apply to keys generated through the DiceKeys API, which calls uses the DiceKeys app to generate keys and often to perform cryptographic operations. The DiceKeys app protects the keys so that other applications are not able to see the raw DiceKey, and these options specify which applications are allowed to generate keys and what they are allowed to do with them.</p>
 <p>The extensibility of underlying JSON format and the obliviousness of this library to non-universal fields allows other libraries to build on top of it without having to change this library. Any key-derivation options fields added will be ignored by this library for all purposes beyond salting the keys generated.</p>
-<h1><a class="anchor" id="autotoc_md0"></a>
-Universal Fields Used by the Seeded Cryptography Library</h1>
+<p>Since any JSON object field outside the spec can be attached, one could, for example, use a field to salt the derivation of a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> like so: </p><div class="fragment"><div class="line">{</div>
+<div class="line">    &quot;keyType&quot;: &quot;SymmetricKey&quot;,</div>
+<div class="line">    &quot;SaltWithThePhoneNumberForJenny&quot;: 8675309</div>
+<div class="line">}</div>
+</div><!-- fragment --><p><a class="anchor" id="key_derivation_options_universal_fields"></a></p>
+<h2><a class="anchor" id="autotoc_md0"></a>
+Universal Fields used by the Seeded Cryptography Library</h2>
 <p>The following fields are inspected and used by the seeded-crypto C++ library.</p>
 <h3><a class="anchor" id="autotoc_md1"></a>
 keyType</h3>
@@ -145,18 +150,10 @@ Hash defaults and recommendations</h4>
 <p>The default hash function is <code>SHA256</code> as this library was designed for DiceKeys, which are sufficiently random seeds (~196 bits) so as not to require brute-force prevention with a costly key-derivation function like <code>Scrypt</code> or <code>Argon2id</code>. The default ensures that keys can be re-derived cheaply on just about any hardware platform.</p>
 <p>Applcations that need a more expensive key derivation to protect against brute-forcing of the key-derivation algorithm will want to use <code>Scrypt</code> if and only if keys will always be derived on hardware where no untrusted code will run during the derivation process. If keys may sometimes be derived on hardware shared with untrusted code, even if that code is sanboxed, we recommend using <code>Argon2id</code>.</p>
 <p>We purposely chose <em>not</em> to support multiple iterations of <code>BLAKE2b</code> or <code>SHA256</code> via the <code>hashFunctionIterations</code> field, as applications that want to increase the cost of key derviation to prevent brute forcing should use <code>Argon2id</code> or <code>Scrypt</code>.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
-Extensions</h1>
-<p>In addition to the fields used by the seeded cryptography library, this JSON format supports fields that this library makes no use of. When processing this JSON format, the seeded cryptography library will ignore any fields it does not use. Since those fields are part of the JSON string, they <em>will</em> be part of the seed used to derive the output and so changes to those fields will change the key. (No matter how small the change to the JSON string, whether the insertion of a new field or the insertion of a white-space character, they are used to seed the key-derivation hash function and thus changes will cause an entirely different key to be derived.)</p>
-<p>Since any JSON object field outside the spec can be attached, one could, for example, use a field to salt the derivation of a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> as illustred by this key-derivation options JSON string: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;SymmetricKey&quot;,</div>
-<div class="line">    &quot;SaltWithThePhoneNumberForJenny&quot;: 8675309</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>The following extension field is used by DiceKeys, but not parsed or processed by this specific library. These <em>extension</em> fields are documented here, despite being ignored by this library, so that all key-derivation options can be found in one place.</p>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md6"></a>
 DiceKeys Hardware Fields</h2>
 <p>This Seeded Cryptography Library is oblivious to these fields, but they are documented here to keep the specification from being split into too many locations.</p>
-<h3><a class="anchor" id="autotoc_md8"></a>
+<h3><a class="anchor" id="autotoc_md7"></a>
 excludeOrientationOfFaces</h3>
 <p>When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:</p><ul>
 <li>The uppercase letter on the die</li>
@@ -165,20 +162,20 @@ excludeOrientationOfFaces</h3>
 </ul>
 <p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be excluded resulting in a 50-character seed. This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or seed.</p>
 <div class="fragment"><div class="line">&quot;excludeOrientationOfFaces&quot;?: true | false // default false</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
 DiceKeys API Fields</h2>
 <p>These fields specify who may generate keys and what they may do with them once generated.</p>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md9"></a>
 clientMayRetrieveKey</h3>
 <p>Set <code>"clientMayRetrieveKey"?: true</code> to allow the client application to retrieve the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> (<code>"keyType": "Public"</code>), <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> (<code>"KeyType": "Signing"</code>), or <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> (<code>"keyType": "Symmetric"</code>) subject to any restrictions specified in the <code>"restrictions"</code> field.</p>
 <div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;?: true | false // default false</div>
 </div><!-- fragment --><p>This allows client apps to derive keys that they can use private/signing/symmetric keys even when the seed is not present for re-derivation, but still have a key that is recoverable with the seed should it become necessary.</p>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 restrictions</h3>
 <p>The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.</p>
-<div class="fragment"><div class="line">&quot;restrictions: {</div>
-<div class="line">    &quot;androidPackagePrefixesAllowed&quot;: string[],</div>
-<div class="line">    &quot;urlPrefixesAllowed&quot;: string[]</div>
+<div class="fragment"><div class="line">&quot;restrictions&quot;?: {</div>
+<div class="line">    &quot;androidPackagePrefixesAllowed&quot;?: string[],</div>
+<div class="line">    &quot;urlPrefixesAllowed&quot;?: string[]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
 <div class="line">    &quot;keyType&quot;: &quot;Seed&quot;,</div>
@@ -193,7 +190,9 @@ restrictions</h3>
 <div class="line">        ]</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --> </div></div><!-- contents -->
+</div><!-- fragment --><p>If the <code>"restrictions"</code> field is set, but the object it is set to does not contain an <code>"androidPackagePrefixesAllowed"</code> field, the API will forbid Android applications from generating the key. If the <code>"restrictions"</code> field is set, but the object it is set to does not contain a <code>"urlPrefixesAllowed"</code> field, the API will forbid iOS and other applications that rely on this field to generate the key.</p>
+<p>The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and and terminate client package IDs with dots, to prevent extension attacks. In other words, if you set the prefix <code>com.example</code>, the API will treat it as <code>com.example.</code>, so that another party cannot register <code>com.exampleattacker</code> to match the <code>com.eaxmple</code> prefix. </p>
+</div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <!-- start footer part -->

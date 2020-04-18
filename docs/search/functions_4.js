@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['jsonparsingexception_74',['JsonParsingException',['../class_json_parsing_exception.html#af8c13b6581f65d34f6a7baf0bbb4a565',1,'JsonParsingException']]]
+  ['invalidkeyderivationoptionsjsonexception_94',['InvalidKeyDerivationOptionsJsonException',['../class_invalid_key_derivation_options_json_exception.html#a0107a272ec812dfba4e2355db44c0f52',1,'InvalidKeyDerivationOptionsJsonException']]],
+  ['invalidkeyderivationoptionvalueexception_95',['InvalidKeyDerivationOptionValueException',['../class_invalid_key_derivation_option_value_exception.html#a0759eba810cd360b2234782fbf1af061',1,'InvalidKeyDerivationOptionValueException']]]
 ];

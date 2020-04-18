@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['jsonparsingexception_50',['JsonParsingException',['../class_json_parsing_exception.html',1,'']]]
+  ['invalidkeyderivationoptionsjsonexception_67',['InvalidKeyDerivationOptionsJsonException',['../class_invalid_key_derivation_options_json_exception.html',1,'']]],
+  ['invalidkeyderivationoptionvalueexception_68',['InvalidKeyDerivationOptionValueException',['../class_invalid_key_derivation_option_value_exception.html',1,'']]]
 ];

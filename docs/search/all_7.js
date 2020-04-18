@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['length_22',['length',['../class_sodium_buffer.html#a449efcd6e418a4905c7060a72dba9b7d',1,'SodiumBuffer']]]
+  ['hash_18',['hash',['../class_hash_function.html#aec437df3699552dd4551aabe02bd447e',1,'HashFunction::hash(const void *message, unsigned long long message_length, unsigned long long hash_length_in_bytes) const =0'],['../class_hash_function.html#aa9b8acdc93f6bb319db2085d1f21452d',1,'HashFunction::hash(SodiumBuffer message, unsigned long long hash_length_in_bytes) const']]],
+  ['hashfunction_19',['HashFunction',['../class_hash_function.html',1,'HashFunction'],['../class_key_derivation_options.html#a2eaefe480a03796ddcd4e8acf0c52cee',1,'KeyDerivationOptions::hashFunction()']]],
+  ['hashfunctionimplementation_20',['hashFunctionImplementation',['../class_key_derivation_options.html#af187a6b4f70698ae9eb183a65dd7ffc1',1,'KeyDerivationOptions']]],
+  ['hashfunctioniterations_21',['hashFunctionIterations',['../class_key_derivation_options.html#a1a7f659468b2aa150c6b45af1e40a4b1',1,'KeyDerivationOptions']]],
+  ['hashfunctionmemorylimit_22',['hashFunctionMemoryLimit',['../class_key_derivation_options.html#a01f57d2939c4199407e5fb97a010a3b3',1,'KeyDerivationOptions']]]
 ];
