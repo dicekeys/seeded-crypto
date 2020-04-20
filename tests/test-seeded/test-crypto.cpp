@@ -22,7 +22,7 @@ std::string defaultTestSigningKeyDerivationOptionsJson = R"KGO({
 
 TEST(Secret, FidoUseCase) {
 	std::string kdo = R"KDO({
-	"keyType": "Seed",
+	"keyType": "Secret",
 	"hashFunction": "Argon2id",
 	"keyLengthInBytes": 96
 })KDO";
@@ -33,12 +33,12 @@ TEST(Secret, FidoUseCase) {
 	const std::string seedAsHex = toHexStr(seed.secretBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
-		"6a7c4bf1355de9689f1c7148c304eda43d5b92dabdf00d83b488ed1d3f054f55a7ff32bf05c2a8e030aa66780f983b989b29d376498a1100865c0ebc095c1982b3079645ad9329f80248a69880c74c9bf087ef39ccbbc0cd1cdf587f8a79c6a5"
+		"c1c9c55ef2b6094d9b31571be17fc19f5895fffce1ee126bf97b7609c99d6887234ec032d57467c95a538766f3fc82f064450342aea39f882d7a29ed214233fab785e6bb375702c86316e4d0d4b77e36339055c0847d7ed98b4fee4a2298d35c"
 	);
 }
 
 const std::string fastSeedJsonKeyDerivationOptions = R"KDO({
-	"keyType": "Seed",
+	"keyType": "Secret",
 	"hashFunction": "SHA256",
 	"keyLengthInBytes": 96
 })KDO";
@@ -62,7 +62,7 @@ TEST(Secret, ConvertsToSerializedFormAndBack) {
 
 TEST(Secret, fromJsonWithoutKeyDerivationOptions) {
 	Secret seed = Secret::fromJson(R"JSON({
-	"seedBytes": "0xffFE"
+	"secretBytes": "0xffFE"
 })JSON");
 
 	ASSERT_EQ(seed.secretBytes.length, 2);
