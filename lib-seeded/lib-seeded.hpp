@@ -13,12 +13,13 @@
 #include "packaged-sealed-message.hpp"
 #include "post-decryption-instructions.hpp"
 
-/** @defgroup DerivedFromSeeds Keys derived from seeds
- * Keys (and seeds) derived from seed strings using 
- * @ref key_derivation_options_format.
+/** @defgroup DerivedFromSeeds Derived Keys
+ * Keys derived from seed strings using 
+ * @ref key_derivation_options_format
+ * (and  which clients can use to derive their own keys).
  */
 
-#include "seed.hpp"
+#include "secret.hpp"
 #include "symmetric-key.hpp"
 #include "public-key.hpp"
 #include "private-key.hpp"

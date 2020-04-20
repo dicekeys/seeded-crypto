@@ -6,6 +6,9 @@ It is an _object oriented_ cryptographic library, with keys
 (SymmetricKey, PrivateKey & PublicKey, SigningKey & SignatureVerificationKey)
 as first-class objects,
 and cryptographic operations implemented as methods on those keys.
+It also supports a derived Secret class, into which
+cryptographic-strength secrets can be derived and shared with
+clients that want to implement their own operations.
 
 ```cpp
 const SymmetricKey(...);
@@ -13,7 +16,7 @@ const std::string plaintext("Wait long enough, and grilled cheese becomes its ow
 const auto sealed_message = sk.seal(plaintext);
 ```
 
-All keys are derived from _seed_ strings, using options specified in
+All keys and secrets are derived from _seed_ strings, using options specified in
 the @ref key_derivation_options_format. This is different from most other libraries,
 where keys are generated using a random number generator. You can still create
 keys using the random number generator with this library, but you would do so
@@ -44,9 +47,9 @@ needed to derive the key needed to unseal the message from the seed.
 When sealing data, you can also attach a string that must be known
 to anyone unsealing the message.  This is separate from the key and is
 included in plaintext in PackagedSealedMessage returned by the seal operation.
-You can use it, for example, to attach public
+You can use it, for example, to attach
 instructions about how such messages should be treated when unsealing.
-Those instructions will 
+Those instructions are not public, and not encrypted. For example:
 
 ```cpp
 const SymmetricKey sk(...);

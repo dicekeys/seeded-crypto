@@ -155,7 +155,7 @@ KeyDerivationOptions::KeyDerivationOptions(
       ).c_str() );
   }
 
-	if (keyType == KeyDerivationOptionsJson::KeyType::Seed) {
+	if (keyType == KeyDerivationOptionsJson::KeyType::Secret) {
 		keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::keyLengthInBytes] = keyLengthInBytes;
 	}
 

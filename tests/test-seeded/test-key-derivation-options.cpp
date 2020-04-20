@@ -21,14 +21,14 @@ TEST(KeyDerivationOptions, GeneratesDefaults) {
 
 TEST(KeyDerivationOptions, FidoUseCase) {
 	KeyDerivationOptions kgo = KeyDerivationOptions(R"KGO({
-	"keyType": "Seed",
+	"keyType": "Secret",
 	"keyLengthInBytes": 96,
 	"hashFunction": "Argon2id",
 	"restrictions": {
 		"androidPackagePrefixesAllowed": ["com.dicekeys.fido"]
 	}
 })KGO",
-	KeyDerivationOptionsJson::KeyType::Seed
+	KeyDerivationOptionsJson::KeyType::Secret
 );
 	ASSERT_EQ(
 		kgo.keyDerivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
@@ -37,7 +37,7 @@ TEST(KeyDerivationOptions, FidoUseCase) {
 	"hashFunctionIterations": 2,
 	"hashFunctionMemoryLimit": 67108864,
 	"keyLengthInBytes": 96,
-	"keyType": "Seed"
+	"keyType": "Secret"
 })KGO"
 );
 }

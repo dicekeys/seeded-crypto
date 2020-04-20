@@ -20,17 +20,17 @@ std::string defaultTestSigningKeyDerivationOptionsJson = R"KGO({
 })KGO";
 
 
-TEST(Seed, FidoUseCase) {
+TEST(Secret, FidoUseCase) {
 	std::string kdo = R"KDO({
 	"keyType": "Seed",
 	"hashFunction": "Argon2id",
 	"keyLengthInBytes": 96
 })KDO";
-	Seed seed(
+	Secret seed(
 		orderedTestKey,
 		kdo
 	);
-	const std::string seedAsHex = toHexStr(seed.seedBytes.toVector());
+	const std::string seedAsHex = toHexStr(seed.secretBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
 		"6a7c4bf1355de9689f1c7148c304eda43d5b92dabdf00d83b488ed1d3f054f55a7ff32bf05c2a8e030aa66780f983b989b29d376498a1100865c0ebc095c1982b3079645ad9329f80248a69880c74c9bf087ef39ccbbc0cd1cdf587f8a79c6a5"
@@ -42,32 +42,32 @@ const std::string fastSeedJsonKeyDerivationOptions = R"KDO({
 	"hashFunction": "SHA256",
 	"keyLengthInBytes": 96
 })KDO";
-TEST(Seed, ConvertsToJsonAndBack) {
-	Seed seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
+TEST(Secret, ConvertsToJsonAndBack) {
+	Secret seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
 	
 	const auto serialized = seed.toJson(1, '\t');
-	const auto replica = Seed::fromJson(serialized);
+	const auto replica = Secret::fromJson(serialized);
 	ASSERT_EQ(replica.keyDerivationOptionsJson, seed.keyDerivationOptionsJson);
-	ASSERT_STREQ(replica.seedBytes.toHexString().c_str(), seed.seedBytes.toHexString().c_str());
+	ASSERT_STREQ(replica.secretBytes.toHexString().c_str(), seed.secretBytes.toHexString().c_str());
 }
 
-TEST(Seed, ConvertsToSerializedFormAndBack) {
-	Seed seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
+TEST(Secret, ConvertsToSerializedFormAndBack) {
+	Secret seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
 	
 	const auto serialized = seed.toSerializedBinaryForm();
-	const auto replica = Seed::fromSerializedBinaryForm(serialized);
+	const auto replica = Secret::fromSerializedBinaryForm(serialized);
 	ASSERT_EQ(replica.keyDerivationOptionsJson, seed.keyDerivationOptionsJson);
-	ASSERT_STREQ(replica.seedBytes.toHexString().c_str(), seed.seedBytes.toHexString().c_str());
+	ASSERT_STREQ(replica.secretBytes.toHexString().c_str(), seed.secretBytes.toHexString().c_str());
 }
 
-TEST(Seed, fromJsonWithoutKeyDerivationOptions) {
-	Seed seed = Seed::fromJson(R"JSON({
+TEST(Secret, fromJsonWithoutKeyDerivationOptions) {
+	Secret seed = Secret::fromJson(R"JSON({
 	"seedBytes": "0xffFE"
 })JSON");
 
-	ASSERT_EQ(seed.seedBytes.length, 2);
-	ASSERT_EQ(seed.seedBytes.data[0], 0xff);
-	ASSERT_EQ(seed.seedBytes.data[1], 0xfe);
+	ASSERT_EQ(seed.secretBytes.length, 2);
+	ASSERT_EQ(seed.secretBytes.data[0], 0xff);
+	ASSERT_EQ(seed.secretBytes.data[1], 0xfe);
 	ASSERT_EQ(seed.keyDerivationOptionsJson.length(), 0);
 }
 

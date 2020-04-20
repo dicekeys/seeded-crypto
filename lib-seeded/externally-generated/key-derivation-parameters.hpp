@@ -25,18 +25,19 @@ namespace KeyDerivationOptionsJson {
 		const std::string keyLengthInBytes = "keyLengthInBytes";
 		const std::string keyType = "keyType";
 		const std::string restrictions = "restrictions";
+		const std::string excludeOrientationOfFaces = "excludeOrientationOfFaces";
 	}
 
 	enum KeyType {
 		_INVALID_KEYTYPE_ = 0,
-		Seed,
+		Secret,
 		Symmetric,
 		Public,
 		Signing
 	};
 	NLOHMANN_JSON_SERIALIZE_ENUM( KeyType, {
 		{KeyType::_INVALID_KEYTYPE_, nullptr},
-		{KeyType::Seed, "Seed"},
+		{KeyType::Secret, "Secret"},
 		{KeyType::Symmetric, "Symmetric"},
 		{KeyType::Public, "Public"},
 		{KeyType::Signing, "Signing"}

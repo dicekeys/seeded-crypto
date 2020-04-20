@@ -61,17 +61,17 @@ The following fields are inspected and used by the seeded-crypto C++ library.
 #### keyType
 
 Specify whether this JSON object should be used to construct an
-@ref Seed, @ref SymmetricKey, @ref PrivateKey, or @ref SigningKey.
+@ref Secret, @ref SymmetricKey, @ref PrivateKey, or @ref SigningKey.
 
 ```TypeScript
 "keyType"?:
-    // For constructing a Seed object
-    "Seed" |
-    // For constructing a SymmetricKey object
+    // For constructing a raw Secret
+    "Secret" |
+    // For constructing a SymmetricKey
     "Symmetric" |
-    // For constructing a PrivateKey object, from which a corresponding PublicKey can be instantiated
+    // For constructing a PrivateKey, from which a corresponding PublicKey can be instantiated
     "Public" |
-    // For constructing a SigningKey object, from which a SignatureVerificationKey can be instantiated
+    // For constructing a SigningKey, from which a SignatureVerificationKey can be instantiated
     "Signing"
 ```
 
@@ -94,14 +94,14 @@ Specify the specific algorithm to use.
     "Ed25519"            // the current default for SigningKey
 ```
 
-The `algorithm` field should never be set for `"keyType": "Seed"`.
+The `algorithm` field should never be set for `"keyType": "Secret"`.
 
 #### keyLengthInBytes
 ```TypeScript
 "keyLengthInBytes"?: number // e.g. "keyLengthInBytes": 32
 ```
 
-Set this value when using `"KeyType": "Seed"` to set the size of the seed to be derived (in bytes, as the name implies). If set for other `keyType`s, it must
+Set this value when using `"KeyType": "Secret"` to set the size of the secret to be derived (in bytes, as the name implies). If set for other `keyType`s, it must
 match the keyLengthInBytes of that algorithm (32 bytes for the current algorithms).
 
 If this library is extended to support `algorithm` values with multiple key-length
@@ -124,7 +124,7 @@ two additional fields, which are ignored for  `"BLAKE2b"` and `"SHA256"`.
 For example:
 ```TypeScript
 {
-    "keyType": "Seed",
+    "keyType": "Secret",
     "keyLengthInBytes": 96,
     "hashFunction": "Argon2id",
     "hashFunctionMemoryLimit": 67108864,
@@ -167,7 +167,7 @@ If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation ch
 resulting in a 50-character seed.
 This option exists because orientations may be harder for users to copy correctly than letters and digits are.
 With this option on, should a user choose to manually copy the contents of a DiceKey and make an error
-in copying an orientation, that error will not prevent them from re-deriving the specified key or seed.
+in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.
 
 ```
     "excludeOrientationOfFaces"?: true | false // default false
@@ -196,7 +196,7 @@ the seed should it become necessary.
 
 #### restrictions
 
-The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.
+The DiceKeys app will restrict access to derived keys or secrets to so that only those apps that are specifically allowed can obtain or use them.
 
 ```TypeScript
     "restrictions"?: {
@@ -208,7 +208,7 @@ The DiceKeys app will restrict access to derived seeds or keys to so that only t
 For example:
 ```TypeScript
 {
-    "keyType": "Seed",
+    "keyType": "Secret",
     "restrictions": {
         "androidPackagePrefixesAllowed": [
             "org.dicekeys.apps.fido",
