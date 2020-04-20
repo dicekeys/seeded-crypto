@@ -105,15 +105,15 @@ Universal Fields used by the Seeded Cryptography Library</h2>
 <p>The following fields are inspected and used by the seeded-crypto C++ library.</p>
 <h3><a class="anchor" id="autotoc_md1"></a>
 keyType</h3>
-<p>Specify whether this JSON object should be used to construct an <a class="el" href="class_seed.html">Seed</a>, <a class="el" href="class_symmetric_key.html">SymmetricKey</a>, <a class="el" href="class_private_key.html">PrivateKey</a>, or <a class="el" href="class_signing_key.html">SigningKey</a>.</p>
+<p>Specify whether this JSON object should be used to construct an <a class="el" href="class_secret.html">Secret</a>, <a class="el" href="class_symmetric_key.html">SymmetricKey</a>, <a class="el" href="class_private_key.html">PrivateKey</a>, or <a class="el" href="class_signing_key.html">SigningKey</a>.</p>
 <div class="fragment"><div class="line">&quot;keyType&quot;?:</div>
-<div class="line">    // For constructing a Seed object</div>
-<div class="line">    &quot;Seed&quot; |</div>
-<div class="line">    // For constructing a SymmetricKey object</div>
+<div class="line">    // For constructing a raw Secret</div>
+<div class="line">    &quot;Secret&quot; |</div>
+<div class="line">    // For constructing a SymmetricKey</div>
 <div class="line">    &quot;Symmetric&quot; |</div>
-<div class="line">    // For constructing a PrivateKey object, from which a corresponding PublicKey can be instantiated</div>
+<div class="line">    // For constructing a PrivateKey, from which a corresponding PublicKey can be instantiated</div>
 <div class="line">    &quot;Public&quot; |</div>
-<div class="line">    // For constructing a SigningKey object, from which a SignatureVerificationKey can be instantiated</div>
+<div class="line">    // For constructing a SigningKey, from which a SignatureVerificationKey can be instantiated</div>
 <div class="line">    &quot;Signing&quot;</div>
 </div><!-- fragment --><p>If not provided, the keyType is inferred from the type of object being constructed.</p>
 <p>If you attempt to construct an object of one <code>keyType</code> when the the <code>"keyType"</code> field specifies a different <code>keyType</code>, the constructor will treat it as an exception.</p>
@@ -127,11 +127,11 @@ algorithm</h3>
 <div class="line">    &quot;X25519&quot; |           // the current default for PrivateKey</div>
 <div class="line">    // valid only for &quot;keyType&quot;: Signing</div>
 <div class="line">    &quot;Ed25519&quot;            // the current default for SigningKey</div>
-</div><!-- fragment --><p>The <code>algorithm</code> field should never be set for <code>"keyType": "Seed"</code>.</p>
+</div><!-- fragment --><p>The <code>algorithm</code> field should never be set for <code>"keyType": "Secret"</code>.</p>
 <h3><a class="anchor" id="autotoc_md3"></a>
 keyLengthInBytes</h3>
 <div class="fragment"><div class="line">&quot;keyLengthInBytes&quot;?: number // e.g. &quot;keyLengthInBytes&quot;: 32</div>
-</div><!-- fragment --><p>Set this value when using <code>"KeyType": "Seed"</code> to set the size of the seed to be derived (in bytes, as the name implies). If set for other <code>keyType</code>s, it must match the keyLengthInBytes of that algorithm (32 bytes for the current algorithms).</p>
+</div><!-- fragment --><p>Set this value when using <code>"KeyType": "Secret"</code> to set the size of the secret to be derived (in bytes, as the name implies). If set for other <code>keyType</code>s, it must match the keyLengthInBytes of that algorithm (32 bytes for the current algorithms).</p>
 <p>If this library is extended to support <code>algorithm</code> values with multiple key-length options, this field can be used to specify which length varient of the algorithm to use.</p>
 <h3><a class="anchor" id="autotoc_md4"></a>
 hashFunction</h3>
@@ -139,7 +139,7 @@ hashFunction</h3>
 </div><!-- fragment --><p>Specifies the hash function used to derive the key. If <code>"Argoin2id"</code> or <code>"Scrypt"</code> are used, you can specify the memory limit and ops (iterations) via two additional fields, which are ignored for <code>"BLAKE2b"</code> and <code>"SHA256"</code>. </p><div class="fragment"><div class="line">&quot;hashFunctionMemoryLimit&quot;: number // default 67108864</div>
 <div class="line">&quot;hashFunctionIterations&quot;: number // default 2, has no effect if algorithm is &quot;BLAKE2b&quot; | &quot;SHA256&quot; </div>
 </div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;Seed&quot;,</div>
+<div class="line">    &quot;keyType&quot;: &quot;Secret&quot;,</div>
 <div class="line">    &quot;keyLengthInBytes&quot;: 96,</div>
 <div class="line">    &quot;hashFunction&quot;: &quot;Argon2id&quot;,</div>
 <div class="line">    &quot;hashFunctionMemoryLimit&quot;: 67108864,</div>
@@ -160,7 +160,7 @@ excludeOrientationOfFaces</h3>
 <li>The digit on the die</li>
 <li>The orientation relative to the top of the square in canonical form</li>
 </ul>
-<p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be excluded resulting in a 50-character seed. This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or seed.</p>
+<p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be excluded resulting in a 50-character seed. This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.</p>
 <div class="fragment"><div class="line">&quot;excludeOrientationOfFaces&quot;?: true | false // default false</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
 DiceKeys API Fields</h2>
@@ -172,13 +172,13 @@ clientMayRetrieveKey</h3>
 </div><!-- fragment --><p>This allows client apps to derive keys that they can use private/signing/symmetric keys even when the seed is not present for re-derivation, but still have a key that is recoverable with the seed should it become necessary.</p>
 <h3><a class="anchor" id="autotoc_md10"></a>
 restrictions</h3>
-<p>The DiceKeys app will restrict access to derived seeds or keys to so that only those apps that are specifically allowed can obtain or use them.</p>
+<p>The DiceKeys app will restrict access to derived keys or secrets to so that only those apps that are specifically allowed can obtain or use them.</p>
 <div class="fragment"><div class="line">&quot;restrictions&quot;?: {</div>
 <div class="line">    &quot;androidPackagePrefixesAllowed&quot;?: string[],</div>
 <div class="line">    &quot;urlPrefixesAllowed&quot;?: string[]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;Seed&quot;,</div>
+<div class="line">    &quot;keyType&quot;: &quot;Secret&quot;,</div>
 <div class="line">    &quot;restrictions&quot;: {</div>
 <div class="line">        &quot;androidPackagePrefixesAllowed&quot;: [</div>
 <div class="line">            &quot;org.dicekeys.apps.fido&quot;,</div>

@@ -10,7 +10,7 @@ var dir_bfa3ca4d7245ff604c8870e56fc2b60a =
     [ "post-decryption-instructions.hpp", "post-decryption-instructions_8hpp_source.html", null ],
     [ "private-key.hpp", "private-key_8hpp_source.html", null ],
     [ "public-key.hpp", "public-key_8hpp_source.html", null ],
-    [ "seed.hpp", "seed_8hpp_source.html", null ],
+    [ "secret.hpp", "secret_8hpp_source.html", null ],
     [ "signature-verification-key.hpp", "signature-verification-key_8hpp_source.html", null ],
     [ "signing-key.hpp", "signing-key_8hpp_source.html", null ],
     [ "sodium-buffer.hpp", "sodium-buffer_8hpp_source.html", null ],

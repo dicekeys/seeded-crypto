@@ -10,7 +10,7 @@ var hierarchy =
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", null ],
     [ "PrivateKey", "class_private_key.html", null ],
     [ "PublicKey", "class_public_key.html", null ],
-    [ "Seed", "class_seed.html", null ],
+    [ "Secret", "class_secret.html", null ],
     [ "SignatureVerificationKey", "class_signature_verification_key.html", null ],
     [ "SigningKey", "class_signing_key.html", null ],
     [ "SodiumBuffer", "class_sodium_buffer.html", null ],

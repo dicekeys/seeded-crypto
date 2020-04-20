@@ -15,14 +15,14 @@ var group___derived_from_seeds =
       [ "keyDerivationOptionsJson", "class_public_key.html#abeb1c748bb7934461fd8e0d74e391f38", null ],
       [ "publicKeyBytes", "class_public_key.html#a7e62a49618c5dbd4cc415a0aa44943a6", null ]
     ] ],
-    [ "Seed", "class_seed.html", [
-      [ "Seed", "class_seed.html#a5b014df44455cc467fe95aed830463d9", null ],
-      [ "Seed", "class_seed.html#a8269f3b1ac9bd0a813203c4d37c26da5", null ],
-      [ "Seed", "class_seed.html#a2d8391b20118a6b1978c8e154887c46e", null ],
-      [ "toJson", "class_seed.html#ae620e5145585f7f9c84f106a72bd7b57", null ],
-      [ "toSerializedBinaryForm", "class_seed.html#aa5d609ad1f8388541f268bb56fa58346", null ],
-      [ "keyDerivationOptionsJson", "class_seed.html#a6ad0643100c877efa95f68dc7742ed7e", null ],
-      [ "seedBytes", "class_seed.html#a6c505a79b60bc9f9f978bdd8b01578d1", null ]
+    [ "Secret", "class_secret.html", [
+      [ "Secret", "class_secret.html#a00a5f6dc1a2d0ad0a93d48ca08485911", null ],
+      [ "Secret", "class_secret.html#ab32b18d41591e7dec63157d24c723c24", null ],
+      [ "Secret", "class_secret.html#a6de87c2943b108414ac82957edb281fe", null ],
+      [ "toJson", "class_secret.html#a60852279e3a5112acbed1a0eef4290fc", null ],
+      [ "toSerializedBinaryForm", "class_secret.html#a9aff4f8515ecab78a350128e09f32ba7", null ],
+      [ "keyDerivationOptionsJson", "class_secret.html#ac7c2320dcb05859cf89e5b83c00f73f1", null ],
+      [ "secretBytes", "class_secret.html#aac1d446019b7ea90f6e993ee26027dcc", null ]
     ] ],
     [ "SignatureVerificationKey", "class_signature_verification_key.html", [
       [ "SignatureVerificationKey", "class_signature_verification_key.html#a8eb152e5ff5d2649ddb06b128e884961", null ],

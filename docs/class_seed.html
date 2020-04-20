@@ -87,14 +87,14 @@ $(document).ready(function(){initNavTree('class_seed.html',''); initResizable();
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_seed-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Seed Class Reference<div class="ingroups"><a class="el" href="group___derived_from_seeds.html">Keys derived from seeds</a></div></div>  </div>
+<div class="title">Seed Class Reference<div class="ingroups"><a class="el" href="group___derived_from_seeds.html">Derived Keys</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  
+<p>A secret derived from a seed string and set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  
  <a href="class_seed.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="seed_8hpp_source.html">seed.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="secret_8hpp_source.html">secret.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -120,14 +120,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:abaaebdc9d6a5977f65221933011c5993"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (seedBytes, keyDerivationOptionsJson)  <a href="class_seed.html#abaaebdc9d6a5977f65221933011c5993">More...</a><br /></td></tr>
 <tr class="separator:abaaebdc9d6a5977f65221933011c5993"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6d70c3125ace9ac077caccbfebaa536"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_seed.html">Seed</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_seed.html#af6d70c3125ace9ac077caccbfebaa536">fromJson</a> (const std::string &amp;seedAsJson)</td></tr>
-<tr class="memdesc:af6d70c3125ace9ac077caccbfebaa536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct (reconstitute) a <a class="el" href="class_seed.html" title="A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specifi...">Seed</a> from its JSON representation.  <a href="class_seed.html#af6d70c3125ace9ac077caccbfebaa536">More...</a><br /></td></tr>
+<tr class="memdesc:af6d70c3125ace9ac077caccbfebaa536"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct (reconstitute) a <a class="el" href="class_seed.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Seed</a> from its JSON representation.  <a href="class_seed.html#af6d70c3125ace9ac077caccbfebaa536">More...</a><br /></td></tr>
 <tr class="separator:af6d70c3125ace9ac077caccbfebaa536"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a6c505a79b60bc9f9f978bdd8b01578d1"><td class="memItemLeft" align="right" valign="top"><a id="a6c505a79b60bc9f9f978bdd8b01578d1"></a>
 const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_seed.html#a6c505a79b60bc9f9f978bdd8b01578d1">seedBytes</a></td></tr>
-<tr class="memdesc:a6c505a79b60bc9f9f978bdd8b01578d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The binary representation of the generated seed. <br /></td></tr>
+<tr class="memdesc:a6c505a79b60bc9f9f978bdd8b01578d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The binary representation of the generated secret. <br /></td></tr>
 <tr class="separator:a6c505a79b60bc9f9f978bdd8b01578d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ad0643100c877efa95f68dc7742ed7e"><td class="memItemLeft" align="right" valign="top"><a id="a6ad0643100c877efa95f68dc7742ed7e"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_seed.html#a6ad0643100c877efa95f68dc7742ed7e">keyDerivationOptionsJson</a></td></tr>
@@ -135,8 +135,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <tr class="separator:a6ad0643100c877efa95f68dc7742ed7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
-<p>Because seed derivation uses a one-way function, this seed can be shared without revealing the secret used to derive it. It can then be used and, if lost, re-derived from the original seed and keyDerivationOptionsJson that were first used to derive it. </p>
+<div class="textblock"><p>A secret derived from a seed string and set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
+<p>Because secret derivation uses a one-way function, this secret can be shared without revealing the seed used to derive it. It can then be used and, if lost, re-derived from the original seed and keyDerivationOptionsJson that were first used to derive it. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5b014df44455cc467fe95aed830463d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5b014df44455cc467fe95aed830463d9">&#9670;&nbsp;</a></span>Seed() <span class="overload">[1/3]</span></h2>
@@ -157,7 +157,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <p>Construct this object as a copy of another object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">other</td><td>The <a class="el" href="class_seed.html" title="A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specifi...">Seed</a> to copy into this new object </td></tr>
+    <tr><td class="paramname">other</td><td>The <a class="el" href="class_seed.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Seed</a> to copy into this new object </td></tr>
   </table>
   </dd>
 </dl>
@@ -263,10 +263,10 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table>
 </div><div class="memdoc">
 
-<p>Construct (reconstitute) a <a class="el" href="class_seed.html" title="A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specifi...">Seed</a> from its JSON representation. </p>
+<p>Construct (reconstitute) a <a class="el" href="class_seed.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Seed</a> from its JSON representation. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">seedAsJson</td><td>A <a class="el" href="class_seed.html" title="A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specifi...">Seed</a> serialized in JSON format via a previous call to toJson. </td></tr>
+    <tr><td class="paramname">seedAsJson</td><td>A <a class="el" href="class_seed.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Seed</a> serialized in JSON format via a previous call to toJson. </td></tr>
   </table>
   </dd>
 </dl>
@@ -337,7 +337,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const std::string A <a class="el" href="class_seed.html" title="A seed/secret, which is itself (re)derived from another secret seed and set of key-derivation specifi...">Seed</a> serialized to JSON format. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const std::string A <a class="el" href="class_seed.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Seed</a> serialized to JSON format. </dd></dl>
 
 </div>
 </div>
@@ -362,8 +362,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>C:/Users/stuar/git/dicekeys-seeded-crypto/lib-seeded/<a class="el" href="seed_8hpp_source.html">seed.hpp</a></li>
-<li>C:/Users/stuar/git/dicekeys-seeded-crypto/lib-seeded/seed.cpp</li>
+<li>C:/Users/stuar/git/dicekeys-seeded-crypto/lib-seeded/<a class="el" href="secret_8hpp_source.html">secret.hpp</a></li>
+<li>C:/Users/stuar/git/dicekeys-seeded-crypto/lib-seeded/secret.cpp</li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
