@@ -2,6 +2,7 @@ var class_key_derivation_options =
 [
     [ "~KeyDerivationOptions", "class_key_derivation_options.html#a4ae369e5a50a0e3beb150934308b5bf5", null ],
     [ "KeyDerivationOptions", "class_key_derivation_options.html#a04490f7d7df84d3d4c75e851c91f7a36", null ],
+    [ "deriveMasterSecret", "class_key_derivation_options.html#a9ceb985f49d26a6b646dfefd0e2a14be", null ],
     [ "keyDerivationOptionsJsonWithAllOptionalParametersSpecified", "class_key_derivation_options.html#a82007f3d9cf2b4a034510b43fbf1d930", null ],
     [ "algorithm", "class_key_derivation_options.html#a88855da90081d0e1633e8fc88e49572c", null ],
     [ "hashFunction", "class_key_derivation_options.html#a2eaefe480a03796ddcd4e8acf0c52cee", null ],

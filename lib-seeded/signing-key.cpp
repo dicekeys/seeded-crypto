@@ -1,8 +1,8 @@
 #include "signing-key.hpp"
 #include "key-derivation-options.hpp"
 #include "sodium-buffer.hpp"
-#include "generate-seed.hpp"
 #include "convert.hpp"
+#include "exceptions.hpp"
 
 SigningKey::SigningKey(
   const SodiumBuffer& _signingKeyBytes,
@@ -72,13 +72,13 @@ SigningKey::SigningKey(
   keyDerivationOptionsJson(_keyDerivationOptionsJson)
 {
   // Turn the seed string into a seed of the appropriate length
-  SodiumBuffer seed = generateSeed(
+  SodiumBuffer seed = KeyDerivationOptions::deriveMasterSecret(
     seedString,
     keyDerivationOptionsJson,
     KeyDerivationOptionsJson::KeyType::Signing,
     crypto_sign_SEEDBYTES
   );
-  // We're not going to keep the signature-verification key, but the sodium API requires we provide a buffer for it.
+  // Dervive a key pair from the seed
   crypto_sign_seed_keypair(signatureVerificationKeyBytes.data(), signingKeyBytes.data, seed.data);
 }
 

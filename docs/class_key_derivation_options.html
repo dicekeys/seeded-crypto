@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('class_key_derivation_options.html','')
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_key_derivation_options-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -102,6 +103,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a82007f3d9cf2b4a034510b43fbf1d930"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_key_derivation_options.html#a82007f3d9cf2b4a034510b43fbf1d930">keyDerivationOptionsJsonWithAllOptionalParametersSpecified</a> (int indent=-1, const char indent_char=' ') const</td></tr>
 <tr class="memdesc:a82007f3d9cf2b4a034510b43fbf1d930"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return JSON with default parameters filled in.  <a href="class_key_derivation_options.html#a82007f3d9cf2b4a034510b43fbf1d930">More...</a><br /></td></tr>
 <tr class="separator:a82007f3d9cf2b4a034510b43fbf1d930"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ceb985f49d26a6b646dfefd0e2a14be"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_key_derivation_options.html#a9ceb985f49d26a6b646dfefd0e2a14be">deriveMasterSecret</a> (const std::string &amp;seedString, const KeyDerivationOptionsJson::KeyType defaultKeyType=KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_) const</td></tr>
+<tr class="memdesc:a9ceb985f49d26a6b646dfefd0e2a14be"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function derives the master secrets for <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, for the <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> pair, for the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> and <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> pair, and for the general-purpose <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class.  <a href="class_key_derivation_options.html#a9ceb985f49d26a6b646dfefd0e2a14be">More...</a><br /></td></tr>
+<tr class="separator:a9ceb985f49d26a6b646dfefd0e2a14be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a5f5369269cc49dbfbdf50ec0c5add141"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_key_derivation_options.html#a5f5369269cc49dbfbdf50ec0c5add141">deriveMasterSecret</a> (const std::string &amp;seedString, const std::string &amp;<a class="el" href="class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f">keyDerivationOptionsJson</a>, const KeyDerivationOptionsJson::KeyType keyTypeRequired, const size_t keyLengthInBytesRequired=0)</td></tr>
+<tr class="memdesc:a5f5369269cc49dbfbdf50ec0c5add141"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function derives the master secrets for <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, for the <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> pair, for the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> and <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> pair, and for the general-purpose <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class.  <a href="class_key_derivation_options.html#a5f5369269cc49dbfbdf50ec0c5add141">More...</a><br /></td></tr>
+<tr class="separator:a5f5369269cc49dbfbdf50ec0c5add141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -111,7 +121,7 @@ KeyDerivationOptionsJson::Algorithm&#160;</td><td class="memItemRight" valign="b
 <tr class="separator:a88855da90081d0e1633e8fc88e49572c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2361cd534e5ed7823b513bfa08cc3f"><td class="memItemLeft" align="right" valign="top"><a id="aef2361cd534e5ed7823b513bfa08cc3f"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:aef2361cd534e5ed7823b513bfa08cc3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mirroring the JSON field in <a class="el" href="key_derivation_options_format.html#key_derivation_options_universal_fields">Key-Derivation Options JSON Universal Fields</a>. <br /></td></tr>
+<tr class="memdesc:aef2361cd534e5ed7823b513bfa08cc3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The original JSON string used to construct this object. <br /></td></tr>
 <tr class="separator:aef2361cd534e5ed7823b513bfa08cc3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2e290dcbb88f6587898734df950c9fd"><td class="memItemLeft" align="right" valign="top"><a id="ac2e290dcbb88f6587898734df950c9fd"></a>
 KeyDerivationOptionsJson::KeyType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_key_derivation_options.html#ac2e290dcbb88f6587898734df950c9fd">keyType</a></td></tr>
@@ -185,6 +195,133 @@ KeyDerivationOptionsJson::HashFunction&#160;</td><td class="memItemRight" valign
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9ceb985f49d26a6b646dfefd0e2a14be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ceb985f49d26a6b646dfefd0e2a14be">&#9670;&nbsp;</a></span>deriveMasterSecret() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> KeyDerivationOptions::deriveMasterSecret </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>seedString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const KeyDerivationOptionsJson::KeyType&#160;</td>
+          <td class="paramname"><em>defaultKeyType</em> = <code>KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>This function derives the master secrets for <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, for the <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> pair, for the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> and <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> pair, and for the general-purpose <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class. </p>
+<p>It applies the hash function specified in the keyDerivationOptionsJson to a preimage of the following form: </p><div class="fragment"><div class="line">&lt;seedString&gt; + <span class="charliteral">&#39;\0&#39;</span> + &lt;<a class="code" href="class_key_derivation_options.html#ac2e290dcbb88f6587898734df950c9fd">keyType</a>&gt; + &lt;<a class="code" href="class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f">keyDerivationOptionsJson</a>&gt;</div>
+</div><!-- fragment --><p>where keyType is converted to a string in ["Secret", "Symmetric", "Public", "Signing"], based on the value of the keyType parameter, defaultKeyType if keyType is not set (<em>INVALID_KEYTYPE</em>), or "" if neither is set (both are <em>INVALID_KEYTYPE</em>).</p>
+<ul>
+<li>For "Secret", the generated secret is placed directly into the <code>secretBytes</code> field of the <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class.</li>
+<li>For "Symmetric", the generated secret becomes the <code>keyBytes</code> field of the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class.</li>
+<li>For "Public", the generated secret is the final parameter (input) to libsodium's <code>crypto_box_seed_keypair</code> function, which generates the key bytes for the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> and <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a>.</li>
+<li>For "Signing", the generated secret is the final parameter (input) to libsodium's <code>crypto_sign_seed_keypair</code> function, which generates the key bytes for the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a>..</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seedString</td><td>A seed value that is the primary salt for the hash function </td></tr>
+    <tr><td class="paramname">defaultKeyType</td><td>If the keyDerivationOptionsJson has a keyType field, and that field specifies a value other than this keyTypeRequired value, this function will throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the keyDerivationOptionsJson is in an invalid format or contains an inval...">InvalidKeyDerivationOptionValueException</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a> The derived secret, set to always be a const so that it is never modified directly.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the keyDerivationOptionsJson is in an invalid format or contains an inval...">InvalidKeyDerivationOptionValueException</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5f5369269cc49dbfbdf50ec0c5add141"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f5369269cc49dbfbdf50ec0c5add141">&#9670;&nbsp;</a></span>deriveMasterSecret() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> KeyDerivationOptions::deriveMasterSecret </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>seedString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>keyDerivationOptionsJson</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const KeyDerivationOptionsJson::KeyType&#160;</td>
+          <td class="paramname"><em>keyTypeRequired</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>keyLengthInBytesRequired</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>This function derives the master secrets for <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, for the <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> pair, for the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> and <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> pair, and for the general-purpose <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class. </p>
+<p>It applies the hash function specified in the keyDerivationOptionsJson to a preimage of the following form: </p><div class="fragment"><div class="line">&lt;seedString&gt; + <span class="charliteral">&#39;\0&#39;</span> + &lt;keyTypeRequired&gt; + &lt;<a class="code" href="class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f">keyDerivationOptionsJson</a>&gt;</div>
+</div><!-- fragment --><p>where keyTypeRequired is converted to a string in ["Secret", "Symmetric", "Public", "Signing"], based on the value of the keyTypeRequired parameter.</p>
+<ul>
+<li>For "Secret", the generated secret is placed directly into the <code>secretBytes</code> field of the <a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a> class.</li>
+<li>For "Symmetric", the generated secret becomes the <code>keyBytes</code> field of the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class.</li>
+<li>For "Public", the generated secret is the final parameter (input) to libsodium's <code>crypto_box_seed_keypair</code> function, which generates the key bytes for the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> and <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a>.</li>
+<li>For "Signing", the generated secret is the final parameter (input) to libsodium's <code>crypto_sign_seed_keypair</code> function, which generates the key bytes for the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a>..</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seedString</td><td>A seed value that is the primary salt for the hash function </td></tr>
+    <tr><td class="paramname">keyDerivationOptionsJson</td><td>The key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </td></tr>
+    <tr><td class="paramname">keyTypeRequired</td><td>If the keyDerivationOptionsJson has a keyType field, and that field specifies a value other than this keyTypeRequired value, this function will throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the keyDerivationOptionsJson is in an invalid format or contains an inval...">InvalidKeyDerivationOptionValueException</a>. </td></tr>
+    <tr><td class="paramname">keyLengthInBytesRequired</td><td>If the keyDerivationOptionsJson does not specify a keyLengthInBytes, generate a secret of this length. Throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the keyDerivationOptionsJson is in an invalid format or contains an inval...">InvalidKeyDerivationOptionValueException</a> is the keyLengthInBytes it specifies does not match this value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a> The derived secret, set to always be a const so that it is never modified directly.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the keyDerivationOptionsJson is in an invalid format or contains an inval...">InvalidKeyDerivationOptionValueException</a></td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_options_json_exception.html" title="Thrown when a keyDerivationOptionsJson string is not in valid JSON format and cannot be parsed.">InvalidKeyDerivationOptionsJsonException</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a82007f3d9cf2b4a034510b43fbf1d930"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a82007f3d9cf2b4a034510b43fbf1d930">&#9670;&nbsp;</a></span>keyDerivationOptionsJsonWithAllOptionalParametersSpecified()</h2>
 
@@ -228,6 +365,8 @@ KeyDerivationOptionsJson::HashFunction&#160;</td><td class="memItemRight" valign
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aclass_key_derivation_options_html_ac2e290dcbb88f6587898734df950c9fd"><div class="ttname"><a href="class_key_derivation_options.html#ac2e290dcbb88f6587898734df950c9fd">KeyDerivationOptions::keyType</a></div><div class="ttdeci">KeyDerivationOptionsJson::KeyType keyType</div><div class="ttdoc">Mirroring the JSON field in Key-Derivation Options JSON Universal Fields.</div><div class="ttdef"><b>Definition:</b> key-derivation-options.hpp:38</div></div>
+<div class="ttc" id="aclass_key_derivation_options_html_aef2361cd534e5ed7823b513bfa08cc3f"><div class="ttname"><a href="class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f">KeyDerivationOptions::keyDerivationOptionsJson</a></div><div class="ttdeci">const std::string keyDerivationOptionsJson</div><div class="ttdoc">The original JSON string used to construct this object.</div><div class="ttdef"><b>Definition:</b> key-derivation-options.hpp:33</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -196,3 +196,98 @@ const std::string KeyDerivationOptions::keyDerivationOptionsJsonWithAllOptionalP
 ) const {
   return keyDerivationOptionsExplicit.dump(indent, indent_char);
 }
+
+
+const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
+  const std::string& seedString,
+  const KeyDerivationOptionsJson::KeyType defaultKeyType
+) const {
+  const KeyDerivationOptionsJson::KeyType finalKeyType =
+    keyType == KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_ ?
+      defaultKeyType : keyType;
+  const std::string keyTypeString =
+    finalKeyType == KeyDerivationOptionsJson::KeyType::Secret ? "Secret" :
+		finalKeyType == KeyDerivationOptionsJson::KeyType::Symmetric ? "Symmetric" :
+		finalKeyType == KeyDerivationOptionsJson::KeyType::Public ? "Public" :
+		finalKeyType == KeyDerivationOptionsJson::KeyType::Signing ? "Signing" :
+    "";
+
+  // Create a hash preimage that is the seed string, followed by a null
+  // terminator, followed by the keyDerivationOptionsJson string.
+  //   <seedString> + '\0' <keyDerivationOptionsJson>
+  SodiumBuffer preimage(
+    // length of the seed string
+    seedString.length() +
+    // 1 character for a null char between the two strings
+    1 +
+    // length of key type
+    keyTypeString.length() +
+    // length of the json string specifying the key-derivation options
+    keyDerivationOptionsJson.length()
+  );
+
+  // Use this moving pointer to write the primage
+  unsigned char* primageWritePtr = preimage.data;
+  // Copy the seed string into the preimage
+  memcpy(
+    primageWritePtr,
+    seedString.c_str(),
+    seedString.length()
+  );
+  primageWritePtr += seedString.length();
+  // copy the null terminator between strings into the preimage
+  *(primageWritePtr++) = '0';
+  // copy the key type
+  memcpy(
+    primageWritePtr,
+    keyTypeString.c_str(),
+    keyTypeString.length()
+  );
+  primageWritePtr += keyTypeString.length();
+  // copy the key derivation options into the preimage
+  memcpy(
+    primageWritePtr,
+    keyDerivationOptionsJson.c_str(),
+    keyDerivationOptionsJson.length()
+  );
+
+  // Hash the preimage to create the seed
+  SodiumBuffer derivedKey =
+    hashFunctionImplementation->hash(
+        preimage.data,
+        preimage.length,
+        keyLengthInBytes
+    );
+
+  return derivedKey;
+}
+
+const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
+		const std::string& seedString,
+		const std::string& keyDerivationOptionsJson,
+		const KeyDerivationOptionsJson::KeyType keyTypeRequired,
+		const size_t keyLengthInBytesRequired
+	) {
+    const KeyDerivationOptions keyDerivationOptions(keyDerivationOptionsJson,keyTypeRequired);
+    // Ensure that the keyType in the key derivation options matches the requirement
+    if (
+      keyTypeRequired != KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_ &&
+      keyTypeRequired != keyDerivationOptions.keyType  
+    ) {
+      throw InvalidKeyDerivationOptionValueException( (
+        "Key generation options must have keyType " + std::to_string(keyTypeRequired)
+      ).c_str() );
+    }
+
+    // Verify key-length requirements (if specified)
+    if (keyLengthInBytesRequired > 0 &&
+        keyDerivationOptions.keyLengthInBytes != keyLengthInBytesRequired) {
+      throw InvalidKeyDerivationOptionValueException( (
+        "Key length in bytes for this keyType should be " + std::to_string(keyLengthInBytesRequired) +
+        " but keyLengthInBytes field was set to " + std::to_string(keyDerivationOptions.keyLengthInBytes)
+        ).c_str()
+      );
+    }
+
+    return keyDerivationOptions.deriveMasterSecret(seedString, keyTypeRequired);
+  }

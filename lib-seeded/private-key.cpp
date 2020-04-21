@@ -2,8 +2,8 @@
 #include "private-key.hpp"
 #include "crypto_box_seal_salted.h"
 #include "key-derivation-options.hpp"
-#include "generate-seed.hpp"
 #include "convert.hpp"
+#include "exceptions.hpp"
 
 PrivateKey::PrivateKey(
     const SodiumBuffer _privateKeyBytes,
@@ -36,7 +36,7 @@ PrivateKey::PrivateKey(
     const std::string& _seedString,
     const std::string& _keyDerivationOptionsJson
   ) : PrivateKey(
-      generateSeed(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::KeyType::Public, crypto_box_SEEDBYTES),
+      KeyDerivationOptions::deriveMasterSecret(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::KeyType::Public, crypto_box_SEEDBYTES),
       _keyDerivationOptionsJson
   ) {}
 

@@ -1,5 +1,6 @@
-#include "./secret.hpp"
-#include "generate-seed.hpp"
+#include "secret.hpp"
+#include "key-derivation-options.hpp"
+#include "exceptions.hpp"
 
 Secret::Secret(
   const SodiumBuffer& _secretBytes,
@@ -10,7 +11,7 @@ Secret::Secret(
   const std::string& seedString,
   const std::string& _keyDerivationOptionsJson
 ) : Secret(
-  generateSeed(
+  KeyDerivationOptions::deriveMasterSecret(
     seedString,
     _keyDerivationOptionsJson,
     KeyDerivationOptionsJson::KeyType::Secret

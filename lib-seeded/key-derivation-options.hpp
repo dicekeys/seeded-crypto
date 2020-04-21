@@ -28,7 +28,7 @@ public:
 	 */
 	KeyDerivationOptionsJson::Algorithm algorithm;
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief The original JSON string used to construct this object
 	 */
 	const std::string keyDerivationOptionsJson;
 
@@ -92,6 +92,96 @@ public:
 	const std::string keyDerivationOptionsJsonWithAllOptionalParametersSpecified(
 		int indent = -1,
 	  const char indent_char = ' '
+	) const;
+
+	/**
+	 * @brief This function derives the master secrets for SymmetricKey,
+	 * for the PublicKey and PrivateKey pair,
+	 * for the SignatureVerificationKey and SigningKey pair,
+	 * and for the general-purpose Secret class.
+	 * 
+	 * It applies the hash function specified in the keyDerivationOptionsJson
+	 * to a preimage of the following form:
+	 * ```
+	 *   <seedString> + '\0' + <keyTypeRequired> + <keyDerivationOptionsJson>
+	 * ```
+	 * where keyTypeRequired is converted to a string in
+	 * ["Secret", "Symmetric", "Public", "Signing"],
+	 * based on the value of the keyTypeRequired parameter.
+	 * 
+	 *   * For "Secret", the generated secret is placed directly into the
+	 *     `secretBytes` field of the Secret class.
+	 *   * For "Symmetric", the generated secret becomes the `keyBytes` field
+	 *     of the SymmetricKey class.
+	 *   * For "Public", the generated secret is the final parameter (input) to
+	 *     libsodium's `crypto_box_seed_keypair` function, which generates
+	 *     the key bytes for the PrivateKey and PublicKey.
+	 *   * For "Signing", the generated secret is the final parameter (input) to
+	 *     libsodium's `crypto_sign_seed_keypair` function, which generates
+	 *     the key bytes for the SigningKey and SignatureVerificationKey..
+	 * 
+	 * @param seedString A seed value that is the primary salt for the hash function
+	 * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+	 * @param keyTypeRequired If the keyDerivationOptionsJson has a keyType field, and that field
+	 * specifies a value other than this keyTypeRequired value, this function will throw an
+	 * InvalidKeyDerivationOptionValueException.
+	 * @param keyLengthInBytesRequired If the keyDerivationOptionsJson does not specify a keyLengthInBytes,
+	 * generate a secret of this length. Throw an InvalidKeyDerivationOptionValueException is
+	 * the keyLengthInBytes it specifies does not match this value.
+	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
+	 * modified directly.
+	 * 
+	 * @throw InvalidKeyDerivationOptionValueException
+	 * @throw InvalidKeyDerivationOptionsJsonException
+	 */
+	static const SodiumBuffer deriveMasterSecret(
+		const std::string& seedString,
+		const std::string& keyDerivationOptionsJson,
+		const KeyDerivationOptionsJson::KeyType keyTypeRequired,
+		const size_t keyLengthInBytesRequired = 0
+	);
+
+	/**
+	 * @brief This function derives the master secrets for SymmetricKey,
+	 * for the PublicKey and PrivateKey pair,
+	 * for the SignatureVerificationKey and SigningKey pair,
+	 * and for the general-purpose Secret class.
+	 * 
+	 * It applies the hash function specified in the keyDerivationOptionsJson
+	 * to a preimage of the following form:
+	 * ```
+	 *   <seedString> + '\0' + <keyType> + <keyDerivationOptionsJson>
+	 * ```
+	 * where keyType is converted to a string in
+	 * ["Secret", "Symmetric", "Public", "Signing"],
+	 * based on the value of the keyType parameter,
+	 * defaultKeyType if keyType is not set (_INVALID_KEYTYPE_),
+	 * or "" if neither is set (both are _INVALID_KEYTYPE_).
+	 * 
+	 *   * For "Secret", the generated secret is placed directly into the
+	 *     `secretBytes` field of the Secret class.
+	 *   * For "Symmetric", the generated secret becomes the `keyBytes` field
+	 *     of the SymmetricKey class.
+	 *   * For "Public", the generated secret is the final parameter (input) to
+	 *     libsodium's `crypto_box_seed_keypair` function, which generates
+	 *     the key bytes for the PrivateKey and PublicKey.
+	 *   * For "Signing", the generated secret is the final parameter (input) to
+	 *     libsodium's `crypto_sign_seed_keypair` function, which generates
+	 *     the key bytes for the SigningKey and SignatureVerificationKey..
+	 * 
+	 * @param seedString A seed value that is the primary salt for the hash function
+	 * @param defaultKeyType If the keyDerivationOptionsJson has a keyType field, and that field
+	 * specifies a value other than this keyTypeRequired value, this function will throw an
+	 * InvalidKeyDerivationOptionValueException.
+	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
+	 * modified directly.
+	 * 
+	 * @throw InvalidKeyDerivationOptionValueException
+	 */
+	const SodiumBuffer deriveMasterSecret(
+		const std::string& seedString,
+		const KeyDerivationOptionsJson::KeyType defaultKeyType =
+			KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
 	) const;
 
 };

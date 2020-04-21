@@ -1,7 +1,8 @@
 #include <exception>
 #include "symmetric-key.hpp"
-#include "generate-seed.hpp"
 #include "packaged-sealed-message.hpp"
+#include "key-derivation-options.hpp"
+#include "exceptions.hpp"
 
 void _crypto_secretbox_nonce_salted(
   unsigned char *nonce,
@@ -38,10 +39,11 @@ SymmetricKey::SymmetricKey(
   const std::string& seedString,
   const std::string& _keyDerivationOptionsJson
 ) : SymmetricKey(
-  generateSeed(
+  KeyDerivationOptions::deriveMasterSecret(
     seedString,
     _keyDerivationOptionsJson,
-    KeyDerivationOptionsJson::KeyType::Symmetric,crypto_secretbox_KEYBYTES
+    KeyDerivationOptionsJson::KeyType::Symmetric,
+    crypto_secretbox_KEYBYTES
   ),
   _keyDerivationOptionsJson
 ) {}

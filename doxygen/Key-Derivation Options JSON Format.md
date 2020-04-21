@@ -60,7 +60,7 @@ The following fields are inspected and used by the seeded-crypto C++ library.
 
 #### keyType
 
-Specify whether this JSON object should be used to construct an
+Specify whether this JSON object should be used to construct a
 @ref Secret, @ref SymmetricKey, @ref PrivateKey, or @ref SigningKey.
 
 ```TypeScript
