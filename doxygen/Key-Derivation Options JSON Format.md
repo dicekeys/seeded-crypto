@@ -46,7 +46,7 @@ Since any JSON object field outside the spec can be attached, one could, for exa
 field to salt the derivation of a SymmetricKey like so:
 ```TypeScript
 {
-    "keyType": "SymmetricKey",
+    "keyType": "Symmetric",
     "SaltWithThePhoneNumberForJenny": 8675309
 }
 ```
