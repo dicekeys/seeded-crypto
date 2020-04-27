@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 <p><em>DiceKeys API fields</em> apply to keys generated through the DiceKeys API, which calls uses the DiceKeys app to generate keys and often to perform cryptographic operations. The DiceKeys app protects the keys so that other applications are not able to see the raw DiceKey, and these options specify which applications are allowed to generate keys and what they are allowed to do with them.</p>
 <p>The extensibility of underlying JSON format and the obliviousness of this library to non-universal fields allows other libraries to build on top of it without having to change this library. Any key-derivation options fields added will be ignored by this library for all purposes beyond salting the keys generated.</p>
 <p>Since any JSON object field outside the spec can be attached, one could, for example, use a field to salt the derivation of a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> like so: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;SymmetricKey&quot;,</div>
+<div class="line">    &quot;keyType&quot;: &quot;Symmetric&quot;,</div>
 <div class="line">    &quot;SaltWithThePhoneNumberForJenny&quot;: 8675309</div>
 <div class="line">}</div>
 </div><!-- fragment --><p><a class="anchor" id="key_derivation_options_universal_fields"></a></p>
