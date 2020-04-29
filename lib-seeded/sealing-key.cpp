@@ -11,17 +11,17 @@ namespace SealingKeyJsonFieldName {
 }
 
 SealingKey::SealingKey(
-    const std::vector<unsigned char> &_SealingKeyBytes,
+    const std::vector<unsigned char> &_sealingKeyBytes,
     const std::string& _derivationOptionsJson
-  ) : SealingKeyBytes(_SealingKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
-    if (SealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
+  ) : sealingKeyBytes(_sealingKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
+    if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
       throw InvalidDerivationOptionValueException("Invalid key size exception");
     }
   }
 
-SealingKey SealingKey::fromJson(const std::string& SealingKeyAsJson) {
+SealingKey SealingKey::fromJson(const std::string& sealingKeyAsJson) {
   try {
-    nlohmann::json jsonObject = nlohmann::json::parse(SealingKeyAsJson);
+    nlohmann::json jsonObject = nlohmann::json::parse(sealingKeyAsJson);
     return SealingKey(
       hexStrToByteVector(jsonObject.at(SealingKeyJsonFieldName::keyBytes)),
       jsonObject.value(SealingKeyJsonFieldName::derivationOptionsJson, "")
@@ -36,7 +36,7 @@ const std::string SealingKey::toJson(
   const char indent_char
 ) const {
 	nlohmann::json asJson;  
-  asJson[SealingKeyJsonFieldName::keyBytes] = toHexStr(SealingKeyBytes);
+  asJson[SealingKeyJsonFieldName::keyBytes] = toHexStr(sealingKeyBytes);
   asJson[SealingKeyJsonFieldName::derivationOptionsJson] =
     derivationOptionsJson;
   return asJson.dump(indent, indent_char);
@@ -46,10 +46,10 @@ const std::string SealingKey::toJson(
 const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
   const unsigned char* message,
   const size_t messageLength,
-  const std::vector<unsigned char> &SealingKey,
+  const std::vector<unsigned char> &sealingKeyBytes,
   const std::string& postDecryptionInstructions
 ) {
-  if (SealingKey.size() != crypto_box_PUBLICKEYBYTES) {
+  if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
     throw std::invalid_argument("Invalid key size");
   }
   if (messageLength <= 0) {
@@ -63,7 +63,7 @@ const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
     ciphertext.data(),
     message,
     messageLength,
-    SealingKey.data(),
+    sealingKeyBytes.data(),
     postDecryptionInstructions.c_str(),
     postDecryptionInstructions.length()
   );
@@ -73,11 +73,11 @@ const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
 
 const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
   const SodiumBuffer &message,
-  const std::vector<unsigned char> &SealingKey,
+  const std::vector<unsigned char> &sealingKeyBytes,
   const std::string& postDecryptionInstructions
 ) {
   return SealingKey::sealToCiphertextOnly(
-    message.data, message.length, SealingKey, postDecryptionInstructions
+    message.data, message.length, sealingKeyBytes, postDecryptionInstructions
   );
 }
 
@@ -86,7 +86,7 @@ const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
   const size_t messageLength,
   const std::string& postDecryptionInstructions
 ) const {
-  return SealingKey::sealToCiphertextOnly(message, messageLength, SealingKeyBytes, postDecryptionInstructions);
+  return SealingKey::sealToCiphertextOnly(message, messageLength, sealingKeyBytes, postDecryptionInstructions);
 }
 
 const std::vector<unsigned char> SealingKey::sealToCiphertextOnly(
@@ -139,12 +139,12 @@ const PackagedSealedMessage SealingKey::seal(
 
 const std::vector<unsigned char> SealingKey::getSealingKeyBytes(
 ) const {
-  return SealingKeyBytes;
+  return sealingKeyBytes;
 }
 
 const SodiumBuffer SealingKey::toSerializedBinaryForm() const {
   SodiumBuffer derivationOptionsJsonBuffer = SodiumBuffer(derivationOptionsJson);
-  SodiumBuffer _SealingKeyBytes(SealingKeyBytes);
+  SodiumBuffer _SealingKeyBytes(sealingKeyBytes);
   SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &_SealingKeyBytes,

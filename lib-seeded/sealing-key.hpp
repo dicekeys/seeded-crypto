@@ -7,9 +7,9 @@
 #include "packaged-sealed-message.hpp"
 
 /**
- * @brief A SealingKey is used to _seal_ messages, in combination with a
+ * @brief A sealingKeyBytes is used to _seal_ messages, in combination with a
  * UnsealingKey which can _unseal_ them.
- * The key pair of this SealingKey and the matching UnsealingKey are generated
+ * The key pair of this sealingKeyBytes and the matching UnsealingKey are generated
  * from a seed and a set of derivation specified options in JSON format
  * @ref derivation_options_format.
  * 
@@ -36,16 +36,16 @@
 class SealingKey {
 public:
   /**
-   * @brief Construct a SealingKey from a JSON string
+   * @brief Construct a sealingKeyBytes from a JSON string
    * 
-   * @param SealingKeyAsJson The JSON encoding of a SealingKey
+   * @param sealingKeyAsJson The JSON encoding of a sealingKeyBytes
    */
-  static SealingKey fromJson(const std::string& SealingKeyAsJson);
+  static SealingKey fromJson(const std::string& sealingKeyAsJson);
   
   /**
    * @brief The binary representation of the public key used for sealing
    */
-  const std::vector<unsigned char> SealingKeyBytes;
+  const std::vector<unsigned char> sealingKeyBytes;
   /**
    * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
@@ -55,7 +55,7 @@ public:
    * @brief Construct a new Public Key object by passing its members.
    */
   SealingKey(
-    const std::vector<unsigned char>& SealingKeyBytes,
+    const std::vector<unsigned char>& sealingKeyBytes,
     const std::string& derivationOptionsJson
   );
 
@@ -77,14 +77,14 @@ public:
    * @brief *Avoid Using* Seal a message using a raw libsodium public key.
    * 
    * Instead of using this static method, we recommend you use the seal
-   * method on an instance of a SealingKey object.
+   * method on an instance of a sealingKeyBytes object.
    * This static method is used internally to libsodium's seal operation.
    * We have exposed so that others can replicate the internals of this class
    * if necessary, but recommend that only when there are reasons not to call
    * the non-static seal operation on an instance of this class.
    * 
    * @param message The plaintext message to seal
-   * @param SealingKey The public key matching the private key used to unseal it.
+   * @param sealingKeyBytes The public key matching the private key used to unseal it.
    * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * RefPDI.
@@ -92,7 +92,7 @@ public:
    */
   static const std::vector<unsigned char> sealToCiphertextOnly(
     const SodiumBuffer& message,
-    const std::vector<unsigned char>& SealingKey,
+    const std::vector<unsigned char>& sealingKeyBytes,
     const std::string& postDecryptionInstructions = {}
   );
 
@@ -100,7 +100,7 @@ public:
    * @brief *Avoid Using* Seal a message using a raw libsodium public key.
    * 
    * Instead of using this static method, we recommend you use the seal
-   * method on an instance of a SealingKey object.
+   * method on an instance of a sealingKeyBytes object.
    * This static method is used internally to libsodium's seal operation.
    * We have exposed so that others can replicate the internals of this class
    * if necessary, but recommend that only when there are reasons not to call
@@ -108,7 +108,7 @@ public:
    * 
    * @param message The plaintext message to seal
    * @param messageLength The length of the plaintext message to seal (in bytes)
-   * @param SealingKey The public key matching the private key used to unseal it.
+   * @param sealingKeyBytes The public key matching the private key used to unseal it.
    * @param postDecryptionInstructions If this optional string is
    * passed, the same string must be passed to unseal the message.
    * RefPDI.
@@ -117,7 +117,7 @@ public:
   static const std::vector<unsigned char> sealToCiphertextOnly(
     const unsigned char* message,
     const size_t messageLength,
-    const std::vector<unsigned char> &SealingKey,
+    const std::vector<unsigned char> &sealingKeyBytes,
     const std::string& postDecryptionInstructions = {}
   );
 
@@ -244,7 +244,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (SealingKeyBytes, derivationOptionsJson)
+   *   (sealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -253,7 +253,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (SealingKeyBytes, derivationOptionsJson)
+   *   (sealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

@@ -113,8 +113,8 @@ TEST(UnsealingKey, ConvertsToJsonAndBack) {
 	const std::string json = testUnsealingKey.toJson(1, '\t');
 	const UnsealingKey replica = UnsealingKey::fromJson(json);
 	ASSERT_EQ(replica.derivationOptionsJson, defaultTestPublicDerivationOptionsJson);
-	ASSERT_EQ(toHexStr(replica.SealingKeyBytes), toHexStr(testUnsealingKey.SealingKeyBytes));
-	ASSERT_EQ(replica.UnsealingKeyBytes.toHexString(), testUnsealingKey.UnsealingKeyBytes.toHexString());
+	ASSERT_EQ(toHexStr(replica.sealingKeyBytes), toHexStr(testUnsealingKey.sealingKeyBytes));
+	ASSERT_EQ(replica.unsealingKeyBytes.toHexString(), testUnsealingKey.unsealingKeyBytes.toHexString());
 }
 
 
@@ -124,8 +124,8 @@ TEST(UnsealingKey, ConvertsToSerializedFormAndBack) {
 	auto serialized = testUnsealingKey.toSerializedBinaryForm();
 	const UnsealingKey replica = UnsealingKey::fromSerializedBinaryForm(serialized);
 	ASSERT_EQ(replica.derivationOptionsJson, defaultTestPublicDerivationOptionsJson);
-	ASSERT_EQ(toHexStr(replica.SealingKeyBytes), toHexStr(testUnsealingKey.SealingKeyBytes));
-	ASSERT_EQ(replica.UnsealingKeyBytes.toHexString(), testUnsealingKey.UnsealingKeyBytes.toHexString());
+	ASSERT_EQ(toHexStr(replica.sealingKeyBytes), toHexStr(testUnsealingKey.sealingKeyBytes));
+	ASSERT_EQ(replica.unsealingKeyBytes.toHexString(), testUnsealingKey.unsealingKeyBytes.toHexString());
 }
 
 

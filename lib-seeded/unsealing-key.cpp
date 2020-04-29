@@ -6,18 +6,18 @@
 #include "exceptions.hpp"
 
 UnsealingKey::UnsealingKey(
-    const SodiumBuffer _UnsealingKeyBytes,
-    const std::vector<unsigned char> _SealingKeyBytes,
+    const SodiumBuffer _unsealingKeyBytes,
+    const std::vector<unsigned char> _sealingKeyBytes,
     const std::string _derivationOptionsJson
   ) :
-    UnsealingKeyBytes(_UnsealingKeyBytes),
-    SealingKeyBytes(_SealingKeyBytes),
+    unsealingKeyBytes(_unsealingKeyBytes),
+    sealingKeyBytes(_sealingKeyBytes),
     derivationOptionsJson(_derivationOptionsJson)
     {
-    if (SealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
+    if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
       throw InvalidDerivationOptionValueException("Invalid public key size");
     }
-    if (UnsealingKeyBytes.length != crypto_box_SECRETKEYBYTES) {
+    if (unsealingKeyBytes.length != crypto_box_SECRETKEYBYTES) {
       throw InvalidDerivationOptionValueException("Invalid private key size for public/private key pair");
     }
   }
@@ -25,11 +25,11 @@ UnsealingKey::UnsealingKey(
 UnsealingKey::UnsealingKey(
   const SodiumBuffer &seedBuffer,
   const std::string& _derivationOptionsJson
-) : derivationOptionsJson(_derivationOptionsJson), SealingKeyBytes(crypto_box_PUBLICKEYBYTES), UnsealingKeyBytes(crypto_box_SECRETKEYBYTES) {
+) : derivationOptionsJson(_derivationOptionsJson), sealingKeyBytes(crypto_box_PUBLICKEYBYTES), unsealingKeyBytes(crypto_box_SECRETKEYBYTES) {
   if (seedBuffer.length < crypto_box_SEEDBYTES){
     throw std::invalid_argument("Insufficient seed length");
   }
-  crypto_box_seed_keypair((unsigned char *) SealingKeyBytes.data(), UnsealingKeyBytes.data, seedBuffer.data);
+  crypto_box_seed_keypair((unsigned char *) sealingKeyBytes.data(), unsealingKeyBytes.data, seedBuffer.data);
 }
 
   UnsealingKey::UnsealingKey(
@@ -43,9 +43,9 @@ UnsealingKey::UnsealingKey(
 UnsealingKey::UnsealingKey(
   const UnsealingKey &other
 ):
-  SealingKeyBytes(other.SealingKeyBytes), 
+  sealingKeyBytes(other.sealingKeyBytes), 
   derivationOptionsJson(other.derivationOptionsJson),
-  UnsealingKeyBytes(other.UnsealingKeyBytes)
+  unsealingKeyBytes(other.unsealingKeyBytes)
   {}
 
 const SodiumBuffer UnsealingKey::unseal(
@@ -62,8 +62,8 @@ const SodiumBuffer UnsealingKey::unseal(
     plaintext.data,
     ciphertext,
     ciphertextLength,
-    SealingKeyBytes.data(),
-    UnsealingKeyBytes.data,
+    sealingKeyBytes.data(),
+    unsealingKeyBytes.data,
     postDecryptionInstructions.c_str(),
     postDecryptionInstructions.length()
   );
@@ -88,7 +88,7 @@ const SodiumBuffer UnsealingKey::unseal(
 }
 
 const SealingKey UnsealingKey::getSealingKey() const {
-  return SealingKey(SealingKeyBytes, derivationOptionsJson);
+  return SealingKey(sealingKeyBytes, derivationOptionsJson);
 }
 
 
@@ -96,19 +96,19 @@ const SealingKey UnsealingKey::getSealingKey() const {
 //  JSON
 ////
 namespace UnsealingKeyJsonField {
-  const std::string SealingKeyBytes = "SealingKeyBytes";
-  const std::string UnsealingKeyBytes = "UnsealingKeyBytes";
+  const std::string sealingKeyBytes = "sealingKeyBytes";
+  const std::string unsealingKeyBytes = "unsealingKeyBytes";
   const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
 UnsealingKey UnsealingKey::fromJson(
-  const std::string& UnsealingKeyAsJson
+  const std::string& unsealingKeyAsJson
 ) {
   try {
-    nlohmann::json jsonObject = nlohmann::json::parse(UnsealingKeyAsJson);
+    nlohmann::json jsonObject = nlohmann::json::parse(unsealingKeyAsJson);
     return UnsealingKey(
-      SodiumBuffer::fromHexString(jsonObject.at(UnsealingKeyJsonField::UnsealingKeyBytes)),
-      hexStrToByteVector(jsonObject.at(UnsealingKeyJsonField::SealingKeyBytes)),
+      SodiumBuffer::fromHexString(jsonObject.at(UnsealingKeyJsonField::unsealingKeyBytes)),
+      hexStrToByteVector(jsonObject.at(UnsealingKeyJsonField::sealingKeyBytes)),
       jsonObject.value(UnsealingKeyJsonField::derivationOptionsJson, ""));
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -120,8 +120,8 @@ const std::string UnsealingKey::toJson(
   const char indent_char
 ) const {
   nlohmann::json asJson;
-  asJson[UnsealingKeyJsonField::UnsealingKeyBytes] = UnsealingKeyBytes.toHexString();
-  asJson[UnsealingKeyJsonField::SealingKeyBytes] = toHexStr(SealingKeyBytes);
+  asJson[UnsealingKeyJsonField::unsealingKeyBytes] = unsealingKeyBytes.toHexString();
+  asJson[UnsealingKeyJsonField::sealingKeyBytes] = toHexStr(sealingKeyBytes);
   asJson[UnsealingKeyJsonField::derivationOptionsJson] = derivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };
@@ -129,10 +129,10 @@ const std::string UnsealingKey::toJson(
 
 const SodiumBuffer UnsealingKey::toSerializedBinaryForm() const {
   SodiumBuffer derivationOptionsJsonBuffer = SodiumBuffer(derivationOptionsJson);
-  SodiumBuffer _SealingKeyBytes(SealingKeyBytes);
+  SodiumBuffer _SealingKeyBytes(sealingKeyBytes);
   SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
-    &UnsealingKeyBytes,
+    &unsealingKeyBytes,
     &_SealingKeyBytes,
     &_derivationOptionsJson
   });

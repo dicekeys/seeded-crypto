@@ -18,11 +18,11 @@ public:
   /**
    * @brief The libSodium private key used for unsealing
    */
-  const SodiumBuffer UnsealingKeyBytes;
+  const SodiumBuffer unsealingKeyBytes;
   /**
    * @brief The libsodium public key used for sealing
    */
-  const std::vector<unsigned char> SealingKeyBytes;
+  const std::vector<unsigned char> sealingKeyBytes;
   /**
    * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
@@ -32,8 +32,8 @@ public:
    * @brief Construct a new UnsealingKey by passing its members.
    */
   UnsealingKey(
-    const SodiumBuffer UnsealingKeyBytes,
-    const std::vector<unsigned char> SealingKeyBytes,
+    const SodiumBuffer unsealingKeyBytes,
+    const std::vector<unsigned char> sealingKeyBytes,
     const std::string derivationOptionsJson
   );
 
@@ -68,10 +68,10 @@ public:
   /**
    * @brief Construct (reconstitute) from serialized JSON format
    * 
-   * @param UnsealingKeyAsJson 
+   * @param unsealingKeyAsJson 
    */
   static UnsealingKey fromJson(
-    const std::string& UnsealingKeyAsJson
+    const std::string& unsealingKeyAsJson
   );
 
 
@@ -170,7 +170,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (UnsealingKeyBytes, SealingKeyBytes, derivationOptionsJson)
+   *   (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -179,7 +179,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (UnsealingKeyBytes, SealingKeyBytes, derivationOptionsJson)
+   *   (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
