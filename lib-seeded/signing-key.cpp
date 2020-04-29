@@ -15,10 +15,10 @@ SigningKey::SigningKey(
   if (signatureVerificationKeyBytes.size() > 0 &&
       signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES
   ) {
-    throw InvalidKeyDerivationOptionValueException("Invalid signature-verification key size");
+    throw InvalidDerivationOptionValueException("Invalid signature-verification key size");
   }
   if (signingKeyBytes.length != crypto_sign_SECRETKEYBYTES) {
-    throw InvalidKeyDerivationOptionValueException("Invalid signing key size");
+    throw InvalidDerivationOptionValueException("Invalid signing key size");
   }
 }
 

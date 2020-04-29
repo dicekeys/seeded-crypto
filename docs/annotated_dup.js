@@ -4,7 +4,7 @@ var annotated_dup =
     [ "DerivationOptions", "class_derivation_options.html", "class_derivation_options" ],
     [ "HashFunction", "class_hash_function.html", "class_hash_function" ],
     [ "InvalidDerivationOptionsJsonException", "class_invalid_derivation_options_json_exception.html", "class_invalid_derivation_options_json_exception" ],
-    [ "InvalidKeyDerivationOptionValueException", "class_invalid_key_derivation_option_value_exception.html", "class_invalid_key_derivation_option_value_exception" ],
+    [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html", "class_invalid_derivation_option_value_exception" ],
     [ "JsonParsingException", "class_json_parsing_exception.html", "class_json_parsing_exception" ],
     [ "KeyLengthException", "class_key_length_exception.html", "class_key_length_exception" ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", "class_packaged_sealed_message" ],

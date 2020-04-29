@@ -79,7 +79,7 @@ Specify whether this JSON object should be used to construct a
 If not provided, the type is inferred from the type of object being constructed.
 
 If you attempt to construct an object of one `type` when the the `"type"` field specifies
-a different `type`, the constructor will throw an @ref InvalidKeyDerivationOptionValueException.
+a different `type`, the constructor will throw an @ref InvalidDerivationOptionValueException.
 
 #### algorithm
 

@@ -187,7 +187,7 @@ DerivationOptionsJson::HashFunction&#160;</td><td class="memItemRight" valign="b
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="class_invalid_derivation_options_json_exception.html" title="Thrown when a derivationOptionsJson string is not in valid JSON format and cannot be parsed.">InvalidDerivationOptionsJsonException</a></td><td></td></tr>
-    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a></td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a></td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -270,14 +270,14 @@ DerivationOptionsJson::HashFunction&#160;</td><td class="memItemRight" valign="b
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">seedString</td><td>A seed value that is the primary salt for the hash function </td></tr>
-    <tr><td class="paramname">defaultType</td><td>If the derivationOptionsJson has a type field, and that field specifies a value other than this typeRequired value, this function will throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a>. </td></tr>
+    <tr><td class="paramname">defaultType</td><td>If the derivationOptionsJson has a type field, and that field specifies a value other than this typeRequired value, this function will throw an <a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a>. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a> The derived secret, set to always be a const so that it is never modified directly.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a></td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a></td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -343,15 +343,15 @@ DerivationOptionsJson::HashFunction&#160;</td><td class="memItemRight" valign="b
   <table class="params">
     <tr><td class="paramname">seedString</td><td>A seed value that is the primary salt for the hash function </td></tr>
     <tr><td class="paramname">derivationOptionsJson</td><td>The derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </td></tr>
-    <tr><td class="paramname">typeRequired</td><td>If the derivationOptionsJson has a type field, and that field specifies a value other than this typeRequired value, this function will throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a>. </td></tr>
-    <tr><td class="paramname">lengthInBytesRequired</td><td>If the derivationOptionsJson does not specify a lengthInBytes, generate a secret of this length. Throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a> is the lengthInBytes it specifies does not match this value. </td></tr>
+    <tr><td class="paramname">typeRequired</td><td>If the derivationOptionsJson has a type field, and that field specifies a value other than this typeRequired value, this function will throw an <a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a>. </td></tr>
+    <tr><td class="paramname">lengthInBytesRequired</td><td>If the derivationOptionsJson does not specify a lengthInBytes, generate a secret of this length. Throw an <a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a> is the lengthInBytes it specifies does not match this value. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a> The derived secret, set to always be a const so that it is never modified directly.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_invalid_key_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidKeyDerivationOptionValueException</a></td><td></td></tr>
+    <tr><td class="paramname"><a class="el" href="class_invalid_derivation_option_value_exception.html" title="Thrown when a JSON value in the derivationOptionsJson is in an invalid format or contains an invalid ...">InvalidDerivationOptionValueException</a></td><td></td></tr>
     <tr><td class="paramname"><a class="el" href="class_invalid_derivation_options_json_exception.html" title="Thrown when a derivationOptionsJson string is not in valid JSON format and cannot be parsed.">InvalidDerivationOptionsJsonException</a></td><td></td></tr>
   </table>
   </dd>

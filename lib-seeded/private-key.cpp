@@ -15,10 +15,10 @@ PrivateKey::PrivateKey(
     derivationOptionsJson(_derivationOptionsJson)
     {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw InvalidKeyDerivationOptionValueException("Invalid public key size");
+      throw InvalidDerivationOptionValueException("Invalid public key size");
     }
     if (privateKeyBytes.length != crypto_box_SECRETKEYBYTES) {
-      throw InvalidKeyDerivationOptionValueException("Invalid private key size for public/private key pair");
+      throw InvalidDerivationOptionValueException("Invalid private key size for public/private key pair");
     }
   }
 

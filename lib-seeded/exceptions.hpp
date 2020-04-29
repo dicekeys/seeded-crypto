@@ -73,7 +73,7 @@ class InvalidDerivationOptionsJsonException: public std::invalid_argument
  * @brief Thrown when a JSON value in the derivationOptionsJson is
  * in an invalid format or contains an invalid value.
  */
-class InvalidKeyDerivationOptionValueException: public std::invalid_argument
+class InvalidDerivationOptionValueException: public std::invalid_argument
 {
 	public:
 	/**
@@ -81,7 +81,7 @@ class InvalidKeyDerivationOptionValueException: public std::invalid_argument
 	 * 
 	 * @param m The exception message
 	 */
-	InvalidKeyDerivationOptionValueException(const char* m = NULL) :
+	InvalidDerivationOptionValueException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid key derivation options") {};
 };
 

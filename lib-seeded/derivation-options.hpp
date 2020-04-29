@@ -75,7 +75,7 @@ public:
 	 * (default: DerivationOptionsJson::type::_INVALID_TYPE_)
 	 * there is no default type.
 	 * @throws InvalidDerivationOptionsJsonException
-	 * @throws InvalidKeyDerivationOptionValueException
+	 * @throws InvalidDerivationOptionValueException
 	 **/
 	DerivationOptions(
 		const std::string& derivationOptionsJson,
@@ -124,14 +124,14 @@ public:
 	 * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
 	 * @param typeRequired If the derivationOptionsJson has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
-	 * InvalidKeyDerivationOptionValueException.
+	 * InvalidDerivationOptionValueException.
 	 * @param lengthInBytesRequired If the derivationOptionsJson does not specify a lengthInBytes,
-	 * generate a secret of this length. Throw an InvalidKeyDerivationOptionValueException is
+	 * generate a secret of this length. Throw an InvalidDerivationOptionValueException is
 	 * the lengthInBytes it specifies does not match this value.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
-	 * @throw InvalidKeyDerivationOptionValueException
+	 * @throw InvalidDerivationOptionValueException
 	 * @throw InvalidDerivationOptionsJsonException
 	 */
 	static const SodiumBuffer deriveMasterSecret(
@@ -172,11 +172,11 @@ public:
 	 * @param seedString A seed value that is the primary salt for the hash function
 	 * @param defaultType If the derivationOptionsJson has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
-	 * InvalidKeyDerivationOptionValueException.
+	 * InvalidDerivationOptionValueException.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
-	 * @throw InvalidKeyDerivationOptionValueException
+	 * @throw InvalidDerivationOptionValueException
 	 */
 	const SodiumBuffer deriveMasterSecret(
 		const std::string& seedString,

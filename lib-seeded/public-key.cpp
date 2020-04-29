@@ -15,7 +15,7 @@ PublicKey::PublicKey(
     const std::string& _derivationOptionsJson
   ) : publicKeyBytes(_publicKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw InvalidKeyDerivationOptionValueException("Invalid key size exception");
+      throw InvalidDerivationOptionValueException("Invalid key size exception");
     }
   }
 

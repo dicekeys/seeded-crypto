@@ -52,12 +52,12 @@ DerivationOptions::DerivationOptions(
       type != typeExpected) {
     // We were expecting type == typeExpected since typeExpected wasn't invalid,
     // but the JSON specified a different key type
-    throw InvalidKeyDerivationOptionValueException("Unexpected type in DerivationOptions");
+    throw InvalidDerivationOptionValueException("Unexpected type in DerivationOptions");
   }
 
   if (type == DerivationOptionsJson::type::_INVALID_TYPE_) {
     // No valid type was specified
-    throw InvalidKeyDerivationOptionValueException("Invalid type in DerivationOptions");
+    throw InvalidDerivationOptionValueException("Invalid type in DerivationOptions");
   }
   derivationOptionsExplicit[DerivationOptionsJson::FieldNames::type] = type;
 
@@ -84,7 +84,7 @@ DerivationOptions::DerivationOptions(
   if (type == DerivationOptionsJson::type::Symmetric &&
       algorithm != DerivationOptionsJson::Algorithm::XSalsa20Poly1305
   ) {
-    throw InvalidKeyDerivationOptionValueException(
+    throw InvalidDerivationOptionValueException(
       "Invalid algorithm type for symmetric key cryptography"
     );
   }
@@ -92,14 +92,14 @@ DerivationOptions::DerivationOptions(
   if (type == DerivationOptionsJson::type::Public &&
     algorithm != DerivationOptionsJson::Algorithm::X25519
     ) {
-    throw InvalidKeyDerivationOptionValueException(
+    throw InvalidDerivationOptionValueException(
       "Invalid algorithm type for public key cryptography"
     );
   }
   if (type == DerivationOptionsJson::type::Signing &&
     algorithm != DerivationOptionsJson::Algorithm::Ed25519
     ) {
-    throw InvalidKeyDerivationOptionValueException(
+    throw InvalidDerivationOptionValueException(
       "Invalid algorithm type for signing key"
     );
   }
@@ -131,7 +131,7 @@ DerivationOptions::DerivationOptions(
     algorithm == DerivationOptionsJson::Algorithm::X25519
     && lengthInBytes != crypto_box_SEEDBYTES
   ) {
-    throw InvalidKeyDerivationOptionValueException( (
+    throw InvalidDerivationOptionValueException( (
         "X25519 public key cryptography must use lengthInBytes of " +
         std::to_string(crypto_box_SEEDBYTES)
       ).c_str() );
@@ -140,7 +140,7 @@ DerivationOptions::DerivationOptions(
     algorithm == DerivationOptionsJson::Algorithm::Ed25519
     && lengthInBytes != crypto_sign_SEEDBYTES
     ) {
-    throw InvalidKeyDerivationOptionValueException((
+    throw InvalidDerivationOptionValueException((
       "Ed25519 signing must use lengthInBytes of " +
       std::to_string(crypto_sign_SEEDBYTES)
       ).c_str());
@@ -149,7 +149,7 @@ DerivationOptions::DerivationOptions(
     algorithm == DerivationOptionsJson::Algorithm::XSalsa20Poly1305 &&
     lengthInBytes != crypto_stream_xsalsa20_KEYBYTES
   ) {
-    throw InvalidKeyDerivationOptionValueException( (
+    throw InvalidDerivationOptionValueException( (
         "XSalsa20Poly1305 symmetric cryptography must use lengthInBytes of " +
         std::to_string(crypto_stream_xsalsa20_KEYBYTES)
       ).c_str() );
@@ -274,7 +274,7 @@ const SodiumBuffer DerivationOptions::deriveMasterSecret(
       typeRequired != DerivationOptionsJson::type::_INVALID_TYPE_ &&
       typeRequired != DerivationOptions.type  
     ) {
-      throw InvalidKeyDerivationOptionValueException( (
+      throw InvalidDerivationOptionValueException( (
         "Key generation options must have type " + std::to_string(typeRequired)
       ).c_str() );
     }
@@ -282,7 +282,7 @@ const SodiumBuffer DerivationOptions::deriveMasterSecret(
     // Verify key-length requirements (if specified)
     if (lengthInBytesRequired > 0 &&
         DerivationOptions.lengthInBytes != lengthInBytesRequired) {
-      throw InvalidKeyDerivationOptionValueException( (
+      throw InvalidDerivationOptionValueException( (
         "lengthInBytes for this type should be " + std::to_string(lengthInBytesRequired) +
         " but lengthInBytes field was set to " + std::to_string(DerivationOptions.lengthInBytes)
         ).c_str()

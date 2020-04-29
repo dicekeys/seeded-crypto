@@ -4,7 +4,7 @@ var hierarchy =
     [ "DerivationOptions", "class_derivation_options.html", null ],
     [ "HashFunction", "class_hash_function.html", null ],
     [ "InvalidDerivationOptionsJsonException", "class_invalid_derivation_options_json_exception.html", null ],
-    [ "InvalidKeyDerivationOptionValueException", "class_invalid_key_derivation_option_value_exception.html", null ],
+    [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html", null ],
     [ "JsonParsingException", "class_json_parsing_exception.html", null ],
     [ "KeyLengthException", "class_key_length_exception.html", null ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", null ],
