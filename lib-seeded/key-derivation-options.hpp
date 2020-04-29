@@ -35,20 +35,20 @@ public:
 	/**
 	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
 	 */
-	KeyDerivationOptionsJson::KeyType keyType;
+	KeyDerivationOptionsJson::type type;
 
 	/**
 	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
 	 */
-  	unsigned int keyLengthInBytes;
+  	unsigned int lengthInBytes;
 	/**
 	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
 	 */
-	size_t hashFunctionMemoryLimit;
+	size_t hashFunctionMemoryLimitInBytes;
 	/**
 	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
 	 */
-	size_t hashFunctionIterations;
+	size_t hashFunctionMemoryPasses;
 
 	/**
 	 * @brief The name of the hash function specified in the @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
@@ -69,18 +69,18 @@ public:
 	 * 
 	 * @param keyDerivationOptionsJson The JSON formatted key-deriation object to parse
 	 * as specified by @ref key_derivation_options_format
-	 * @param keyTypeExpected The expected keyType, which will be the default if the JSON doesn't
-	 * contain a keyType field and which will cause an exception to be thrown if the
-	 * JSON has a conflicting keyType.  If not set
-	 * (default: KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_)
-	 * there is no default keyType.
+	 * @param typeExpected The expected type, which will be the default if the JSON doesn't
+	 * contain a type field and which will cause an exception to be thrown if the
+	 * JSON has a conflicting type.  If not set
+	 * (default: KeyDerivationOptionsJson::type::_INVALID_TYPE_)
+	 * there is no default type.
 	 * @throws InvalidKeyDerivationOptionsJsonException
 	 * @throws InvalidKeyDerivationOptionValueException
 	 **/
 	KeyDerivationOptions(
 		const std::string& keyDerivationOptionsJson,
-		const KeyDerivationOptionsJson::KeyType keyTypeExpected =
-			KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
+		const KeyDerivationOptionsJson::type typeExpected =
+			KeyDerivationOptionsJson::type::_INVALID_TYPE_
 	);
 
 	/**
@@ -103,11 +103,11 @@ public:
 	 * It applies the hash function specified in the keyDerivationOptionsJson
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <keyTypeRequired> + <keyDerivationOptionsJson>
+	 *   <seedString> + '\0' + <typeRequired> + <keyDerivationOptionsJson>
 	 * ```
-	 * where keyTypeRequired is converted to a string in
+	 * where typeRequired is converted to a string in
 	 * ["Secret", "Symmetric", "Public", "Signing"],
-	 * based on the value of the keyTypeRequired parameter.
+	 * based on the value of the typeRequired parameter.
 	 * 
 	 *   * For "Secret", the generated secret is placed directly into the
 	 *     `secretBytes` field of the Secret class.
@@ -122,12 +122,12 @@ public:
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
 	 * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
-	 * @param keyTypeRequired If the keyDerivationOptionsJson has a keyType field, and that field
-	 * specifies a value other than this keyTypeRequired value, this function will throw an
+	 * @param typeRequired If the keyDerivationOptionsJson has a type field, and that field
+	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidKeyDerivationOptionValueException.
-	 * @param keyLengthInBytesRequired If the keyDerivationOptionsJson does not specify a keyLengthInBytes,
+	 * @param lengthInBytesRequired If the keyDerivationOptionsJson does not specify a lengthInBytes,
 	 * generate a secret of this length. Throw an InvalidKeyDerivationOptionValueException is
-	 * the keyLengthInBytes it specifies does not match this value.
+	 * the lengthInBytes it specifies does not match this value.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
@@ -137,8 +137,8 @@ public:
 	static const SodiumBuffer deriveMasterSecret(
 		const std::string& seedString,
 		const std::string& keyDerivationOptionsJson,
-		const KeyDerivationOptionsJson::KeyType keyTypeRequired,
-		const size_t keyLengthInBytesRequired = 0
+		const KeyDerivationOptionsJson::type typeRequired,
+		const size_t lengthInBytesRequired = 0
 	);
 
 	/**
@@ -150,13 +150,13 @@ public:
 	 * It applies the hash function specified in the keyDerivationOptionsJson
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <keyType> + <keyDerivationOptionsJson>
+	 *   <seedString> + '\0' + <type> + <keyDerivationOptionsJson>
 	 * ```
-	 * where keyType is converted to a string in
+	 * where type is converted to a string in
 	 * ["Secret", "Symmetric", "Public", "Signing"],
-	 * based on the value of the keyType parameter,
-	 * defaultKeyType if keyType is not set (_INVALID_KEYTYPE_),
-	 * or "" if neither is set (both are _INVALID_KEYTYPE_).
+	 * based on the value of the type parameter,
+	 * defaultType if type is not set (_INVALID_TYPE_),
+	 * or "" if neither is set (both are _INVALID_TYPE_).
 	 * 
 	 *   * For "Secret", the generated secret is placed directly into the
 	 *     `secretBytes` field of the Secret class.
@@ -170,8 +170,8 @@ public:
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
-	 * @param defaultKeyType If the keyDerivationOptionsJson has a keyType field, and that field
-	 * specifies a value other than this keyTypeRequired value, this function will throw an
+	 * @param defaultType If the keyDerivationOptionsJson has a type field, and that field
+	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidKeyDerivationOptionValueException.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
@@ -180,8 +180,8 @@ public:
 	 */
 	const SodiumBuffer deriveMasterSecret(
 		const std::string& seedString,
-		const KeyDerivationOptionsJson::KeyType defaultKeyType =
-			KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_
+		const KeyDerivationOptionsJson::type defaultType =
+			KeyDerivationOptionsJson::type::_INVALID_TYPE_
 	) const;
 
 };

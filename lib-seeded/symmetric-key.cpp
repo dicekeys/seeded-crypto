@@ -42,7 +42,7 @@ SymmetricKey::SymmetricKey(
   KeyDerivationOptions::deriveMasterSecret(
     seedString,
     _keyDerivationOptionsJson,
-    KeyDerivationOptionsJson::KeyType::Symmetric,
+    KeyDerivationOptionsJson::type::Symmetric,
     crypto_secretbox_KEYBYTES
   ),
   _keyDerivationOptionsJson

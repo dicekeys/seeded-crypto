@@ -14,7 +14,7 @@ Secret::Secret(
   KeyDerivationOptions::deriveMasterSecret(
     seedString,
     _keyDerivationOptionsJson,
-    KeyDerivationOptionsJson::KeyType::Secret
+    KeyDerivationOptionsJson::type::Secret
   ),
   _keyDerivationOptionsJson
 ) {}

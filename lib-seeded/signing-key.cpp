@@ -75,7 +75,7 @@ SigningKey::SigningKey(
   SodiumBuffer seed = KeyDerivationOptions::deriveMasterSecret(
     seedString,
     keyDerivationOptionsJson,
-    KeyDerivationOptionsJson::KeyType::Signing,
+    KeyDerivationOptionsJson::type::Signing,
     crypto_sign_SEEDBYTES
   );
   // Dervive a key pair from the seed

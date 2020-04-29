@@ -20,27 +20,27 @@ namespace KeyDerivationOptionsJson {
 	namespace FieldNames {
 		const std::string algorithm = "algorithm";
 		const std::string hashFunction = "hashFunction";
-		const std::string hashFunctionMemoryLimit = "hashFunctionMemoryLimit";
-		const std::string hashFunctionIterations = "hashFunctionIterations";
-		const std::string keyLengthInBytes = "keyLengthInBytes";
-		const std::string keyType = "keyType";
+		const std::string hashFunctionMemoryLimitInBytes = "hashFunctionMemoryLimitInBytes";
+		const std::string hashFunctionMemoryPasses = "hashFunctionMemoryPasses";
+		const std::string lengthInBytes = "lengthInBytes";
+		const std::string type = "type";
 		const std::string restrictions = "restrictions";
 		const std::string excludeOrientationOfFaces = "excludeOrientationOfFaces";
 	}
 
-	enum KeyType {
-		_INVALID_KEYTYPE_ = 0,
+	enum type {
+		_INVALID_TYPE_ = 0,
 		Secret,
 		Symmetric,
 		Public,
 		Signing
 	};
-	NLOHMANN_JSON_SERIALIZE_ENUM( KeyType, {
-		{KeyType::_INVALID_KEYTYPE_, nullptr},
-		{KeyType::Secret, "Secret"},
-		{KeyType::Symmetric, "Symmetric"},
-		{KeyType::Public, "Public"},
-		{KeyType::Signing, "Signing"}
+	NLOHMANN_JSON_SERIALIZE_ENUM( type, {
+		{type::_INVALID_TYPE_, nullptr},
+		{type::Secret, "Secret"},
+		{type::Symmetric, "Symmetric"},
+		{type::Public, "Public"},
+		{type::Signing, "Signing"}
 	})
 	
 
@@ -77,8 +77,8 @@ namespace KeyDerivationOptionsJson {
 };
 
 namespace Argoin2idDefaults {
-	const unsigned long long hashFunctionIterations = 2;
-	const size_t hashFunctionMemoryLimit = 67108864;
+	const unsigned long long hashFunctionMemoryPasses = 2;
+	const size_t hashFunctionMemoryLimitInBytes = 67108864;
 }
 
 namespace DecryptionRestrictionsJson {

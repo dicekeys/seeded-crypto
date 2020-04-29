@@ -36,7 +36,7 @@ PrivateKey::PrivateKey(
     const std::string& _seedString,
     const std::string& _keyDerivationOptionsJson
   ) : PrivateKey(
-      KeyDerivationOptions::deriveMasterSecret(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::KeyType::Public, crypto_box_SEEDBYTES),
+      KeyDerivationOptions::deriveMasterSecret(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::type::Public, crypto_box_SEEDBYTES),
       _keyDerivationOptionsJson
   ) {}
 

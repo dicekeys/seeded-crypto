@@ -7,24 +7,24 @@
 
 const std::string orderedTestKey = "A1tB2rC3bD4lE5tF6bG1tH1tI1tJ1tK1tL1tM1tN1tO1tP1tR1tS1tT1tU1tV1tW1tX1tY1tZ1t";
 std::string defaultTestPublicKeyDerivationOptionsJson = R"KGO({
-	"keyType": "Public",
+	"type": "Public",
 	"additionalSalt": "1"
 })KGO";
 std::string defaultTestSymmetricKeyDerivationOptionsJson = R"KGO({
-	"keyType": "Symmetric",
+	"type": "Symmetric",
 	"additionalSalt": "1"
 })KGO";
 std::string defaultTestSigningKeyDerivationOptionsJson = R"KGO({
-	"keyType": "Signing",
+	"type": "Signing",
 	"additionalSalt": "1"
 })KGO";
 
 
 TEST(Secret, FidoUseCase) {
 	std::string kdo = R"KDO({
-	"keyType": "Secret",
+	"type": "Secret",
 	"hashFunction": "Argon2id",
-	"keyLengthInBytes": 96
+	"lengthInBytes": 96
 })KDO";
 	Secret seed(
 		orderedTestKey,
@@ -33,14 +33,14 @@ TEST(Secret, FidoUseCase) {
 	const std::string seedAsHex = toHexStr(seed.secretBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
-		"4784aee184cc8f8d6a6f3dd3d74359229313a744a70f57e69d251cf723945090997269c990daed9b10ec2bb4f6cd91302f6fbf49d1497608ba748fdc8cad438e24d1b4b471d9ac971f1bc6d120c096fc17469f72576546f3905236d2d0820de0"
+		"fe3bfee2ff3c284e68b9c93af89b42725bb9d758c6883aa216e5c181d328d99adf4d2bf86f88e9d11b31db815a4d7ef602fb14bb59761d7045640682601d2ee7db9846028739d7f2b807e263635f497d2e7e60318415b19e314830184ef1a56a"
 	);
 }
 
 const std::string fastSeedJsonKeyDerivationOptions = R"KDO({
-	"keyType": "Secret",
+	"type": "Secret",
 	"hashFunction": "SHA256",
-	"keyLengthInBytes": 96
+	"lengthInBytes": 96
 })KDO";
 TEST(Secret, ConvertsToJsonAndBack) {
 	Secret seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);

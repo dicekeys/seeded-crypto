@@ -34,32 +34,32 @@ nlohmann::json parseJsonWithKeyDerviationOptionsExceptions(std::string json) {
 //   https://github.com/nlohmann/json#specializing-enum-conversion
 KeyDerivationOptions::KeyDerivationOptions(
   const std::string& _keyDerivationOptionsJson,
-  const KeyDerivationOptionsJson::KeyType keyTypeExpected
+  const KeyDerivationOptionsJson::type typeExpected
 ) : keyDerivationOptionsJson(_keyDerivationOptionsJson) {
   const nlohmann::json& keyDerivationOptionsObject = parseJsonWithKeyDerviationOptionsExceptions(
     keyDerivationOptionsJson.size() == 0 ? "{}" : keyDerivationOptionsJson
   );
 
   //
-  // keyType
+  // type
   //
-  keyType = keyDerivationOptionsObject.value<KeyDerivationOptionsJson::KeyType>(
-      KeyDerivationOptionsJson::FieldNames::keyType,
-      keyTypeExpected
+  type = keyDerivationOptionsObject.value<KeyDerivationOptionsJson::type>(
+      KeyDerivationOptionsJson::FieldNames::type,
+      typeExpected
     );
 
-  if (keyTypeExpected != KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_ &&
-      keyType != keyTypeExpected) {
-    // We were expecting keyType == keyTypeExpected since keyTypeExpected wasn't invalid,
+  if (typeExpected != KeyDerivationOptionsJson::type::_INVALID_TYPE_ &&
+      type != typeExpected) {
+    // We were expecting type == typeExpected since typeExpected wasn't invalid,
     // but the JSON specified a different key type
-    throw InvalidKeyDerivationOptionValueException("Unexpected keyType in KeyDerivationOptions");
+    throw InvalidKeyDerivationOptionValueException("Unexpected type in KeyDerivationOptions");
   }
 
-  if (keyType == KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_) {
-    // No valid keyType was specified
-    throw InvalidKeyDerivationOptionValueException("Invalid keyType in KeyDerivationOptions");
+  if (type == KeyDerivationOptionsJson::type::_INVALID_TYPE_) {
+    // No valid type was specified
+    throw InvalidKeyDerivationOptionValueException("Invalid type in KeyDerivationOptions");
   }
-  keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::keyType] = keyType;
+  keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::type] = type;
 
   //
   // algorithm
@@ -67,21 +67,21 @@ KeyDerivationOptions::KeyDerivationOptions(
   algorithm = keyDerivationOptionsObject.value<KeyDerivationOptionsJson::Algorithm>(
     KeyDerivationOptionsJson::FieldNames::algorithm,
     // Default value depends on the purpose
-    (keyType == KeyDerivationOptionsJson::KeyType::Symmetric) ?
+    (type == KeyDerivationOptionsJson::type::Symmetric) ?
         // For symmetric crypto, default to XSalsa20Poly1305
         KeyDerivationOptionsJson::Algorithm::XSalsa20Poly1305 :
-    (keyType == KeyDerivationOptionsJson::KeyType::Public) ?
+    (type == KeyDerivationOptionsJson::type::Public) ?
       // For public key crypto, default to X25519
       KeyDerivationOptionsJson::Algorithm::X25519 :
-    (keyType == KeyDerivationOptionsJson::KeyType::Signing) ?
+    (type == KeyDerivationOptionsJson::type::Signing) ?
       // For public key signing, default to Ed25519
     KeyDerivationOptionsJson::Algorithm::Ed25519 :
       // Otherwise, the leave the key setting to invalid (we don't care about a specific key type)
       KeyDerivationOptionsJson::Algorithm::_INVALID_ALGORITHM_
   );
 
-  // Validate that the key type is allowed for this keyType
-  if (keyType == KeyDerivationOptionsJson::KeyType::Symmetric &&
+  // Validate that the key type is allowed for this type
+  if (type == KeyDerivationOptionsJson::type::Symmetric &&
       algorithm != KeyDerivationOptionsJson::Algorithm::XSalsa20Poly1305
   ) {
     throw InvalidKeyDerivationOptionValueException(
@@ -89,14 +89,14 @@ KeyDerivationOptions::KeyDerivationOptions(
     );
   }
 
-  if (keyType == KeyDerivationOptionsJson::KeyType::Public &&
+  if (type == KeyDerivationOptionsJson::type::Public &&
     algorithm != KeyDerivationOptionsJson::Algorithm::X25519
     ) {
     throw InvalidKeyDerivationOptionValueException(
       "Invalid algorithm type for public key cryptography"
     );
   }
-  if (keyType == KeyDerivationOptionsJson::KeyType::Signing &&
+  if (type == KeyDerivationOptionsJson::type::Signing &&
     algorithm != KeyDerivationOptionsJson::Algorithm::Ed25519
     ) {
     throw InvalidKeyDerivationOptionValueException(
@@ -104,8 +104,8 @@ KeyDerivationOptions::KeyDerivationOptions(
     );
   }
 
-  if (keyType != KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_) {
-    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::keyType] = keyType;
+  if (type != KeyDerivationOptionsJson::type::_INVALID_TYPE_) {
+    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::type] = type;
   }
 
   if (algorithm != KeyDerivationOptionsJson::Algorithm::_INVALID_ALGORITHM_) {
@@ -113,11 +113,11 @@ KeyDerivationOptions::KeyDerivationOptions(
   }
 
   //
-  // keyLengthInBytes
+  // lengthInBytes
   //
-  keyLengthInBytes =
+  lengthInBytes =
     keyDerivationOptionsObject.value<unsigned int>(
-      KeyDerivationOptionsJson::FieldNames::keyLengthInBytes,
+      KeyDerivationOptionsJson::FieldNames::lengthInBytes,
       algorithm == KeyDerivationOptionsJson::Algorithm::X25519 ?
         crypto_box_SEEDBYTES :
       algorithm == KeyDerivationOptionsJson::Algorithm::XSalsa20Poly1305 ?
@@ -129,34 +129,34 @@ KeyDerivationOptions::KeyDerivationOptions(
 
   if (
     algorithm == KeyDerivationOptionsJson::Algorithm::X25519
-    && keyLengthInBytes != crypto_box_SEEDBYTES
+    && lengthInBytes != crypto_box_SEEDBYTES
   ) {
     throw InvalidKeyDerivationOptionValueException( (
-        "X25519 public key cryptography must use keyLengthInBytes of " +
+        "X25519 public key cryptography must use lengthInBytes of " +
         std::to_string(crypto_box_SEEDBYTES)
       ).c_str() );
   }
   if (
     algorithm == KeyDerivationOptionsJson::Algorithm::Ed25519
-    && keyLengthInBytes != crypto_sign_SEEDBYTES
+    && lengthInBytes != crypto_sign_SEEDBYTES
     ) {
     throw InvalidKeyDerivationOptionValueException((
-      "Ed25519 signing must use keyLengthInBytes of " +
+      "Ed25519 signing must use lengthInBytes of " +
       std::to_string(crypto_sign_SEEDBYTES)
       ).c_str());
   }
   if (
     algorithm == KeyDerivationOptionsJson::Algorithm::XSalsa20Poly1305 &&
-    keyLengthInBytes != crypto_stream_xsalsa20_KEYBYTES
+    lengthInBytes != crypto_stream_xsalsa20_KEYBYTES
   ) {
     throw InvalidKeyDerivationOptionValueException( (
-        "XSalsa20Poly1305 symmetric cryptography must use keyLengthInBytes of " +
+        "XSalsa20Poly1305 symmetric cryptography must use lengthInBytes of " +
         std::to_string(crypto_stream_xsalsa20_KEYBYTES)
       ).c_str() );
   }
 
-	if (keyType == KeyDerivationOptionsJson::KeyType::Secret) {
-		keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::keyLengthInBytes] = keyLengthInBytes;
+	if (type == KeyDerivationOptionsJson::type::Secret) {
+		keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::lengthInBytes] = lengthInBytes;
 	}
 
   hashFunction = keyDerivationOptionsObject.value<KeyDerivationOptionsJson::HashFunction>(
@@ -164,16 +164,16 @@ KeyDerivationOptions::KeyDerivationOptions(
       KeyDerivationOptionsJson::HashFunction::SHA256
   );
   keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunction] = hashFunction;
-  hashFunctionIterations = keyDerivationOptionsObject.value<size_t>(
-    KeyDerivationOptionsJson::FieldNames::hashFunctionIterations,
+  hashFunctionMemoryPasses = keyDerivationOptionsObject.value<size_t>(
+    KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryPasses,
     (hashFunction == KeyDerivationOptionsJson::HashFunction::Argon2id || hashFunction == KeyDerivationOptionsJson::HashFunction::Scrypt) ? 2 : 1
   );
-  hashFunctionMemoryLimit = keyDerivationOptionsObject.value<size_t>(
-    KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryLimit, 67108864U
+  hashFunctionMemoryLimitInBytes = keyDerivationOptionsObject.value<size_t>(
+    KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryLimitInBytes, 67108864U
   );
   if (hashFunction == KeyDerivationOptionsJson::HashFunction::Argon2id || hashFunction == KeyDerivationOptionsJson::HashFunction::Scrypt) {
-    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryLimit] = hashFunctionMemoryLimit;
-    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunctionIterations] = hashFunctionIterations;
+    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryLimitInBytes] = hashFunctionMemoryLimitInBytes;
+    keyDerivationOptionsExplicit[KeyDerivationOptionsJson::FieldNames::hashFunctionMemoryPasses] = hashFunctionMemoryPasses;
   }
 
     if (hashFunction == KeyDerivationOptionsJson::HashFunction::SHA256) {
@@ -181,9 +181,9 @@ KeyDerivationOptions::KeyDerivationOptions(
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::BLAKE2b) {
       hashFunctionImplementation = new HashFunctionBlake2b();
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Argon2id) {
-      hashFunctionImplementation = new HashFunctionArgon2id(hashFunctionIterations, hashFunctionMemoryLimit);
+      hashFunctionImplementation = new HashFunctionArgon2id(hashFunctionMemoryPasses, hashFunctionMemoryLimitInBytes);
     } else if (hashFunction == KeyDerivationOptionsJson::HashFunction::Scrypt) {
-      hashFunctionImplementation = new HashFunctionScrypt(hashFunctionIterations, hashFunctionMemoryLimit);
+      hashFunctionImplementation = new HashFunctionScrypt(hashFunctionMemoryPasses, hashFunctionMemoryLimitInBytes);
     } else {
       throw std::invalid_argument("Invalid hashFunction");
     }
@@ -200,16 +200,16 @@ const std::string KeyDerivationOptions::keyDerivationOptionsJsonWithAllOptionalP
 
 const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
   const std::string& seedString,
-  const KeyDerivationOptionsJson::KeyType defaultKeyType
+  const KeyDerivationOptionsJson::type defaultType
 ) const {
-  const KeyDerivationOptionsJson::KeyType finalKeyType =
-    keyType == KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_ ?
-      defaultKeyType : keyType;
-  const std::string keyTypeString =
-    finalKeyType == KeyDerivationOptionsJson::KeyType::Secret ? "Secret" :
-		finalKeyType == KeyDerivationOptionsJson::KeyType::Symmetric ? "Symmetric" :
-		finalKeyType == KeyDerivationOptionsJson::KeyType::Public ? "Public" :
-		finalKeyType == KeyDerivationOptionsJson::KeyType::Signing ? "Signing" :
+  const KeyDerivationOptionsJson::type finalType =
+    type == KeyDerivationOptionsJson::type::_INVALID_TYPE_ ?
+      defaultType : type;
+  const std::string typeString =
+    finalType == KeyDerivationOptionsJson::type::Secret ? "Secret" :
+		finalType == KeyDerivationOptionsJson::type::Symmetric ? "Symmetric" :
+		finalType == KeyDerivationOptionsJson::type::Public ? "Public" :
+		finalType == KeyDerivationOptionsJson::type::Signing ? "Signing" :
     "";
 
   // Create a hash preimage that is the seed string, followed by a null
@@ -221,7 +221,7 @@ const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
     // 1 character for a null char between the two strings
     1 +
     // length of key type
-    keyTypeString.length() +
+    typeString.length() +
     // length of the json string specifying the key-derivation options
     keyDerivationOptionsJson.length()
   );
@@ -240,10 +240,10 @@ const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
   // copy the key type
   memcpy(
     primageWritePtr,
-    keyTypeString.c_str(),
-    keyTypeString.length()
+    typeString.c_str(),
+    typeString.length()
   );
-  primageWritePtr += keyTypeString.length();
+  primageWritePtr += typeString.length();
   // copy the key derivation options into the preimage
   memcpy(
     primageWritePtr,
@@ -256,7 +256,7 @@ const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
     hashFunctionImplementation->hash(
         preimage.data,
         preimage.length,
-        keyLengthInBytes
+        lengthInBytes
     );
 
   return derivedKey;
@@ -265,29 +265,29 @@ const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
 const SodiumBuffer KeyDerivationOptions::deriveMasterSecret(
 		const std::string& seedString,
 		const std::string& keyDerivationOptionsJson,
-		const KeyDerivationOptionsJson::KeyType keyTypeRequired,
-		const size_t keyLengthInBytesRequired
+		const KeyDerivationOptionsJson::type typeRequired,
+		const size_t lengthInBytesRequired
 	) {
-    const KeyDerivationOptions keyDerivationOptions(keyDerivationOptionsJson,keyTypeRequired);
-    // Ensure that the keyType in the key derivation options matches the requirement
+    const KeyDerivationOptions keyDerivationOptions(keyDerivationOptionsJson,typeRequired);
+    // Ensure that the type in the key derivation options matches the requirement
     if (
-      keyTypeRequired != KeyDerivationOptionsJson::KeyType::_INVALID_KEYTYPE_ &&
-      keyTypeRequired != keyDerivationOptions.keyType  
+      typeRequired != KeyDerivationOptionsJson::type::_INVALID_TYPE_ &&
+      typeRequired != keyDerivationOptions.type  
     ) {
       throw InvalidKeyDerivationOptionValueException( (
-        "Key generation options must have keyType " + std::to_string(keyTypeRequired)
+        "Key generation options must have type " + std::to_string(typeRequired)
       ).c_str() );
     }
 
     // Verify key-length requirements (if specified)
-    if (keyLengthInBytesRequired > 0 &&
-        keyDerivationOptions.keyLengthInBytes != keyLengthInBytesRequired) {
+    if (lengthInBytesRequired > 0 &&
+        keyDerivationOptions.lengthInBytes != lengthInBytesRequired) {
       throw InvalidKeyDerivationOptionValueException( (
-        "Key length in bytes for this keyType should be " + std::to_string(keyLengthInBytesRequired) +
-        " but keyLengthInBytes field was set to " + std::to_string(keyDerivationOptions.keyLengthInBytes)
+        "lengthInBytes for this type should be " + std::to_string(lengthInBytesRequired) +
+        " but lengthInBytes field was set to " + std::to_string(keyDerivationOptions.lengthInBytes)
         ).c_str()
       );
     }
 
-    return keyDerivationOptions.deriveMasterSecret(seedString, keyTypeRequired);
+    return keyDerivationOptions.deriveMasterSecret(seedString, typeRequired);
   }
