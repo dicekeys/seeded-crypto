@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////
-// KeyDerivationOptions JSON Specification
+// DerivationOptions JSON Specification
 // - Automatically-generated file - NOT TO BE MODIFIED DIRECTLY
 //////////////////////////////////////////////////////////////////
 //
 // This c++ header file specifies the JSON parameter names
-// for KeyDerivationOptions.
+// for DerivationOptions.
 #pragma once
 
 #include <string>
