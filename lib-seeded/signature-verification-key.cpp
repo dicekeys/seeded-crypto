@@ -6,13 +6,13 @@
 
 namespace SignatureVerificationKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
-  const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+  const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
 SignatureVerificationKey::SignatureVerificationKey(
     const std::vector<unsigned char> &_verificationKeyBytes,
-    const std::string& _keyDerivationOptionsJson
-  ) : signatureVerificationKeyBytes(_verificationKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
+    const std::string& _derivationOptionsJson
+  ) : signatureVerificationKeyBytes(_verificationKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
     if (signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES) {
       throw std::invalid_argument("Invalid key size exception");
     }
@@ -25,7 +25,7 @@ SignatureVerificationKey SignatureVerificationKey::fromJson(const std::string& s
       hexStrToByteVector(jsonObject.value<std::string>(
         SignatureVerificationKeyJsonFieldName::keyBytes, "")),
       jsonObject.value<std::string>(
-        SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson, "")
+        SignatureVerificationKeyJsonFieldName::derivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -43,8 +43,8 @@ const std::string SignatureVerificationKey::toJson(
   nlohmann::json asJson;
   asJson[SignatureVerificationKeyJsonFieldName::keyBytes] =
     toHexStr(getKeyBytes());
-  asJson[SignatureVerificationKeyJsonFieldName::keyDerivationOptionsJson] =
-    keyDerivationOptionsJson;
+  asJson[SignatureVerificationKeyJsonFieldName::derivationOptionsJson] =
+    derivationOptionsJson;
   return asJson.dump(indent, indent_char);
 }
 
@@ -122,10 +122,10 @@ bool SignatureVerificationKey::verify(
 
 const SodiumBuffer SignatureVerificationKey::toSerializedBinaryForm() const {
   SodiumBuffer _signatureVerificationKeyBytes(signatureVerificationKeyBytes);
-  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
+  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &_signatureVerificationKeyBytes,
-    &_keyDerivationOptionsJson
+    &_derivationOptionsJson
   });
 }
 

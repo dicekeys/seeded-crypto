@@ -9,13 +9,13 @@
 
 #include "sodium-buffer.hpp"
 #include "hash-functions.hpp"
-#include "key-derivation-options.hpp"
+#include "derivation-options.hpp"
 #include "packaged-sealed-message.hpp"
 #include "post-decryption-instructions.hpp"
 
 /** @defgroup DerivedFromSeeds Derived Keys
  * Keys derived from seed strings using 
- * @ref key_derivation_options_format
+ * @ref derivation_options_format
  * (and  which clients can use to derive their own keys).
  */
 

@@ -13,8 +13,8 @@
  * getSignatureVerificationKey.
  * 
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of key-derivation specified options in
- *  @ref key_derivation_options_format.
+ * from a seed and a set of derivation specified options in
+ *  @ref derivation_options_format.
  * 
  * @ingroup DerivedFromSeeds
  */
@@ -44,9 +44,9 @@ public:
    */
   const SodiumBuffer signingKeyBytes;
   /**
-   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
-  const std::string keyDerivationOptionsJson;
+  const std::string derivationOptionsJson;
 
   /**
    * @brief Construct a copy of another SigningKey
@@ -61,7 +61,7 @@ public:
    */
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
-    const std::string& KeyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -71,21 +71,21 @@ public:
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
     const std::vector<unsigned char> &signatureVerificationKeyBytes,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
     /**
    * @brief Construct a new SigningKey by deriving a signing key pair from a seed
-   * string and a set of key-derivation options in @ref key_derivation_options_format.
+   * string and a set of derivation options in @ref derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   SigningKey(
     const std::string& seedString,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -169,7 +169,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (keyBytes, signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   *   (keyBytes, signatureVerificationKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -186,7 +186,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (keyBytes, signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   *   (keyBytes, signatureVerificationKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

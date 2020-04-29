@@ -14,8 +14,8 @@
  * pair the SignatureVerificationKey can confirm that the message was
  * indeed signed using the SigningKey.
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of key-derivation specified options in
- *  @ref key_derivation_options_format.
+ * from a seed and a set of derivation specified options in
+ *  @ref derivation_options_format.
  * 
  * To derive a SignatureVerificationKey from a seed, first derive the
  * corresponding SigningKey and then call SigningKey::getSignatureVerificationKey.
@@ -29,19 +29,19 @@ public:
    */
   const std::vector<unsigned char> signatureVerificationKeyBytes;
   /**
-   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
-  const std::string keyDerivationOptionsJson;
+  const std::string derivationOptionsJson;
  
   /**
   * @brief Construct by passing the classes members
   * 
   * @param keyBytes 
-  * @param keyDerivationOptionsJson 
+  * @param derivationOptionsJson 
   */
   SignatureVerificationKey(
     const std::vector<unsigned char> &keyBytes,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -203,18 +203,18 @@ public:
   const std::string getKeyBytesAsHexDigits() const;
 
   /**
-   * @brief Get the JSON-formatted key-derivation options string used to generate
+   * @brief Get the JSON-formatted derivation options string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string in  @ref key_derivation_options_format
+   * @return const std::string in  @ref derivation_options_format
    */
-  const std::string getKeyDerivationOptionsJson() const {
-    return keyDerivationOptionsJson; 
+  const std::string getDerivationOptionsJson() const {
+    return derivationOptionsJson; 
   }
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   *   (signatureVerificationKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -223,7 +223,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (signatureVerificationKeyBytes, keyDerivationOptionsJson)
+   *   (signatureVerificationKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

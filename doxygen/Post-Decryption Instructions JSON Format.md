@@ -9,7 +9,7 @@ as an empty string.)
 The Seeded Cryptography Library is agnostic to the format and value of this string, so long as
 the same string is used both during sealing and unsealing.
 
-However, since it's format mirrors @ref key_derivation_options_format, and the DiceKeys API Fields
+However, since it's format mirrors @ref derivation_options_format, and the DiceKeys API Fields
 are currently documented here, we currently document the Post-Decrytpion Instructions JSON
 fields below.
 
@@ -20,7 +20,7 @@ may be released to a client application.
 
 #### restrictions
 
-This field mirrors the field in @ref key_derivation_options_format, restricting the set
+This field mirrors the field in @ref derivation_options_format, restricting the set
 of parties allowed to see an unsealed message.
 
 ```TypeScript

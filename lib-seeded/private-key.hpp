@@ -7,8 +7,8 @@
  * @brief A PrivateKey is used to _unseal_ messages sealed with its
  * corresponding PublicKey.
  * The PrivateKey and PublicKey are generated
- * from a seed and a set of key-derivation specified options in
- * @ref key_derivation_options_format.
+ * from a seed and a set of derivation specified options in
+ * @ref derivation_options_format.
  * 
  * The PrivateKey includes a copy of the PublicKey, which can be
  * reconstituted as a PublicKey object via the getPublicKey method.
@@ -24,9 +24,9 @@ public:
    */
   const std::vector<unsigned char> publicKeyBytes;
   /**
-   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
-  const std::string keyDerivationOptionsJson;
+  const std::string derivationOptionsJson;
 
   /**
    * @brief Construct a new PrivateKey by passing its members.
@@ -34,35 +34,35 @@ public:
   PrivateKey(
     const SodiumBuffer privateKeyBytes,
     const std::vector<unsigned char> publicKeyBytes,
-    const std::string keyDerivationOptionsJson
+    const std::string derivationOptionsJson
   );
 
   /**
    * @brief Construct a new PrivateKey by deriving a public/private
-   * key pair from a seedBuffer and a set of key-derivation options
-   * in @ref key_derivation_options_format.
+   * key pair from a seedBuffer and a set of derivation options
+   * in @ref derivation_options_format.
    * 
    * @param seedBuffer The seed as sequence of bytes
-   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   PrivateKey(
     const SodiumBuffer& seedBuffer,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
    * @brief Construct a new PrivateKey by deriving a public/private
-   * key pair from a seed string and a set of key-derivation options
-   * in @ref key_derivation_options_format.
+   * key pair from a seed string and a set of derivation options
+   * in @ref derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   PrivateKey(
     const std::string& seedString,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -128,7 +128,7 @@ public:
 
   /**
    * @brief Unseal a message from packaged format, ignoring the
-   * keyDerivationOptionsJson since this PrivateKey has been
+   * derivationOptionsJson since this PrivateKey has been
    * instantiated. (If it's the wrong key, the unseal will fail.)
    * 
    * @param packagedSealedMessage The message to be unsealed
@@ -150,7 +150,7 @@ public:
     const PackagedSealedMessage &packagedSealedMessage,
       const std::string& seedString
   ) {
-    return PrivateKey(seedString, packagedSealedMessage.keyDerivationOptionsJson)
+    return PrivateKey(seedString, packagedSealedMessage.derivationOptionsJson)
       .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
   }
 
@@ -170,7 +170,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (privateKeyBytes, publicKeyBytes, keyDerivationOptionsJson)
+   *   (privateKeyBytes, publicKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -179,7 +179,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (privateKeyBytes, publicKeyBytes, keyDerivationOptionsJson)
+   *   (privateKeyBytes, publicKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

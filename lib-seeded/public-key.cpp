@@ -7,13 +7,13 @@
 
 namespace PublicKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
-  const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+  const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
 PublicKey::PublicKey(
     const std::vector<unsigned char> &_publicKeyBytes,
-    const std::string& _keyDerivationOptionsJson
-  ) : publicKeyBytes(_publicKeyBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {
+    const std::string& _derivationOptionsJson
+  ) : publicKeyBytes(_publicKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
       throw InvalidKeyDerivationOptionValueException("Invalid key size exception");
     }
@@ -24,7 +24,7 @@ PublicKey PublicKey::fromJson(const std::string& publicKeyAsJson) {
     nlohmann::json jsonObject = nlohmann::json::parse(publicKeyAsJson);
     return PublicKey(
       hexStrToByteVector(jsonObject.at(PublicKeyJsonFieldName::keyBytes)),
-      jsonObject.value(PublicKeyJsonFieldName::keyDerivationOptionsJson, "")
+      jsonObject.value(PublicKeyJsonFieldName::derivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -37,8 +37,8 @@ const std::string PublicKey::toJson(
 ) const {
 	nlohmann::json asJson;  
   asJson[PublicKeyJsonFieldName::keyBytes] = toHexStr(publicKeyBytes);
-  asJson[PublicKeyJsonFieldName::keyDerivationOptionsJson] =
-    keyDerivationOptionsJson;
+  asJson[PublicKeyJsonFieldName::derivationOptionsJson] =
+    derivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };
 
@@ -102,7 +102,7 @@ const PackagedSealedMessage PublicKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message.data(), message.size(), postDecryptionInstructions),
-    keyDerivationOptionsJson,
+    derivationOptionsJson,
     postDecryptionInstructions
   );  
 }
@@ -113,7 +113,7 @@ const PackagedSealedMessage PublicKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message.data, message.length, postDecryptionInstructions),
-    keyDerivationOptionsJson,
+    derivationOptionsJson,
     postDecryptionInstructions
   );
 }
@@ -125,7 +125,7 @@ const PackagedSealedMessage PublicKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message, messageLength, postDecryptionInstructions),
-    keyDerivationOptionsJson,
+    derivationOptionsJson,
     postDecryptionInstructions
   );
 }
@@ -143,12 +143,12 @@ const std::vector<unsigned char> PublicKey::getPublicKeyBytes(
 }
 
 const SodiumBuffer PublicKey::toSerializedBinaryForm() const {
-  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer derivationOptionsJsonBuffer = SodiumBuffer(derivationOptionsJson);
   SodiumBuffer _publicKeyBytes(publicKeyBytes);
-  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
+  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &_publicKeyBytes,
-    &_keyDerivationOptionsJson
+    &_derivationOptionsJson
   });
 }
 

@@ -7,11 +7,11 @@
 /**
  * @brief A SymmetricKey can be used to seal and unseal messages.
  * This SymmetricKey class can be (re) derived from a seed using
- * set of key-derivation options specified in @ref key_derivation_options_format.
+ * set of derivation options specified in @ref derivation_options_format.
  * So, you can use this symmetric-key to seal a message, throw the
  * key away, and re-generate the key when you need to unseal the
  * message so long as you still have the original seed and
- * keyDerivationOptionsJson.
+ * derivationOptionsJson.
  *  
  * Sealing a message (_plaintext_) creates a _ciphertext which contains
  * the message but from which observers who do not have the PrivateKey
@@ -45,16 +45,16 @@ class SymmetricKey {
    */
   const SodiumBuffer keyBytes;
   /**
-   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
-  const std::string keyDerivationOptionsJson;
+  const std::string derivationOptionsJson;
 
   /**
    * @brief Construct a SymmetricKey from its members
    */
   SymmetricKey(
     const SodiumBuffer& keyBytes,
-    std::string keyDerivationOptionsJson
+    std::string derivationOptionsJson
   );
 
   /**
@@ -77,17 +77,17 @@ class SymmetricKey {
 
     /**
    * @brief Construct a new SymmetricKey by (re)deriving it from a seed string
-   * and a set of key-derivation options in @ref key_derivation_options_format.
+   * and a set of derivation options in @ref derivation_options_format.
    * 
    * @param seedString The private seed which is used to generate the key.
    * Anyone who knows (or can guess) this seed can re-generate the key
-   * by passing it along with the keyDerivationOptionsJson.
-   * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    * 
    */
   SymmetricKey(
     const std::string& seedString,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -99,7 +99,7 @@ class SymmetricKey {
    * passed, the same string must be passed to unseal the message.
    * @return const std::vector<unsigned char> The sealed _ciphertext_
    * without the additional context needed to unseal
-   * (the keyDerivationOptionsJson required to re-derive the key and
+   * (the derivationOptionsJson required to re-derive the key and
    * any postDecryptionInstructions which must match on unsealing.)
 
    */
@@ -119,7 +119,7 @@ class SymmetricKey {
    * about what should happen after the message is unsealed.
    * @return const std::vector<unsigned char> The sealed _ciphertext_
    * without the additional context needed to unseal
-   * (the keyDerivationOptionsJson required to re-derive the key and
+   * (the derivationOptionsJson required to re-derive the key and
    * any postDecryptionInstructions which must match on unsealing.)
    */  
   const std::vector<unsigned char> sealToCiphertextOnly(
@@ -277,7 +277,7 @@ class SymmetricKey {
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (keyBytes, keyDerivationOptionsJson)
+   *   (keyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -286,7 +286,7 @@ class SymmetricKey {
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (keyBytes, keyDerivationOptionsJson)
+   *   (keyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

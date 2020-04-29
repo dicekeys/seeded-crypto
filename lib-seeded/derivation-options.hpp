@@ -3,84 +3,84 @@
 #pragma warning( disable : 26812 )
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
-#include "./externally-generated/key-derivation-parameters.hpp"
+#include "./externally-generated/derivation-parameters.hpp"
 #include "hash-functions.hpp"
 
 /**
- * @brief This class parses a keyDerivationOptionsJson string
+ * @brief This class parses a derivationOptionsJson string
  * on construction and then exposes the
- * @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+ * @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
  * as fields of this class.
  * 
  * @ingroup BuildingBlocks
  */
-class KeyDerivationOptions {
+class DerivationOptions {
 /**
  * This class represents key generation options,
  * provided in JSON format, as an immutable class.
  */
 
 private:
-	nlohmann::json keyDerivationOptionsExplicit;
+	nlohmann::json derivationOptionsExplicit;
 public:
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-	KeyDerivationOptionsJson::Algorithm algorithm;
+	DerivationOptionsJson::Algorithm algorithm;
 	/**
 	 * @brief The original JSON string used to construct this object
 	 */
-	const std::string keyDerivationOptionsJson;
+	const std::string derivationOptionsJson;
 
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-	KeyDerivationOptionsJson::type type;
+	DerivationOptionsJson::type type;
 
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
   	unsigned int lengthInBytes;
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
 	size_t hashFunctionMemoryLimitInBytes;
 	/**
-	 * @brief Mirroring the JSON field in @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
 	size_t hashFunctionMemoryPasses;
 
 	/**
-	 * @brief The name of the hash function specified in the @ref key_derivation_options_universal_fields "Key-Derivation Options JSON Universal Fields"
+	 * @brief The name of the hash function specified in the @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-	KeyDerivationOptionsJson::HashFunction hashFunction;
+	DerivationOptionsJson::HashFunction hashFunction;
 
 	/**
 	 * @brief A pointer to a hash function that *implements* the specified
-	 * key-derivation hash function.
+	 * derivation hash function.
 	 */
 	HashFunction *hashFunctionImplementation;
 
-	~KeyDerivationOptions();
+	~DerivationOptions();
 
 	/**
-	 * Create a KeyDerivationOptions class from the JSON representation
+	 * Create a DerivationOptions class from the JSON representation
 	 * of the key generation options.
 	 * 
-	 * @param keyDerivationOptionsJson The JSON formatted key-deriation object to parse
-	 * as specified by @ref key_derivation_options_format
+	 * @param derivationOptionsJson The JSON formatted key-deriation object to parse
+	 * as specified by @ref derivation_options_format
 	 * @param typeExpected The expected type, which will be the default if the JSON doesn't
 	 * contain a type field and which will cause an exception to be thrown if the
 	 * JSON has a conflicting type.  If not set
-	 * (default: KeyDerivationOptionsJson::type::_INVALID_TYPE_)
+	 * (default: DerivationOptionsJson::type::_INVALID_TYPE_)
 	 * there is no default type.
-	 * @throws InvalidKeyDerivationOptionsJsonException
+	 * @throws InvalidDerivationOptionsJsonException
 	 * @throws InvalidKeyDerivationOptionValueException
 	 **/
-	KeyDerivationOptions(
-		const std::string& keyDerivationOptionsJson,
-		const KeyDerivationOptionsJson::type typeExpected =
-			KeyDerivationOptionsJson::type::_INVALID_TYPE_
+	DerivationOptions(
+		const std::string& derivationOptionsJson,
+		const DerivationOptionsJson::type typeExpected =
+			DerivationOptionsJson::type::_INVALID_TYPE_
 	);
 
 	/**
@@ -89,7 +89,7 @@ public:
 	 * @param indent JSON indent ddpth
 	 * @param indent_char The char used for JSON indenting
 	 */
-	const std::string keyDerivationOptionsJsonWithAllOptionalParametersSpecified(
+	const std::string derivationOptionsJsonWithAllOptionalParametersSpecified(
 		int indent = -1,
 	  const char indent_char = ' '
 	) const;
@@ -100,10 +100,10 @@ public:
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
-	 * It applies the hash function specified in the keyDerivationOptionsJson
+	 * It applies the hash function specified in the derivationOptionsJson
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <typeRequired> + <keyDerivationOptionsJson>
+	 *   <seedString> + '\0' + <typeRequired> + <derivationOptionsJson>
 	 * ```
 	 * where typeRequired is converted to a string in
 	 * ["Secret", "Symmetric", "Public", "Signing"],
@@ -121,23 +121,23 @@ public:
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
-	 * @param keyDerivationOptionsJson The key-derivation options in @ref key_derivation_options_format.
-	 * @param typeRequired If the keyDerivationOptionsJson has a type field, and that field
+	 * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+	 * @param typeRequired If the derivationOptionsJson has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidKeyDerivationOptionValueException.
-	 * @param lengthInBytesRequired If the keyDerivationOptionsJson does not specify a lengthInBytes,
+	 * @param lengthInBytesRequired If the derivationOptionsJson does not specify a lengthInBytes,
 	 * generate a secret of this length. Throw an InvalidKeyDerivationOptionValueException is
 	 * the lengthInBytes it specifies does not match this value.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
 	 * @throw InvalidKeyDerivationOptionValueException
-	 * @throw InvalidKeyDerivationOptionsJsonException
+	 * @throw InvalidDerivationOptionsJsonException
 	 */
 	static const SodiumBuffer deriveMasterSecret(
 		const std::string& seedString,
-		const std::string& keyDerivationOptionsJson,
-		const KeyDerivationOptionsJson::type typeRequired,
+		const std::string& derivationOptionsJson,
+		const DerivationOptionsJson::type typeRequired,
 		const size_t lengthInBytesRequired = 0
 	);
 
@@ -147,10 +147,10 @@ public:
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
-	 * It applies the hash function specified in the keyDerivationOptionsJson
+	 * It applies the hash function specified in the derivationOptionsJson
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <type> + <keyDerivationOptionsJson>
+	 *   <seedString> + '\0' + <type> + <derivationOptionsJson>
 	 * ```
 	 * where type is converted to a string in
 	 * ["Secret", "Symmetric", "Public", "Signing"],
@@ -170,7 +170,7 @@ public:
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
-	 * @param defaultType If the keyDerivationOptionsJson has a type field, and that field
+	 * @param defaultType If the derivationOptionsJson has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidKeyDerivationOptionValueException.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
@@ -180,8 +180,8 @@ public:
 	 */
 	const SodiumBuffer deriveMasterSecret(
 		const std::string& seedString,
-		const KeyDerivationOptionsJson::type defaultType =
-			KeyDerivationOptionsJson::type::_INVALID_TYPE_
+		const DerivationOptionsJson::type defaultType =
+			DerivationOptionsJson::type::_INVALID_TYPE_
 	) const;
 
 };

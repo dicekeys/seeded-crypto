@@ -16,7 +16,7 @@ namespace KeyUseRestrictionsJson {
 	}
 }
 
-namespace KeyDerivationOptionsJson {
+namespace DerivationOptionsJson {
 	namespace FieldNames {
 		const std::string algorithm = "algorithm";
 		const std::string hashFunction = "hashFunction";

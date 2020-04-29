@@ -1,29 +1,46 @@
-# Key-Derivation Options JSON Format {#key_derivation_options_format}
+# JSON Format for Derivation Options {#derivation_options_format}
 
-This JSON-format is used to specify how a key should be derived from a seed string.
+This JSON-format is used to specify how secrets (Secret) and keys (SymmetricKey) and key pairs (PrivateKey & PublicKey, SigningKey & SignatureVerificationKey) should be derived from a seed string.
 
-When the Seeded Cryptography Library derives a key from a seed string, the key-derivations
-options JSON string is used to salt the key derivation process.
-Thus, any change to this string no matter how tiny, even if just ordering or white space,
-will cause the library to derive a different key than for any other pair of
-seed strings and key-derivation options JSON string.
+For example, the following is a valid Derivation Options JSON string used to generate a SymmetricKey, using the `Argon2id` to derive the key bytes from a seed string:
 
-The value of a key-derivation options JSON string must be either a valid JSON object specification,
+```TypeScript
+{
+    "type": "Symmetric",
+    "hashFunction": "Argon2id"
+}
+```
+
+The value of a derivation options JSON string must be either a valid JSON object specification,
 which is a set of fields enclosed in curly braces ("{}") per the JSON format,
 or an empty string.
 
-This specification defines default values for all fields, which are applied if a field is absent,
-and so a key-derviation options JSON string that is itself an empty string ("") or empty object ("{}")
-will use the default values for all fields.
-For example, If you are specifying derivation options for a SymmetricKey operation and pass an empty string,
-the `"type"` field will be inferred to be `Symmetric` and the `"algorithm"` will be the default
-algorithm for symmetric key cryptography (`XSalsa20Poly1305`).
+This specification defines default values for _all_ fields, these defaults are used when a field is absent, and so a derivation options JSON string that is itself an empty string ("") or empty object ("{}") will use defaults for all field values.
+For example, If you are deriving a SymmetricKey and pass the empty string,
+the `"type"` will be inferred to be `Symmetric`, the `"hashFunction"` to be `SHA256`, and the `"algorithm"` will be the default
+algorithm for symmetric key cryptography: `XSalsa20Poly1305`.
 
-This specification breaks fields into three types:
+The Seeded Cryptography Library uses a hash function to derive keys and secrets, and the input to that hash function includes both the seed string _and_ the JSON string you provide with the derivation options.  In cryptographic terms, this means the JSON string with your derivation options is used to _salt_ the hash function.
+Thus, _any_ change to this Derivation Options JSON string, even if just ordering or white space, will cause a different key or secret to be derived.
 
-*Universal fields* are used by the Seeded Cryptography Library directly to derive keys.
-They are generalizable to any type of seed string, not just the DiceKeys use case
-for which the library was created.
+Any fields in your JSON object that are not in this specification have no effect other than to change the input to the hash function and thus the derived key or secret.
+This allows other libraries to extend the spec without making changes to how this
+library derives keys and secrets. Those using the library can also embed arbitrary
+fields into the JSON object as they see fit. For example, the second field in
+the object specified by the following JSON string is not processed by the library,
+but since the entire string is passed to the hash function used to derive the key it ensure a different key will be derived than if the field were absent:
+
+```TypeScript
+{
+    "type": "Symmetric",
+    "aRandomNumericSaltNotInTheSpec": 1299486243
+}
+```
+
+#### How this specification is organized
+This specification separates the JSON object fields into three categories:
+
+*Universal fields* are used by the Seeded Cryptography Library directly to derive secrets and key seeds. These are generalizable to any type of seed string, not just the DiceKeys use case for which we created this library.
 
 The Seeded Cryptogpraphy Library is oblivious to other fields, but since they are part of the
 JSON string any changes to them will cause the library to derive a different key.
@@ -36,24 +53,8 @@ operations. The DiceKeys app protects the keys so that other applications are no
 able to see the raw DiceKey, and these options specify which applications are
 allowed to generate keys and what they are allowed to do with them.
 
-The extensibility of underlying JSON format and the obliviousness of this
-library to non-universal fields allows other libraries to build
-on top of it without having to change this library.
-Any key-derivation options fields added will be ignored by this
-library for all purposes beyond salting the keys generated.
 
-Since any JSON object field outside the spec can be attached, one could, for example, use a
-field to salt the derivation of a SymmetricKey like so:
-```TypeScript
-{
-    "type": "Symmetric",
-    "SaltWithThePhoneNumberForJenny": 8675309
-}
-```
-
-
-
-@anchor key_derivation_options_universal_fields
+@anchor derivation_options_universal_fields
 ### Universal Fields used by the Seeded Cryptography Library
 
 The following fields are inspected and used by the seeded-crypto C++ library.
@@ -87,11 +88,11 @@ Specify the specific algorithm to use.
 ```TypeScript
 "algorithm"?: 
     // valid only for "type": "Symmetric"
-    "XSalsa20Poly1305" | // the current default for SymmetricKey
+    "XSalsa20Poly1305" | // the default for SymmetricKey
     // valid only for "type": "Public"
-    "X25519" |           // the current default for PrivateKey
+    "X25519" |           // the default for PrivateKey
     // valid only for "type": Signing
-    "Ed25519"            // the current default for SigningKey
+    "Ed25519"            // the default for SigningKey
 ```
 
 The `algorithm` field should never be set for `"type": "Secret"`.
@@ -110,13 +111,15 @@ use.
 
 #### hashFunction
 
-The `hashFunction` field specifies the hash function to use for key derivation. The default is `"SHA256"`.
+The `hashFunction` field specifies the hash function to used to derive key seeds and secrets. The default is `"SHA256"`.
 
 ```TypeScript
 "hashFunction"?: "BLAKE2b" | "SHA256" | "Argon2id" | "Scrypt"
 ```
 
-`Argon2id` and `Scrypt` are hash functions designed to require not just computation, but also memory, in order to thwart hardware brute force attacks. (The `Argon2id` parameter maps to algorithm `crypto_pwhash_ALG_ARGON2ID13` in libsodium with the salt set to a block of zero bytes, and `Scrypt` maps to algorithm `crypto_pwhash_scryptsalsa208sha256` in libsodium, also with zero bytes for the salt.) When using these two hash functions, you can also specify the memory limit and the number of passes to make through memory.
+`Argon2id` and `Scrypt` are hash functions designed to require not just computation, but also memory, in order to thwart hardware brute force attacks.[^1] (The `Argon2id` parameter maps to algorithm `crypto_pwhash_ALG_ARGON2ID13` in libsodium with the salt set to a block of zero bytes, and `Scrypt` maps to algorithm `crypto_pwhash_scryptsalsa208sha256` in libsodium, also with zero bytes for the salt.) When using these two hash functions, you can also specify the memory limit and the number of passes to make through memory.
+
+[^1] X
 
 ```TypeScript
 "hashFunctionMemoryLimitInBytes": number // default 67108864
@@ -162,7 +165,7 @@ This default ensures that keys can be re-derived cheaply
 on just about any hardware platform.
 
 Applcations that need a more expensive key derivation to protect against
-brute-forcing of the key-derivation algorithm will want to use
+brute-forcing of the derivation algorithm will want to use
 `Scrypt` if _and only if_ keys will _always_ be derived on hardware where
 no untrusted code will run during the derivation process.
 If keys may sometimes be derived on hardware shared with untrusted code,
@@ -179,7 +182,7 @@ The input, or `preimage`, to the key derivation function is the concatenation of
 - a null-termination character ('\0') for the seed,
 - the type (`Symmetric`, `Public`, `Signing`, or `Secret`) of the key being derived,
     UTF8 encoded and not null terminated, and
-- the key-derivation options JSON string, UTF8 encoded and not null terminated.
+- the derivation options JSON string, UTF8 encoded and not null terminated.
 
 Including the `type` of the key (or secret) being derived in the preimage may seem unnecessary, since there is a `type` field in the JSON format.  It is important to include the type of the key or secret actually being derived because the `type` field is optional in the JSON format. If we were not to include it, two keys of different types derived from the same JSON specification could have the same preimage.
 

@@ -1,39 +1,39 @@
 #include "secret.hpp"
-#include "key-derivation-options.hpp"
+#include "derivation-options.hpp"
 #include "exceptions.hpp"
 
 Secret::Secret(
   const SodiumBuffer& _secretBytes,
-  const std::string& _keyDerivationOptionsJson
-) : secretBytes(_secretBytes), keyDerivationOptionsJson(_keyDerivationOptionsJson) {}
+  const std::string& _derivationOptionsJson
+) : secretBytes(_secretBytes), derivationOptionsJson(_derivationOptionsJson) {}
 
 Secret::Secret(
   const std::string& seedString,
-  const std::string& _keyDerivationOptionsJson
+  const std::string& _derivationOptionsJson
 ) : Secret(
-  KeyDerivationOptions::deriveMasterSecret(
+  DerivationOptions::deriveMasterSecret(
     seedString,
-    _keyDerivationOptionsJson,
-    KeyDerivationOptionsJson::type::Secret
+    _derivationOptionsJson,
+    DerivationOptionsJson::type::Secret
   ),
-  _keyDerivationOptionsJson
+  _derivationOptionsJson
 ) {}
 
-Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.keyDerivationOptionsJson) {}
+Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.derivationOptionsJson) {}
 
 // JSON field names
 namespace SecretJsonFields {
   static const std::string secretBytes = "secretBytes";
-  static const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+  static const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
 Secret Secret::fromJson(const std::string& secretAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
-    auto kdo = jsonObject.value<std::string>(SecretJsonFields::keyDerivationOptionsJson, "");
+    auto kdo = jsonObject.value<std::string>(SecretJsonFields::derivationOptionsJson, "");
     return Secret(
       SodiumBuffer::fromHexString(jsonObject.at(SecretJsonFields::secretBytes)),
-      jsonObject.value<std::string>(SecretJsonFields::keyDerivationOptionsJson, "")
+      jsonObject.value<std::string>(SecretJsonFields::derivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -47,18 +47,18 @@ const char indent_char
 ) const {
   nlohmann::json asJson;
   asJson[SecretJsonFields::secretBytes] = secretBytes.toHexString();
-  if (keyDerivationOptionsJson.size() > 0) {
-    asJson[SecretJsonFields::keyDerivationOptionsJson] = keyDerivationOptionsJson;
+  if (derivationOptionsJson.size() > 0) {
+    asJson[SecretJsonFields::derivationOptionsJson] = derivationOptionsJson;
   }
   return asJson.dump(indent, indent_char);
 }
 
 
 const SodiumBuffer Secret::toSerializedBinaryForm() const {
-  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
+  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &secretBytes,
-    &_keyDerivationOptionsJson
+    &_derivationOptionsJson
   });
 }
 

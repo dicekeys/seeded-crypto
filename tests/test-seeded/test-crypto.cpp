@@ -6,15 +6,15 @@
 
 
 const std::string orderedTestKey = "A1tB2rC3bD4lE5tF6bG1tH1tI1tJ1tK1tL1tM1tN1tO1tP1tR1tS1tT1tU1tV1tW1tX1tY1tZ1t";
-std::string defaultTestPublicKeyDerivationOptionsJson = R"KGO({
+std::string defaultTestPublicDerivationOptionsJson = R"KGO({
 	"type": "Public",
 	"additionalSalt": "1"
 })KGO";
-std::string defaultTestSymmetricKeyDerivationOptionsJson = R"KGO({
+std::string defaultTestSymmetricDerivationOptionsJson = R"KGO({
 	"type": "Symmetric",
 	"additionalSalt": "1"
 })KGO";
-std::string defaultTestSigningKeyDerivationOptionsJson = R"KGO({
+std::string defaultTestSigningDerivationOptionsJson = R"KGO({
 	"type": "Signing",
 	"additionalSalt": "1"
 })KGO";
@@ -37,30 +37,30 @@ TEST(Secret, FidoUseCase) {
 	);
 }
 
-const std::string fastSeedJsonKeyDerivationOptions = R"KDO({
+const std::string fastSeedJsonDerivationOptions = R"KDO({
 	"type": "Secret",
 	"hashFunction": "SHA256",
 	"lengthInBytes": 96
 })KDO";
 TEST(Secret, ConvertsToJsonAndBack) {
-	Secret seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
+	Secret seed(orderedTestKey, fastSeedJsonDerivationOptions);
 	
 	const auto serialized = seed.toJson(1, '\t');
 	const auto replica = Secret::fromJson(serialized);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, seed.keyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, seed.derivationOptionsJson);
 	ASSERT_STREQ(replica.secretBytes.toHexString().c_str(), seed.secretBytes.toHexString().c_str());
 }
 
 TEST(Secret, ConvertsToSerializedFormAndBack) {
-	Secret seed(orderedTestKey, fastSeedJsonKeyDerivationOptions);
+	Secret seed(orderedTestKey, fastSeedJsonDerivationOptions);
 	
 	const auto serialized = seed.toSerializedBinaryForm();
 	const auto replica = Secret::fromSerializedBinaryForm(serialized);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, seed.keyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, seed.derivationOptionsJson);
 	ASSERT_STREQ(replica.secretBytes.toHexString().c_str(), seed.secretBytes.toHexString().c_str());
 }
 
-TEST(Secret, fromJsonWithoutKeyDerivationOptions) {
+TEST(Secret, fromJsonWithoutDerivationOptions) {
 	Secret seed = Secret::fromJson(R"JSON({
 	"secretBytes": "0xffFE"
 })JSON");
@@ -68,7 +68,7 @@ TEST(Secret, fromJsonWithoutKeyDerivationOptions) {
 	ASSERT_EQ(seed.secretBytes.length, 2);
 	ASSERT_EQ(seed.secretBytes.data[0], 0xff);
 	ASSERT_EQ(seed.secretBytes.data[1], 0xfe);
-	ASSERT_EQ(seed.keyDerivationOptionsJson.length(), 0);
+	ASSERT_EQ(seed.derivationOptionsJson.length(), 0);
 }
 
 
@@ -93,7 +93,7 @@ TEST(PostDecryptionInstructions, HandlesEmptyJsonObject) {
 }
 
 TEST(PublicKey, GetsPublicKey) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	ASSERT_EQ(testPublicKey.getPublicKeyBytes().size(), 32);
@@ -108,22 +108,22 @@ TEST(PublicKey, GetsPublicKeyFromEmptyOptions) {
 
 
 TEST(PrivateKey, ConvertsToJsonAndBack) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 
 	const std::string json = testPrivateKey.toJson(1, '\t');
 	const PrivateKey replica = PrivateKey::fromJson(json);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, defaultTestPublicDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPrivateKey.publicKeyBytes));
 	ASSERT_EQ(replica.privateKeyBytes.toHexString(), testPrivateKey.privateKeyBytes.toHexString());
 }
 
 
 TEST(PrivateKey, ConvertsToSerializedFormAndBack) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 
 	auto serialized = testPrivateKey.toSerializedBinaryForm();
 	const PrivateKey replica = PrivateKey::fromSerializedBinaryForm(serialized);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestPublicKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, defaultTestPublicDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.publicKeyBytes), toHexStr(testPrivateKey.publicKeyBytes));
 	ASSERT_EQ(replica.privateKeyBytes.toHexString(), testPrivateKey.privateKeyBytes.toHexString());
 }
@@ -131,29 +131,29 @@ TEST(PrivateKey, ConvertsToSerializedFormAndBack) {
 
 
 TEST(PublicKey, ConvertsToJsonAndBack) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 	
 	const std::string json = testPublicKey.toJson(1, '\t');
 	const PublicKey replica = PublicKey::fromJson(json);
-	ASSERT_EQ(replica.getKeyDerivationOptionsJson(), defaultTestPublicKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.getDerivationOptionsJson(), defaultTestPublicDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.getPublicKeyBytes()), toHexStr(testPublicKey.getPublicKeyBytes()));
 }
 
 
 TEST(PublicKey, ConvertsToSerializedFormAndBack) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 	
 	const auto serialized = testPublicKey.toSerializedBinaryForm();
 	const PublicKey replica = PublicKey::fromSerializedBinaryForm(serialized);
-	ASSERT_EQ(replica.getKeyDerivationOptionsJson(), defaultTestPublicKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.getDerivationOptionsJson(), defaultTestPublicDerivationOptionsJson);
 	ASSERT_EQ(toHexStr(replica.getPublicKeyBytes()), toHexStr(testPublicKey.getPublicKeyBytes()));
 }
 
 
 TEST(PublicKey, EncryptsAndDecrypts) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
@@ -166,7 +166,7 @@ TEST(PublicKey, EncryptsAndDecrypts) {
 }
 
 TEST(PublicKey, EncryptsAndDecryptsPackaged) {
-	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicKeyDerivationOptionsJson);
+	const PrivateKey testPrivateKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const PublicKey testPublicKey = testPrivateKey.getPublicKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
@@ -180,7 +180,7 @@ TEST(PublicKey, EncryptsAndDecryptsPackaged) {
 
 
 TEST(SigningKey, GetsSigningKey) {
-	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	ASSERT_EQ(testSignatureVerificationKey.getKeyBytesAsHexDigits().length(), 64);
@@ -194,55 +194,55 @@ TEST(SigningKey, GetsSigningKeyFromEmptyOptions) {
 }
 
 TEST(SigningKey, ConvertsToJsonAndBack) {
-	SigningKey testKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 
 	const std::string json = testKey.toJson(true, 1, '\t');
 	SigningKey replica = SigningKey::fromJson(json);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestSigningKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, defaultTestSigningDerivationOptionsJson);
 	ASSERT_STREQ(replica.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
 	ASSERT_STREQ(toHexStr(replica.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 }
 
 
 TEST(SigningKey, ConvertsToSerializedFormAndBack) {
-	SigningKey testKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 
 	auto comactSerializedBinaryForm = testKey.toSerializedBinaryForm(true);
 	auto compactCopy = SigningKey::fromSerializedBinaryForm(comactSerializedBinaryForm);
-	ASSERT_EQ(compactCopy.keyDerivationOptionsJson, testKey.keyDerivationOptionsJson);
+	ASSERT_EQ(compactCopy.derivationOptionsJson, testKey.derivationOptionsJson);
 	ASSERT_STREQ(toHexStr(compactCopy.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 	ASSERT_STREQ(compactCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
 
 	auto fullSerializedBinaryForm = testKey.toSerializedBinaryForm(false);
 	auto fullCopy = SigningKey::fromSerializedBinaryForm(fullSerializedBinaryForm);
-	ASSERT_EQ(fullCopy.keyDerivationOptionsJson, testKey.keyDerivationOptionsJson);
+	ASSERT_EQ(fullCopy.derivationOptionsJson, testKey.derivationOptionsJson);
 	ASSERT_STREQ(toHexStr(fullCopy.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 	ASSERT_STREQ(fullCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
 
 }
 
 TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
-	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	const std::string serialized = testSignatureVerificationKey.toJson(1, '\t');
 	const SignatureVerificationKey replica = SignatureVerificationKey::fromJson(serialized);
-	ASSERT_EQ(replica.getKeyDerivationOptionsJson(), defaultTestSigningKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.getDerivationOptionsJson(), defaultTestSigningDerivationOptionsJson);
 	ASSERT_STREQ(replica.getKeyBytesAsHexDigits().c_str(), testSignatureVerificationKey.getKeyBytesAsHexDigits().c_str());
 }
 
 TEST(SignatureVerificationKey, ConvertsToSerializedFormAndBack) {
-	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	const auto serialized = testSignatureVerificationKey.toSerializedBinaryForm();
 	const SignatureVerificationKey replica = SignatureVerificationKey::fromSerializedBinaryForm(serialized);
-	ASSERT_EQ(replica.getKeyDerivationOptionsJson(), defaultTestSigningKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.getDerivationOptionsJson(), defaultTestSigningDerivationOptionsJson);
 	ASSERT_STREQ(replica.getKeyBytesAsHexDigits().c_str(), testSignatureVerificationKey.getKeyBytesAsHexDigits().c_str());
 }
 
 TEST(SigningKey, Verification) {
-	SigningKey testSigningKey(orderedTestKey, defaultTestSigningKeyDerivationOptionsJson);
+	SigningKey testSigningKey(orderedTestKey, defaultTestSigningDerivationOptionsJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
@@ -256,7 +256,7 @@ TEST(SigningKey, Verification) {
 
 
 TEST(SymmetricKey, EncryptsAndDecryptsWithoutPostDecryptionInstructions) {
-	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
 	const std::string postDecryptionInstructions = {};
@@ -270,25 +270,25 @@ TEST(SymmetricKey, EncryptsAndDecryptsWithoutPostDecryptionInstructions) {
 
 
 TEST(SymmetricKey, ConvertsToSerializedFormAndBack) {
-	const SymmetricKey testKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 
 	const auto serializedBinaryForm = testKey.toSerializedBinaryForm();
 	const auto copy = SymmetricKey::fromSerializedBinaryForm(serializedBinaryForm);
-	ASSERT_EQ(copy.keyDerivationOptionsJson, defaultTestSymmetricKeyDerivationOptionsJson);
+	ASSERT_EQ(copy.derivationOptionsJson, defaultTestSymmetricDerivationOptionsJson);
 	ASSERT_STREQ(copy.keyBytes.toHexString().c_str(), testKey.keyBytes.toHexString().c_str());
 }
 
 TEST(SymmetricKey, ConvertsToJsonAndBack) {
-	const SymmetricKey testKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 
 	const std::string json = testKey.toJson(1, '\t');
 	const SymmetricKey replica = SymmetricKey::fromJson(json);
-	ASSERT_EQ(replica.keyDerivationOptionsJson, defaultTestSymmetricKeyDerivationOptionsJson);
+	ASSERT_EQ(replica.derivationOptionsJson, defaultTestSymmetricDerivationOptionsJson);
 	ASSERT_STREQ(replica.keyBytes.toHexString().c_str(), testKey.keyBytes.toHexString().c_str());
 }
 
 TEST(SymmetricKey, EncryptsAndDecrypts) {
-	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
 	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
@@ -302,7 +302,7 @@ TEST(SymmetricKey, EncryptsAndDecrypts) {
 
 
 TEST(SymmetricKey, EncryptsAndDecryptsPackaged) {
-	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
 	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
@@ -317,7 +317,7 @@ TEST(SymmetricKey, EncryptsAndDecryptsPackaged) {
 
 
 TEST(SymmetricKey, EncryptsAndDecryptsPackagedAndDecryptsWithoutRederiving) {
-	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricKeyDerivationOptionsJson);
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
 	
 	const std::vector<unsigned char> messageVector = { 'y', 'o', 't', 'o' };
 	const std::string postDecryptionInstructions = "{\"userMustAcknowledgeThisMessage\": \"yoto mofo\"}";
@@ -340,7 +340,7 @@ TEST(PackagedSealedMessage, ConvertsToSerializedFormAndBack) {
 	
 	ASSERT_EQ(replica.ciphertext.size(), 1);
 	ASSERT_EQ(replica.ciphertext.data()[0], 42);
-	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
+	ASSERT_STREQ(replica.derivationOptionsJson.c_str(), message.derivationOptionsJson.c_str());
 	ASSERT_STREQ(replica.postDecryptionInstructions.c_str(), message.postDecryptionInstructions.c_str());
 }
 
@@ -352,6 +352,6 @@ TEST(PackagedSealedMessage, ConvertsToJsonAndBack) {
 
 	ASSERT_EQ(replica.ciphertext.size(), 1);
 	ASSERT_EQ(replica.ciphertext.data()[0], 42);
-	ASSERT_STREQ(replica.keyDerivationOptionsJson.c_str(), message.keyDerivationOptionsJson.c_str());
+	ASSERT_STREQ(replica.derivationOptionsJson.c_str(), message.derivationOptionsJson.c_str());
 	ASSERT_STREQ(replica.postDecryptionInstructions.c_str(), message.postDecryptionInstructions.c_str());
 }

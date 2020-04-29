@@ -54,10 +54,10 @@ public:
 };
 
 /**
- * @brief Thrown when a keyDerivationOptionsJson string is not in
+ * @brief Thrown when a derivationOptionsJson string is not in
  * valid JSON format and cannot be parsed.
  */
-class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
+class InvalidDerivationOptionsJsonException: public std::invalid_argument
 {
 	public:
 	/**
@@ -65,12 +65,12 @@ class InvalidKeyDerivationOptionsJsonException: public std::invalid_argument
 	 * 
 	 * @param m The exception message
 	 */
-	InvalidKeyDerivationOptionsJsonException(const char* m = NULL) :
+	InvalidDerivationOptionsJsonException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid JSON key derivation options") {};
 };
 
 /**
- * @brief Thrown when a JSON value in the keyDerivationOptionsJson is
+ * @brief Thrown when a JSON value in the derivationOptionsJson is
  * in an invalid format or contains an invalid value.
  */
 class InvalidKeyDerivationOptionValueException: public std::invalid_argument

@@ -1,18 +1,18 @@
 #include "github-com-nlohmann-json/json.hpp"
 #include "private-key.hpp"
 #include "crypto_box_seal_salted.h"
-#include "key-derivation-options.hpp"
+#include "derivation-options.hpp"
 #include "convert.hpp"
 #include "exceptions.hpp"
 
 PrivateKey::PrivateKey(
     const SodiumBuffer _privateKeyBytes,
     const std::vector<unsigned char> _publicKeyBytes,
-    const std::string _keyDerivationOptionsJson
+    const std::string _derivationOptionsJson
   ) :
     privateKeyBytes(_privateKeyBytes),
     publicKeyBytes(_publicKeyBytes),
-    keyDerivationOptionsJson(_keyDerivationOptionsJson)
+    derivationOptionsJson(_derivationOptionsJson)
     {
     if (publicKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
       throw InvalidKeyDerivationOptionValueException("Invalid public key size");
@@ -24,8 +24,8 @@ PrivateKey::PrivateKey(
 
 PrivateKey::PrivateKey(
   const SodiumBuffer &seedBuffer,
-  const std::string& _keyDerivationOptionsJson
-) : keyDerivationOptionsJson(_keyDerivationOptionsJson), publicKeyBytes(crypto_box_PUBLICKEYBYTES), privateKeyBytes(crypto_box_SECRETKEYBYTES) {
+  const std::string& _derivationOptionsJson
+) : derivationOptionsJson(_derivationOptionsJson), publicKeyBytes(crypto_box_PUBLICKEYBYTES), privateKeyBytes(crypto_box_SECRETKEYBYTES) {
   if (seedBuffer.length < crypto_box_SEEDBYTES){
     throw std::invalid_argument("Insufficient seed length");
   }
@@ -34,17 +34,17 @@ PrivateKey::PrivateKey(
 
   PrivateKey::PrivateKey(
     const std::string& _seedString,
-    const std::string& _keyDerivationOptionsJson
+    const std::string& _derivationOptionsJson
   ) : PrivateKey(
-      KeyDerivationOptions::deriveMasterSecret(_seedString, _keyDerivationOptionsJson, KeyDerivationOptionsJson::type::Public, crypto_box_SEEDBYTES),
-      _keyDerivationOptionsJson
+      DerivationOptions::deriveMasterSecret(_seedString, _derivationOptionsJson, DerivationOptionsJson::type::Public, crypto_box_SEEDBYTES),
+      _derivationOptionsJson
   ) {}
 
 PrivateKey::PrivateKey(
   const PrivateKey &other
 ):
   publicKeyBytes(other.publicKeyBytes), 
-  keyDerivationOptionsJson(other.keyDerivationOptionsJson),
+  derivationOptionsJson(other.derivationOptionsJson),
   privateKeyBytes(other.privateKeyBytes)
   {}
 
@@ -88,7 +88,7 @@ const SodiumBuffer PrivateKey::unseal(
 }
 
 const PublicKey PrivateKey::getPublicKey() const {
-  return PublicKey(publicKeyBytes, keyDerivationOptionsJson);
+  return PublicKey(publicKeyBytes, derivationOptionsJson);
 }
 
 
@@ -98,7 +98,7 @@ const PublicKey PrivateKey::getPublicKey() const {
 namespace PrivateKeyJsonField {
   const std::string publicKeyBytes = "publicKeyBytes";
   const std::string privateKeyBytes = "privateKeyBytes";
-  const std::string keyDerivationOptionsJson = "keyDerivationOptionsJson";
+  const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
 PrivateKey PrivateKey::fromJson(
@@ -109,7 +109,7 @@ PrivateKey PrivateKey::fromJson(
     return PrivateKey(
       SodiumBuffer::fromHexString(jsonObject.at(PrivateKeyJsonField::privateKeyBytes)),
       hexStrToByteVector(jsonObject.at(PrivateKeyJsonField::publicKeyBytes)),
-      jsonObject.value(PrivateKeyJsonField::keyDerivationOptionsJson, ""));
+      jsonObject.value(PrivateKeyJsonField::derivationOptionsJson, ""));
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
@@ -122,19 +122,19 @@ const std::string PrivateKey::toJson(
   nlohmann::json asJson;
   asJson[PrivateKeyJsonField::privateKeyBytes] = privateKeyBytes.toHexString();
   asJson[PrivateKeyJsonField::publicKeyBytes] = toHexStr(publicKeyBytes);
-  asJson[PrivateKeyJsonField::keyDerivationOptionsJson] = keyDerivationOptionsJson;
+  asJson[PrivateKeyJsonField::derivationOptionsJson] = derivationOptionsJson;
   return asJson.dump(indent, indent_char);
 };
 
 
 const SodiumBuffer PrivateKey::toSerializedBinaryForm() const {
-  SodiumBuffer keyDerivationOptionsJsonBuffer = SodiumBuffer(keyDerivationOptionsJson);
+  SodiumBuffer derivationOptionsJsonBuffer = SodiumBuffer(derivationOptionsJson);
   SodiumBuffer _publicKeyBytes(publicKeyBytes);
-  SodiumBuffer _keyDerivationOptionsJson(keyDerivationOptionsJson);
+  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
     &privateKeyBytes,
     &_publicKeyBytes,
-    &_keyDerivationOptionsJson
+    &_derivationOptionsJson
   });
 }
 

@@ -10,8 +10,8 @@
  * @brief A PublicKey is used to _seal_ messages, in combination with a
  * PrivateKey which can _unseal_ them.
  * The key pair of this PublicKey and the matching PrivateKey are generated
- * from a seed and a set of key-derivation specified options in JSON format
- * @ref key_derivation_options_format.
+ * from a seed and a set of derivation specified options in JSON format
+ * @ref derivation_options_format.
  * 
  * To derive a public key from a seed, first derive the corresponding
  * PrivateKey and then call PrivateKey::getPublicKey.
@@ -47,16 +47,16 @@ public:
    */
   const std::vector<unsigned char> publicKeyBytes;
   /**
-   * @brief A @ref key_derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
-  const std::string keyDerivationOptionsJson;
+  const std::string derivationOptionsJson;
 
   /**
    * @brief Construct a new Public Key object by passing its members.
    */
   PublicKey(
     const std::vector<unsigned char>& publicKeyBytes,
-    const std::string& keyDerivationOptionsJson
+    const std::string& derivationOptionsJson
   );
 
   /**
@@ -154,7 +154,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its keyDerivationOptionsJson and postDecryptionInstructions
+   * along with its derivationOptionsJson and postDecryptionInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -171,7 +171,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its keyDerivationOptionsJson and postDecryptionInstructions
+   * along with its derivationOptionsJson and postDecryptionInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -190,7 +190,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its keyDerivationOptionsJson and postDecryptionInstructions
+   * along with its derivationOptionsJson and postDecryptionInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -208,7 +208,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its keyDerivationOptionsJson and postDecryptionInstructions
+   * along with its derivationOptionsJson and postDecryptionInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -233,18 +233,18 @@ public:
   const std::vector<unsigned char> getPublicKeyBytes() const;
 
   /**
-   * @brief Get the JSON-formatted key-derivation options string used to generate
+   * @brief Get the JSON-formatted derivation options string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string in  @ref key_derivation_options_format
+   * @return const std::string in  @ref derivation_options_format
    */
-  const std::string getKeyDerivationOptionsJson() const {
-    return keyDerivationOptionsJson; 
+  const std::string getDerivationOptionsJson() const {
+    return derivationOptionsJson; 
   }
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (publicKeyBytes, keyDerivationOptionsJson)
+   *   (publicKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -253,7 +253,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (publicKeyBytes, keyDerivationOptionsJson)
+   *   (publicKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

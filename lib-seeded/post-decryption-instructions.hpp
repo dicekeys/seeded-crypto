@@ -4,7 +4,7 @@
 #include "hash-functions.hpp"
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
-#include "./externally-generated/key-derivation-parameters.hpp"
+#include "./externally-generated/derivation-parameters.hpp"
 
 class PostDecryptionInstructions {
 /**

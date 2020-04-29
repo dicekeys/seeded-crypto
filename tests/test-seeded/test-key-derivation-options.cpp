@@ -2,14 +2,14 @@
 #include "lib-seeded.hpp"
 
 
-TEST(KeyDerivationOptions, GeneratesDefaults) {
-	KeyDerivationOptions kgo = KeyDerivationOptions(R"KGO({
+TEST(DerivationOptions, GeneratesDefaults) {
+	DerivationOptions kgo = DerivationOptions(R"KGO({
 	"type": "Public"	
 })KGO",
-	KeyDerivationOptionsJson::type::Public
+	DerivationOptionsJson::type::Public
 );
 	ASSERT_EQ(
-		kgo.keyDerivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "SHA256",
@@ -19,8 +19,8 @@ TEST(KeyDerivationOptions, GeneratesDefaults) {
 }
 
 
-TEST(KeyDerivationOptions, FidoUseCase) {
-	KeyDerivationOptions kgo = KeyDerivationOptions(R"KGO({
+TEST(DerivationOptions, FidoUseCase) {
+	DerivationOptions kgo = DerivationOptions(R"KGO({
 	"type": "Secret",
 	"lengthInBytes": 96,
 	"hashFunction": "Argon2id",
@@ -28,10 +28,10 @@ TEST(KeyDerivationOptions, FidoUseCase) {
 		"androidPackagePrefixesAllowed": ["com.dicekeys.fido"]
 	}
 })KGO",
-	KeyDerivationOptionsJson::type::Secret
+	DerivationOptionsJson::type::Secret
 );
 	ASSERT_EQ(
-		kgo.keyDerivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"hashFunction": "Argon2id",
 	"hashFunctionMemoryLimitInBytes": 67108864,
@@ -51,15 +51,15 @@ TEST(KeyDerivationOptions, FidoUseCase) {
 	}
 */
 
-TEST(KeyDerivationOptions, InitsWithClientPrefixes) {
-	KeyDerivationOptions kgo = KeyDerivationOptions(R"KGO({
+TEST(DerivationOptions, InitsWithClientPrefixes) {
+	DerivationOptions kgo = DerivationOptions(R"KGO({
 	"type": "Public",
 	"restrictToClientApplicationsIdPrefixes": ["com.dicekeys.client", "com.dicekeys.another"]
 })KGO",
-	KeyDerivationOptionsJson::type::Public
+	DerivationOptionsJson::type::Public
 );
 	ASSERT_EQ(
-		kgo.keyDerivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "SHA256",
