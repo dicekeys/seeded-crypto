@@ -91,16 +91,16 @@ $(document).ready(function(){initNavTree('class_signature_verification_key.html'
 </div><!--header-->
 <div class="contents">
 
-<p>A <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is used to verify that messages were signed by its corresponding <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. SigningKeys generate <em>signatures</em>, and by verifying a message/signature pair the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> can confirm that the message was indeed signed using the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  
+<p>A <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is used to verify that messages were signed by its corresponding <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. SigningKeys generate <em>signatures</em>, and by verifying a message/signature pair the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> can confirm that the message was indeed signed using the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of derivation specified options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>.  
  <a href="class_signature_verification_key.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="signature-verification-key_8hpp_source.html">signature-verification-key.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8eb152e5ff5d2649ddb06b128e884961"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a8eb152e5ff5d2649ddb06b128e884961">SignatureVerificationKey</a> (const std::vector&lt; unsigned char &gt; &amp;keyBytes, const std::string &amp;<a class="el" href="class_signature_verification_key.html#a992bf5e659b9b626d69d711607cfcddf">keyDerivationOptionsJson</a>)</td></tr>
-<tr class="memdesc:a8eb152e5ff5d2649ddb06b128e884961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by passing the classes members.  <a href="class_signature_verification_key.html#a8eb152e5ff5d2649ddb06b128e884961">More...</a><br /></td></tr>
-<tr class="separator:a8eb152e5ff5d2649ddb06b128e884961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac19b7ccececbf30802717dc972141376"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#ac19b7ccececbf30802717dc972141376">SignatureVerificationKey</a> (const std::vector&lt; unsigned char &gt; &amp;keyBytes, const std::string &amp;<a class="el" href="class_signature_verification_key.html#acfc89ec62457377b62ae8e5a2fbe3595">derivationOptionsJson</a>)</td></tr>
+<tr class="memdesc:ac19b7ccececbf30802717dc972141376"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by passing the classes members.  <a href="class_signature_verification_key.html#ac19b7ccececbf30802717dc972141376">More...</a><br /></td></tr>
+<tr class="separator:ac19b7ccececbf30802717dc972141376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d8c091c3f2582d3ceaa805fd7dde446"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a4d8c091c3f2582d3ceaa805fd7dde446">toJson</a> (int indent=-1, const char indent_char=' ') const</td></tr>
 <tr class="memdesc:a4d8c091c3f2582d3ceaa805fd7dde446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this object to a JSON-formatted string.  <a href="class_signature_verification_key.html#a4d8c091c3f2582d3ceaa805fd7dde446">More...</a><br /></td></tr>
 <tr class="separator:a4d8c091c3f2582d3ceaa805fd7dde446"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,11 +119,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a01ddfcec375ebced79b74af9b047e2de"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de">getKeyBytesAsHexDigits</a> () const</td></tr>
 <tr class="memdesc:a01ddfcec375ebced79b74af9b047e2de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the raw signature-verification key as a string of hex digits.  <a href="class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de">More...</a><br /></td></tr>
 <tr class="separator:a01ddfcec375ebced79b74af9b047e2de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04583de53f878c7485dfaf85db4dd9da"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a04583de53f878c7485dfaf85db4dd9da">getKeyDerivationOptionsJson</a> () const</td></tr>
-<tr class="memdesc:a04583de53f878c7485dfaf85db4dd9da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the JSON-formatted key-derivation options string used to generate the public-private key pair.  <a href="class_signature_verification_key.html#a04583de53f878c7485dfaf85db4dd9da">More...</a><br /></td></tr>
-<tr class="separator:a04583de53f878c7485dfaf85db4dd9da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5e389f51405bcd72d6dfd386181961e"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#ae5e389f51405bcd72d6dfd386181961e">getDerivationOptionsJson</a> () const</td></tr>
+<tr class="memdesc:ae5e389f51405bcd72d6dfd386181961e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the JSON-formatted derivation options string used to generate the public-private key pair.  <a href="class_signature_verification_key.html#ae5e389f51405bcd72d6dfd386181961e">More...</a><br /></td></tr>
+<tr class="separator:ae5e389f51405bcd72d6dfd386181961e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a249bcba1668ab5bff3548377f5cbff29"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29">toSerializedBinaryForm</a> () const</td></tr>
-<tr class="memdesc:a249bcba1668ab5bff3548377f5cbff29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (signatureVerificationKeyBytes, keyDerivationOptionsJson)  <a href="class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29">More...</a><br /></td></tr>
+<tr class="memdesc:a249bcba1668ab5bff3548377f5cbff29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (signatureVerificationKeyBytes, derivationOptionsJson)  <a href="class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29">More...</a><br /></td></tr>
 <tr class="separator:a249bcba1668ab5bff3548377f5cbff29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -138,7 +138,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a9fd9205220db9c4f1a6ca404ecd56faa"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Avoid Using</em> Verify a message's signature using a raw libsodium verification key  <a href="class_signature_verification_key.html#a9fd9205220db9c4f1a6ca404ecd56faa">More...</a><br /></td></tr>
 <tr class="separator:a9fd9205220db9c4f1a6ca404ecd56faa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_signature_verification_key.html">SignatureVerificationKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a1228b5b66833ab09fc6dafd6c2fe4ce3">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, keyDerivationOptionsJson)  <a href="class_signature_verification_key.html#a1228b5b66833ab09fc6dafd6c2fe4ce3">More...</a><br /></td></tr>
+<tr class="memdesc:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, derivationOptionsJson)  <a href="class_signature_verification_key.html#a1228b5b66833ab09fc6dafd6c2fe4ce3">More...</a><br /></td></tr>
 <tr class="separator:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -147,17 +147,17 @@ Public Attributes</h2></td></tr>
 const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a306eec6284f14859e596a815313ebc95">signatureVerificationKeyBytes</a></td></tr>
 <tr class="memdesc:a306eec6284f14859e596a815313ebc95"><td class="mdescLeft">&#160;</td><td class="mdescRight">The raw binary representation of the cryptographic key. <br /></td></tr>
 <tr class="separator:a306eec6284f14859e596a815313ebc95"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a992bf5e659b9b626d69d711607cfcddf"><td class="memItemLeft" align="right" valign="top"><a id="a992bf5e659b9b626d69d711607cfcddf"></a>
-const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a992bf5e659b9b626d69d711607cfcddf">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:a992bf5e659b9b626d69d711607cfcddf"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> string used to specify how this key is derived. <br /></td></tr>
-<tr class="separator:a992bf5e659b9b626d69d711607cfcddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfc89ec62457377b62ae8e5a2fbe3595"><td class="memItemLeft" align="right" valign="top"><a id="acfc89ec62457377b62ae8e5a2fbe3595"></a>
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#acfc89ec62457377b62ae8e5a2fbe3595">derivationOptionsJson</a></td></tr>
+<tr class="memdesc:acfc89ec62457377b62ae8e5a2fbe3595"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a> string used to specify how this key is derived. <br /></td></tr>
+<tr class="separator:acfc89ec62457377b62ae8e5a2fbe3595"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is used to verify that messages were signed by its corresponding <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. SigningKeys generate <em>signatures</em>, and by verifying a message/signature pair the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> can confirm that the message was indeed signed using the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of key-derivation specified options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
+<div class="textblock"><p>A <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is used to verify that messages were signed by its corresponding <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. SigningKeys generate <em>signatures</em>, and by verifying a message/signature pair the <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> can confirm that the message was indeed signed using the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>. The key pair of the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> is generated from a seed and a set of derivation specified options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </p>
 <p>To derive a <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> from a seed, first derive the corresponding <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> and then call <a class="el" href="class_signing_key.html#a5fdf0c3fc992f2c931711eabc3c7f526" title="Get a SignatureVerificationKey which is used to verify signatures generated with this SigningKey.">SigningKey::getSignatureVerificationKey</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8eb152e5ff5d2649ddb06b128e884961"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8eb152e5ff5d2649ddb06b128e884961">&#9670;&nbsp;</a></span>SignatureVerificationKey()</h2>
+<a id="ac19b7ccececbf30802717dc972141376"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac19b7ccececbf30802717dc972141376">&#9670;&nbsp;</a></span>SignatureVerificationKey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,7 +172,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>keyDerivationOptionsJson</em>&#160;</td>
+          <td class="paramname"><em>derivationOptionsJson</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -186,7 +186,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">keyBytes</td><td></td></tr>
-    <tr><td class="paramname">keyDerivationOptionsJson</td><td></td></tr>
+    <tr><td class="paramname">derivationOptionsJson</td><td></td></tr>
   </table>
   </dd>
 </dl>
@@ -252,8 +252,36 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table>
 </div><div class="memdoc">
 
-<p>Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, keyDerivationOptionsJson) </p>
+<p>Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
+
+</div>
+</div>
+<a id="ae5e389f51405bcd72d6dfd386181961e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5e389f51405bcd72d6dfd386181961e">&#9670;&nbsp;</a></span>getDerivationOptionsJson()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string SignatureVerificationKey::getDerivationOptionsJson </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the JSON-formatted derivation options string used to generate the public-private key pair. </p>
+<dl class="section return"><dt>Returns</dt><dd>const std::string in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a> </dd></dl>
 
 </div>
 </div>
@@ -294,34 +322,6 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 <p>Get the raw signature-verification key as a string of hex digits. </p>
 <dl class="section return"><dt>Returns</dt><dd>const std::string a string containing only hex digits (and no "0x"). </dd></dl>
-
-</div>
-</div>
-<a id="a04583de53f878c7485dfaf85db4dd9da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04583de53f878c7485dfaf85db4dd9da">&#9670;&nbsp;</a></span>getKeyDerivationOptionsJson()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::string SignatureVerificationKey::getKeyDerivationOptionsJson </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get the JSON-formatted key-derivation options string used to generate the public-private key pair. </p>
-<dl class="section return"><dt>Returns</dt><dd>const std::string in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> </dd></dl>
 
 </div>
 </div>
@@ -379,7 +379,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Serialize to byte array as a list of: (signatureVerificationKeyBytes, keyDerivationOptionsJson) </p>
+<p>Serialize to byte array as a list of: (signatureVerificationKeyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>

@@ -1,9 +1,9 @@
 var dir_bfa3ca4d7245ff604c8870e56fc2b60a =
 [
     [ "convert.hpp", "convert_8hpp_source.html", null ],
+    [ "derivation-options.hpp", "derivation-options_8hpp_source.html", null ],
     [ "exceptions.hpp", "exceptions_8hpp_source.html", null ],
     [ "hash-functions.hpp", "hash-functions_8hpp_source.html", null ],
-    [ "key-derivation-options.hpp", "key-derivation-options_8hpp_source.html", null ],
     [ "lib-seeded.hpp", "lib-seeded_8hpp_source.html", null ],
     [ "packaged-sealed-message.hpp", "packaged-sealed-message_8hpp_source.html", null ],
     [ "post-decryption-instructions.hpp", "post-decryption-instructions_8hpp_source.html", null ],

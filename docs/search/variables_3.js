@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['hashfunction_126',['hashFunction',['../class_key_derivation_options.html#a2eaefe480a03796ddcd4e8acf0c52cee',1,'KeyDerivationOptions']]],
-  ['hashfunctionimplementation_127',['hashFunctionImplementation',['../class_key_derivation_options.html#af187a6b4f70698ae9eb183a65dd7ffc1',1,'KeyDerivationOptions']]],
-  ['hashfunctioniterations_128',['hashFunctionIterations',['../class_key_derivation_options.html#a1a7f659468b2aa150c6b45af1e40a4b1',1,'KeyDerivationOptions']]],
-  ['hashfunctionmemorylimit_129',['hashFunctionMemoryLimit',['../class_key_derivation_options.html#a01f57d2939c4199407e5fb97a010a3b3',1,'KeyDerivationOptions']]]
+  ['hashfunction_127',['hashFunction',['../class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe',1,'DerivationOptions']]],
+  ['hashfunctionimplementation_128',['hashFunctionImplementation',['../class_derivation_options.html#aef860a1e30164f4a6dc8bd33bc710255',1,'DerivationOptions']]],
+  ['hashfunctionmemorylimitinbytes_129',['hashFunctionMemoryLimitInBytes',['../class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d',1,'DerivationOptions']]],
+  ['hashfunctionmemorypasses_130',['hashFunctionMemoryPasses',['../class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3',1,'DerivationOptions']]]
 ];

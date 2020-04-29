@@ -91,17 +91,17 @@ $(document).ready(function(){initNavTree('class_public_key.html',''); initResiza
 </div><!--header-->
 <div class="contents">
 
-<p>A <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> is used to <em>seal</em> messages, in combination with a <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> which can <em>unseal</em> them. The key pair of this <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and the matching <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> are generated from a seed and a set of key-derivation specified options in JSON format <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  
+<p>A <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> is used to <em>seal</em> messages, in combination with a <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> which can <em>unseal</em> them. The key pair of this <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and the matching <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> are generated from a seed and a set of derivation specified options in JSON format <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>.  
  <a href="class_public_key.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="public-key_8hpp_source.html">public-key.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a91229754236efbd63b50e93b665eeacf"><td class="memItemLeft" align="right" valign="top"><a id="a91229754236efbd63b50e93b665eeacf"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a91229754236efbd63b50e93b665eeacf">PublicKey</a> (const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_public_key.html#a7e62a49618c5dbd4cc415a0aa44943a6">publicKeyBytes</a>, const std::string &amp;<a class="el" href="class_public_key.html#abeb1c748bb7934461fd8e0d74e391f38">keyDerivationOptionsJson</a>)</td></tr>
-<tr class="memdesc:a91229754236efbd63b50e93b665eeacf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Public Key object by passing its members. <br /></td></tr>
-<tr class="separator:a91229754236efbd63b50e93b665eeacf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee870f2e1a28cc7d93b17b84f7e343f9"><td class="memItemLeft" align="right" valign="top"><a id="aee870f2e1a28cc7d93b17b84f7e343f9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#aee870f2e1a28cc7d93b17b84f7e343f9">PublicKey</a> (const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_public_key.html#a7e62a49618c5dbd4cc415a0aa44943a6">publicKeyBytes</a>, const std::string &amp;<a class="el" href="class_public_key.html#ac7e9b3f88b07f2a8199476b99cf978cb">derivationOptionsJson</a>)</td></tr>
+<tr class="memdesc:aee870f2e1a28cc7d93b17b84f7e343f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Public Key object by passing its members. <br /></td></tr>
+<tr class="separator:aee870f2e1a28cc7d93b17b84f7e343f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8995e1456c51f610ebee3ce2c452ef47"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a8995e1456c51f610ebee3ce2c452ef47">toJson</a> (int indent=-1, const char indent_char=' ') const</td></tr>
 <tr class="memdesc:a8995e1456c51f610ebee3ce2c452ef47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this object to a JSON-formatted string.  <a href="class_public_key.html#a8995e1456c51f610ebee3ce2c452ef47">More...</a><br /></td></tr>
 <tr class="separator:a8995e1456c51f610ebee3ce2c452ef47"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,25 +112,25 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad58b54babf9c99b001bd7d25cd24ceb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message.  <a href="class_public_key.html#ad58b54babf9c99b001bd7d25cd24ceb7">More...</a><br /></td></tr>
 <tr class="separator:ad58b54babf9c99b001bd7d25cd24ceb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade51af3f61dd5b90a466756ab26b44d4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#ade51af3f61dd5b90a466756ab26b44d4">seal</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;message, const std::string &amp;postDecryptionInstructions) const</td></tr>
-<tr class="memdesc:ade51af3f61dd5b90a466756ab26b44d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ade51af3f61dd5b90a466756ab26b44d4">More...</a><br /></td></tr>
+<tr class="memdesc:ade51af3f61dd5b90a466756ab26b44d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ade51af3f61dd5b90a466756ab26b44d4">More...</a><br /></td></tr>
 <tr class="separator:ade51af3f61dd5b90a466756ab26b44d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1e9d86705561fc03cf21b191c7a1094"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#ad1e9d86705561fc03cf21b191c7a1094">seal</a> (const std::vector&lt; unsigned char &gt; &amp;message, const std::string &amp;postDecryptionInstructions=&quot;&quot;) const</td></tr>
-<tr class="memdesc:ad1e9d86705561fc03cf21b191c7a1094"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ad1e9d86705561fc03cf21b191c7a1094">More...</a><br /></td></tr>
+<tr class="memdesc:ad1e9d86705561fc03cf21b191c7a1094"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ad1e9d86705561fc03cf21b191c7a1094">More...</a><br /></td></tr>
 <tr class="separator:ad1e9d86705561fc03cf21b191c7a1094"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3b49ec0f32b20538b67799734f78a17"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#ab3b49ec0f32b20538b67799734f78a17">seal</a> (const std::string &amp;message, const std::string &amp;postDecryptionInstructions={}) const</td></tr>
-<tr class="memdesc:ab3b49ec0f32b20538b67799734f78a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ab3b49ec0f32b20538b67799734f78a17">More...</a><br /></td></tr>
+<tr class="memdesc:ab3b49ec0f32b20538b67799734f78a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#ab3b49ec0f32b20538b67799734f78a17">More...</a><br /></td></tr>
 <tr class="separator:ab3b49ec0f32b20538b67799734f78a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f06b2b57eee7e23b21f3b3e2b5f627f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a6f06b2b57eee7e23b21f3b3e2b5f627f">seal</a> (const unsigned char *message, const size_t messageLength, const std::string &amp;postDecryptionInstructions) const</td></tr>
-<tr class="memdesc:a6f06b2b57eee7e23b21f3b3e2b5f627f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#a6f06b2b57eee7e23b21f3b3e2b5f627f">More...</a><br /></td></tr>
+<tr class="memdesc:a6f06b2b57eee7e23b21f3b3e2b5f627f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage.  <a href="class_public_key.html#a6f06b2b57eee7e23b21f3b3e2b5f627f">More...</a><br /></td></tr>
 <tr class="separator:a6f06b2b57eee7e23b21f3b3e2b5f627f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02e36c4c9a03a54e02cdf9eae44cd3d3"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a02e36c4c9a03a54e02cdf9eae44cd3d3">getPublicKeyBytes</a> () const</td></tr>
 <tr class="memdesc:a02e36c4c9a03a54e02cdf9eae44cd3d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the copy of the raw public key bytes used by lib-sodium.  <a href="class_public_key.html#a02e36c4c9a03a54e02cdf9eae44cd3d3">More...</a><br /></td></tr>
 <tr class="separator:a02e36c4c9a03a54e02cdf9eae44cd3d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a488900ad04bb867a0891963862981bea"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a488900ad04bb867a0891963862981bea">getKeyDerivationOptionsJson</a> () const</td></tr>
-<tr class="memdesc:a488900ad04bb867a0891963862981bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the JSON-formatted key-derivation options string used to generate the public-private key pair.  <a href="class_public_key.html#a488900ad04bb867a0891963862981bea">More...</a><br /></td></tr>
-<tr class="separator:a488900ad04bb867a0891963862981bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd8a05781918cc13ba62e0bcc64df573"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#afd8a05781918cc13ba62e0bcc64df573">getDerivationOptionsJson</a> () const</td></tr>
+<tr class="memdesc:afd8a05781918cc13ba62e0bcc64df573"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the JSON-formatted derivation options string used to generate the public-private key pair.  <a href="class_public_key.html#afd8a05781918cc13ba62e0bcc64df573">More...</a><br /></td></tr>
+<tr class="separator:afd8a05781918cc13ba62e0bcc64df573"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a234a1ded392f749ccb4b3135f2a08823"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a234a1ded392f749ccb4b3135f2a08823">toSerializedBinaryForm</a> () const</td></tr>
-<tr class="memdesc:a234a1ded392f749ccb4b3135f2a08823"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (publicKeyBytes, keyDerivationOptionsJson)  <a href="class_public_key.html#a234a1ded392f749ccb4b3135f2a08823">More...</a><br /></td></tr>
+<tr class="memdesc:a234a1ded392f749ccb4b3135f2a08823"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (publicKeyBytes, derivationOptionsJson)  <a href="class_public_key.html#a234a1ded392f749ccb4b3135f2a08823">More...</a><br /></td></tr>
 <tr class="separator:a234a1ded392f749ccb4b3135f2a08823"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -145,7 +145,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a1ba0b54c83b662337acbdb1fb71923cd"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Avoid Using</em> Seal a message using a raw libsodium public key.  <a href="class_public_key.html#a1ba0b54c83b662337acbdb1fb71923cd">More...</a><br /></td></tr>
 <tr class="separator:a1ba0b54c83b662337acbdb1fb71923cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac503c854b95d03309d16b7956a6eb33d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_public_key.html">PublicKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#ac503c854b95d03309d16b7956a6eb33d">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:ac503c854b95d03309d16b7956a6eb33d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (publicKeyBytes, keyDerivationOptionsJson)  <a href="class_public_key.html#ac503c854b95d03309d16b7956a6eb33d">More...</a><br /></td></tr>
+<tr class="memdesc:ac503c854b95d03309d16b7956a6eb33d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (publicKeyBytes, derivationOptionsJson)  <a href="class_public_key.html#ac503c854b95d03309d16b7956a6eb33d">More...</a><br /></td></tr>
 <tr class="separator:ac503c854b95d03309d16b7956a6eb33d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -154,13 +154,13 @@ Public Attributes</h2></td></tr>
 const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#a7e62a49618c5dbd4cc415a0aa44943a6">publicKeyBytes</a></td></tr>
 <tr class="memdesc:a7e62a49618c5dbd4cc415a0aa44943a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The binary representation of the public key used for sealing. <br /></td></tr>
 <tr class="separator:a7e62a49618c5dbd4cc415a0aa44943a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abeb1c748bb7934461fd8e0d74e391f38"><td class="memItemLeft" align="right" valign="top"><a id="abeb1c748bb7934461fd8e0d74e391f38"></a>
-const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#abeb1c748bb7934461fd8e0d74e391f38">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:abeb1c748bb7934461fd8e0d74e391f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> string used to specify how this key is derived. <br /></td></tr>
-<tr class="separator:abeb1c748bb7934461fd8e0d74e391f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7e9b3f88b07f2a8199476b99cf978cb"><td class="memItemLeft" align="right" valign="top"><a id="ac7e9b3f88b07f2a8199476b99cf978cb"></a>
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_public_key.html#ac7e9b3f88b07f2a8199476b99cf978cb">derivationOptionsJson</a></td></tr>
+<tr class="memdesc:ac7e9b3f88b07f2a8199476b99cf978cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a> string used to specify how this key is derived. <br /></td></tr>
+<tr class="separator:ac7e9b3f88b07f2a8199476b99cf978cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> is used to <em>seal</em> messages, in combination with a <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> which can <em>unseal</em> them. The key pair of this <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and the matching <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> are generated from a seed and a set of key-derivation specified options in JSON format <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
+<div class="textblock"><p>A <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> is used to <em>seal</em> messages, in combination with a <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> which can <em>unseal</em> them. The key pair of this <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a> and the matching <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> are generated from a seed and a set of derivation specified options in JSON format <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </p>
 <p>To derive a public key from a seed, first derive the corresponding <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> and then call <a class="el" href="class_private_key.html#a808ca1477d3e74f986744578a78bf395" title="Get the PublicKey used to seal messages that can be unsealed with this PrivateKey.">PrivateKey::getPublicKey</a>.</p>
 <p>Sealing a message (<em>plaintext</em>) creates a _ciphertext which contains the message but from which observers who do not have the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> cannot discern the contents of the message. Sealing also provides integrity-protection, which will prevent the message from being unsealed if it is modified. We use the verbs seal and unseal, rather than encrypt and decrypt, because the encrypting alone does not confer that the message includes an integrity (message authentication) code to prove that the ciphertext has not been tampered with.</p>
 <p>Note that sealing data does not prevent attackers who capture a sealed message (ciphertext) in transit with another validly-sealed message. A <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> can be used to sign messages that another party can verify that the message has not been forged or modified since the signer approved it. </p>
@@ -223,13 +223,13 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table>
 </div><div class="memdoc">
 
-<p>Deserialize from a byte array stored as a list of: (publicKeyBytes, keyDerivationOptionsJson) </p>
+<p>Deserialize from a byte array stored as a list of: (publicKeyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>
 </div>
-<a id="a488900ad04bb867a0891963862981bea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a488900ad04bb867a0891963862981bea">&#9670;&nbsp;</a></span>getKeyDerivationOptionsJson()</h2>
+<a id="afd8a05781918cc13ba62e0bcc64df573"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd8a05781918cc13ba62e0bcc64df573">&#9670;&nbsp;</a></span>getDerivationOptionsJson()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -238,7 +238,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::string PublicKey::getKeyDerivationOptionsJson </td>
+          <td class="memname">const std::string PublicKey::getDerivationOptionsJson </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -251,8 +251,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table>
 </div><div class="memdoc">
 
-<p>Get the JSON-formatted key-derivation options string used to generate the public-private key pair. </p>
-<dl class="section return"><dt>Returns</dt><dd>const std::string in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> </dd></dl>
+<p>Get the JSON-formatted derivation options string used to generate the public-private key pair. </p>
+<dl class="section return"><dt>Returns</dt><dd>const std::string in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a> </dd></dl>
 
 </div>
 </div>
@@ -302,7 +302,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
+<p>Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The plaintext message to seal </td></tr>
@@ -310,7 +310,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -340,7 +340,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
+<p>Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The plaintext message to seal </td></tr>
@@ -348,7 +348,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -378,7 +378,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
+<p>Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The plaintext message to seal </td></tr>
@@ -386,7 +386,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -422,7 +422,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Seal a plaintext message and then package the results along with its keyDerivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
+<p>Seal a plaintext message and then package the results along with its derivationOptionsJson and postDecryptionInstructions into a SealedPackagedMessage. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">message</td><td>The plaintext message to seal </td></tr>
@@ -431,7 +431,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -687,7 +687,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Serialize to byte array as a list of: (publicKeyBytes, keyDerivationOptionsJson) </p>
+<p>Serialize to byte array as a list of: (publicKeyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>

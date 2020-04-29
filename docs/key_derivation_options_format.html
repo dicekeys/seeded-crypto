@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 <div class="textblock"><p>This JSON-format is used to specify how a key should be derived from a seed string.</p>
 <p>When the Seeded Cryptography Library derives a key from a seed string, the key-derivations options JSON string is used to salt the key derivation process. Thus, any change to this string no matter how tiny, even if just ordering or white space, will cause the library to derive a different key than for any other pair of seed strings and key-derivation options JSON string.</p>
 <p>The value of a key-derivation options JSON string must be either a valid JSON object specification, which is a set of fields enclosed in curly braces ("{}") per the JSON format, or an empty string.</p>
-<p>This specification defines default values for all fields, which are applied if a field is absent, and so a key-derviation options JSON string that is itself an empty string ("") or empty object ("{}") will use the default values for all fields. For example, If you are specifying derivation options for a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> operation and pass an empty string, the <code>"keyType"</code> field will be inferred to be <code>Symmetric</code> and the <code>"algorithm"</code> will be the default algorithm for symmetric key cryptography (<code>XSalsa20Poly1305</code>).</p>
+<p>This specification defines default values for all fields, which are applied if a field is absent, and so a key-derviation options JSON string that is itself an empty string ("") or empty object ("{}") will use the default values for all fields. For example, If you are specifying derivation options for a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> operation and pass an empty string, the <code>"type"</code> field will be inferred to be <code>Symmetric</code> and the <code>"algorithm"</code> will be the default algorithm for symmetric key cryptography (<code>XSalsa20Poly1305</code>).</p>
 <p>This specification breaks fields into three types:</p>
 <p><em>Universal fields</em> are used by the Seeded Cryptography Library directly to derive keys. They are generalizable to any type of seed string, not just the DiceKeys use case for which the library was created.</p>
 <p>The Seeded Cryptogpraphy Library is oblivious to other fields, but since they are part of the JSON string any changes to them will cause the library to derive a different key.</p>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 <p><em>DiceKeys API fields</em> apply to keys generated through the DiceKeys API, which calls uses the DiceKeys app to generate keys and often to perform cryptographic operations. The DiceKeys app protects the keys so that other applications are not able to see the raw DiceKey, and these options specify which applications are allowed to generate keys and what they are allowed to do with them.</p>
 <p>The extensibility of underlying JSON format and the obliviousness of this library to non-universal fields allows other libraries to build on top of it without having to change this library. Any key-derivation options fields added will be ignored by this library for all purposes beyond salting the keys generated.</p>
 <p>Since any JSON object field outside the spec can be attached, one could, for example, use a field to salt the derivation of a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> like so: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;Symmetric&quot;,</div>
+<div class="line">    &quot;type&quot;: &quot;Symmetric&quot;,</div>
 <div class="line">    &quot;SaltWithThePhoneNumberForJenny&quot;: 8675309</div>
 <div class="line">}</div>
 </div><!-- fragment --><p><a class="anchor" id="key_derivation_options_universal_fields"></a></p>
@@ -104,9 +104,9 @@ $(document).ready(function(){initNavTree('key_derivation_options_format.html',''
 Universal Fields used by the Seeded Cryptography Library</h2>
 <p>The following fields are inspected and used by the seeded-crypto C++ library.</p>
 <h3><a class="anchor" id="autotoc_md1"></a>
-keyType</h3>
+type</h3>
 <p>Specify whether this JSON object should be used to construct a <a class="el" href="class_secret.html">Secret</a>, <a class="el" href="class_symmetric_key.html">SymmetricKey</a>, <a class="el" href="class_private_key.html">PrivateKey</a>, or <a class="el" href="class_signing_key.html">SigningKey</a>.</p>
-<div class="fragment"><div class="line">&quot;keyType&quot;?:</div>
+<div class="fragment"><div class="line">&quot;type&quot;?:</div>
 <div class="line">    // For constructing a raw Secret</div>
 <div class="line">    &quot;Secret&quot; |</div>
 <div class="line">    // For constructing a SymmetricKey</div>
@@ -115,45 +115,60 @@ keyType</h3>
 <div class="line">    &quot;Public&quot; |</div>
 <div class="line">    // For constructing a SigningKey, from which a SignatureVerificationKey can be instantiated</div>
 <div class="line">    &quot;Signing&quot;</div>
-</div><!-- fragment --><p>If not provided, the keyType is inferred from the type of object being constructed.</p>
-<p>If you attempt to construct an object of one <code>keyType</code> when the the <code>"keyType"</code> field specifies a different <code>keyType</code>, the constructor will treat it as an exception.</p>
+</div><!-- fragment --><p>If not provided, the type is inferred from the type of object being constructed.</p>
+<p>If you attempt to construct an object of one <code>type</code> when the the <code>"type"</code> field specifies a different <code>type</code>, the constructor will throw an <a class="el" href="class_invalid_key_derivation_option_value_exception.html">InvalidKeyDerivationOptionValueException</a>.</p>
 <h3><a class="anchor" id="autotoc_md2"></a>
 algorithm</h3>
 <p>Specify the specific algorithm to use.</p>
 <div class="fragment"><div class="line">&quot;algorithm&quot;?: </div>
-<div class="line">    // valid only for &quot;keyType&quot;: &quot;Symmetric&quot;</div>
+<div class="line">    // valid only for &quot;type&quot;: &quot;Symmetric&quot;</div>
 <div class="line">    &quot;XSalsa20Poly1305&quot; | // the current default for SymmetricKey</div>
-<div class="line">    // valid only for &quot;keyType&quot;: &quot;Public&quot;</div>
+<div class="line">    // valid only for &quot;type&quot;: &quot;Public&quot;</div>
 <div class="line">    &quot;X25519&quot; |           // the current default for PrivateKey</div>
-<div class="line">    // valid only for &quot;keyType&quot;: Signing</div>
+<div class="line">    // valid only for &quot;type&quot;: Signing</div>
 <div class="line">    &quot;Ed25519&quot;            // the current default for SigningKey</div>
-</div><!-- fragment --><p>The <code>algorithm</code> field should never be set for <code>"keyType": "Secret"</code>.</p>
+</div><!-- fragment --><p>The <code>algorithm</code> field should never be set for <code>"type": "Secret"</code>.</p>
 <h3><a class="anchor" id="autotoc_md3"></a>
-keyLengthInBytes</h3>
-<div class="fragment"><div class="line">&quot;keyLengthInBytes&quot;?: number // e.g. &quot;keyLengthInBytes&quot;: 32</div>
-</div><!-- fragment --><p>Set this value when using <code>"KeyType": "Secret"</code> to set the size of the secret to be derived (in bytes, as the name implies). If set for other <code>keyType</code>s, it must match the keyLengthInBytes of that algorithm (32 bytes for the current algorithms).</p>
+lengthInBytes</h3>
+<div class="fragment"><div class="line">&quot;lengthInBytes&quot;?: number // e.g. &quot;lengthInBytes&quot;: 32</div>
+</div><!-- fragment --><p>Set this value when using <code>"type": "Secret"</code> to set the size of the secret to be derived (in bytes, as the name implies). If set for other <code>type</code>s, it must match the lengthInBytes of that algorithm (32 bytes for the current algorithms).</p>
 <p>If this library is extended to support <code>algorithm</code> values with multiple key-length options, this field can be used to specify which length varient of the algorithm to use.</p>
 <h3><a class="anchor" id="autotoc_md4"></a>
 hashFunction</h3>
-<div class="fragment"><div class="line">&quot;hashFunction&quot;?: &quot;BLAKE2b&quot; | &quot;SHA256&quot; | &quot;Argon2id&quot; | &quot;Scrypt&quot; // default &quot;SHA256&quot;</div>
-</div><!-- fragment --><p>Specifies the hash function used to derive the key. If <code>"Argoin2id"</code> or <code>"Scrypt"</code> are used, you can specify the memory limit and ops (iterations) via two additional fields, which are ignored for <code>"BLAKE2b"</code> and <code>"SHA256"</code>. </p><div class="fragment"><div class="line">&quot;hashFunctionMemoryLimit&quot;: number // default 67108864</div>
-<div class="line">&quot;hashFunctionIterations&quot;: number // default 2, has no effect if algorithm is &quot;BLAKE2b&quot; | &quot;SHA256&quot; </div>
-</div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;Secret&quot;,</div>
-<div class="line">    &quot;keyLengthInBytes&quot;: 96,</div>
+<p>The <code>hashFunction</code> field specifies the hash function to use for key derivation. The default is <code>"SHA256"</code>.</p>
+<div class="fragment"><div class="line">&quot;hashFunction&quot;?: &quot;BLAKE2b&quot; | &quot;SHA256&quot; | &quot;Argon2id&quot; | &quot;Scrypt&quot;</div>
+</div><!-- fragment --><p><code>Argon2id</code> and <code>Scrypt</code> are hash functions designed to require not just computation, but also memory, in order to thwart hardware brute force attacks. (The <code>Argon2id</code> parameter maps to algorithm <code>crypto_pwhash_ALG_ARGON2ID13</code> in libsodium with the salt set to a block of zero bytes, and <code>Scrypt</code> maps to algorithm <code>crypto_pwhash_scryptsalsa208sha256</code> in libsodium, also with zero bytes for the salt.) When using these two hash functions, you can also specify the memory limit and the number of passes to make through memory.</p>
+<div class="fragment"><div class="line">&quot;hashFunctionMemoryLimitInBytes&quot;: number // default 67108864</div>
+<div class="line">&quot;hashFunctionMemoryPasses&quot;: number // default 2</div>
+</div><!-- fragment --><p>The <code>hashFunctionMemoryLimitInBytes</code> field is the amount of memory that <code>Argoin2id</code> or <code>Scrypt</code> will be required to iterate (pass) through in order to compute the correct output, and <code>hashFunctionMemoryPasses</code> is the number of passes it will need to make through that memory to do so.</p>
+<p>For example: </p><div class="fragment"><div class="line">{</div>
+<div class="line">    &quot;type&quot;: &quot;Secret&quot;,</div>
+<div class="line">    &quot;lengthInBytes&quot;: 96,</div>
 <div class="line">    &quot;hashFunction&quot;: &quot;Argon2id&quot;,</div>
-<div class="line">    &quot;hashFunctionMemoryLimit&quot;: 67108864,</div>
-<div class="line">    &quot;hashFunctionIterations&quot;: 4</div>
+<div class="line">    &quot;hashFunctionMemoryLimitInBytes&quot;: 67108864,</div>
+<div class="line">    &quot;hashFunctionMemoryPasses&quot;: 4</div>
 <div class="line">}</div>
-</div><!-- fragment --><h4><a class="anchor" id="autotoc_md5"></a>
+</div><!-- fragment --><p>As the name implies, the <code>hashFunctionMemoryLimitInBytes</code> field is specified in bytes. It should be a multiple of 1,024, must be at least 8,192 and no greater than 2^31 (2,147,483,648). The default is 67,108,864. This field maps to the <a href="https://libsodium.gitbook.io/doc/password_hashing/default_phf"><code>memlimit</code> parameter in libsodium</a>.</p>
+<p>The <code>hashFunctionMemoryPasses</code> must be at least 1, no greater than 2^32-1 (4,294,967,295), and is set to 2 memory passes by default. Since this parameter determines the number of passes the hash function will make through the memory region specified by <code>hashFunctionMemoryLimitInBytes</code>, and results in hashing an amount of memory equal to the product of these two parameters, the computational cost on the order of the product of <code>hashFunctionMemoryPasses</code> times <code>hashFunctionMemoryLimitInBytes</code>. (The <code>hashFunctionMemoryPasses</code> field maps to the poorly-documented <code>opslimit</code> in <code>libsodium</code>. An examination of the <code>libsodium</code> source shows that opslimit is assigned to a parameter named <code>t_cost</code>, which in turn is assigned to <code>instance.passes</code> on line 56 of <a href="https://github.com/jedisct1/libsodium/blob/7214dff083638604cd48e5c9ffc5704460192794/src/libsodium/crypto_pwhash/argon2/argon2.c">argon2.c</a>.)</p>
+<p><code>BLAKE2b</code> and <code>SHA256</code> are single-iteration functions and so, when using them, the <code>hashFunctionMemoryLimitInBytes</code> and <code>hashFunctionMemoryPasses</code> fields must not be set.</p>
+<h4><a class="anchor" id="autotoc_md5"></a>
 Hash defaults and recommendations</h4>
-<p>The default hash function is <code>SHA256</code> as this library was designed for DiceKeys, which are sufficiently random seeds (~196 bits) so as not to require brute-force prevention with a costly key-derivation function like <code>Scrypt</code> or <code>Argon2id</code>. The default ensures that keys can be re-derived cheaply on just about any hardware platform.</p>
-<p>Applcations that need a more expensive key derivation to protect against brute-forcing of the key-derivation algorithm will want to use <code>Scrypt</code> if and only if keys will always be derived on hardware where no untrusted code will run during the derivation process. If keys may sometimes be derived on hardware shared with untrusted code, even if that code is sanboxed, we recommend using <code>Argon2id</code>.</p>
-<p>We purposely chose <em>not</em> to support multiple iterations of <code>BLAKE2b</code> or <code>SHA256</code> via the <code>hashFunctionIterations</code> field, as applications that want to increase the cost of key derviation to prevent brute forcing should use <code>Argon2id</code> or <code>Scrypt</code>.</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<p>The default hash function is <code>SHA256</code> as this library was designed for DiceKeys, which are random and rawn from such a large number of possible values (~2^196) to make <code>Scrypt</code> and <code>Argon2id</code> unncessary. This default ensures that keys can be re-derived cheaply on just about any hardware platform.</p>
+<p>Applcations that need a more expensive key derivation to protect against brute-forcing of the key-derivation algorithm will want to use <code>Scrypt</code> if <em>and only if</em> keys will <em>always</em> be derived on hardware where no untrusted code will run during the derivation process. If keys may sometimes be derived on hardware shared with untrusted code, even if that code is sanboxed, we recommend using <code>Argon2id</code>.</p>
+<p>We purposely chose <em>not</em> to support multiple iterations of <code>BLAKE2b</code> or <code>SHA256</code> via the <code>hashFunctionMemoryPasses</code> field, as applications that want to increase the cost of key derviation to prevent brute forcing should use <code>Argon2id</code> or <code>Scrypt</code>.</p>
+<h4><a class="anchor" id="autotoc_md6"></a>
+Preimage construction</h4>
+<p>The input, or <code>preimage</code>, to the key derivation function is the concatenation of</p><ul>
+<li>the seed (UTF8 encoded if no encoding to a binary array is specified)),</li>
+<li>a null-termination character ('\0') for the seed,</li>
+<li>the type (<code>Symmetric</code>, <code>Public</code>, <code>Signing</code>, or <code><a class="el" href="class_secret.html" title="A secret derived from a seed string and set of key-derivation specified options in Key-Derivation Opt...">Secret</a></code>) of the key being derived, UTF8 encoded and not null terminated, and</li>
+<li>the key-derivation options JSON string, UTF8 encoded and not null terminated.</li>
+</ul>
+<p>Including the <code>type</code> of the key (or secret) being derived in the preimage may seem unnecessary, since there is a <code>type</code> field in the JSON format. It is important to include the type of the key or secret actually being derived because the <code>type</code> field is optional in the JSON format. If we were not to include it, two keys of different types derived from the same JSON specification could have the same preimage.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
 DiceKeys Hardware Fields</h2>
 <p>This Seeded Cryptography Library is oblivious to these fields, but they are documented here to keep the specification from being split into too many locations.</p>
-<h3><a class="anchor" id="autotoc_md7"></a>
+<h3><a class="anchor" id="autotoc_md8"></a>
 excludeOrientationOfFaces</h3>
 <p>When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:</p><ul>
 <li>The uppercase letter on the die</li>
@@ -162,15 +177,15 @@ excludeOrientationOfFaces</h3>
 </ul>
 <p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be excluded resulting in a 50-character seed. This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.</p>
 <div class="fragment"><div class="line">&quot;excludeOrientationOfFaces&quot;?: true | false // default false</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
 DiceKeys API Fields</h2>
 <p>These fields specify who may generate keys and what they may do with them once generated.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 clientMayRetrieveKey</h3>
-<p>Set <code>"clientMayRetrieveKey"?: true</code> to allow the client application to retrieve the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> (<code>"keyType": "Public"</code>), <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> (<code>"KeyType": "Signing"</code>), or <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> (<code>"keyType": "Symmetric"</code>) subject to any restrictions specified in the <code>"restrictions"</code> field.</p>
+<p>Set <code>"clientMayRetrieveKey"?: true</code> to allow the client application to retrieve the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> (<code>"type": "Public"</code>), <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> (<code>"type": "Signing"</code>), or <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> (<code>"type": "Symmetric"</code>) subject to any restrictions specified in the <code>"restrictions"</code> field.</p>
 <div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;?: true | false // default false</div>
 </div><!-- fragment --><p>This allows client apps to derive keys that they can use private/signing/symmetric keys even when the seed is not present for re-derivation, but still have a key that is recoverable with the seed should it become necessary.</p>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 restrictions</h3>
 <p>The DiceKeys app will restrict access to derived keys or secrets to so that only those apps that are specifically allowed can obtain or use them.</p>
 <div class="fragment"><div class="line">&quot;restrictions&quot;?: {</div>
@@ -178,7 +193,7 @@ restrictions</h3>
 <div class="line">    &quot;urlPrefixesAllowed&quot;?: string[]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;keyType&quot;: &quot;Secret&quot;,</div>
+<div class="line">    &quot;type&quot;: &quot;Secret&quot;,</div>
 <div class="line">    &quot;restrictions&quot;: {</div>
 <div class="line">        &quot;androidPackagePrefixesAllowed&quot;: [</div>
 <div class="line">            &quot;org.dicekeys.apps.fido&quot;,</div>
@@ -191,7 +206,7 @@ restrictions</h3>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>If the <code>"restrictions"</code> field is set, but the object it is set to does not contain an <code>"androidPackagePrefixesAllowed"</code> field, the API will forbid Android applications from generating the key. If the <code>"restrictions"</code> field is set, but the object it is set to does not contain a <code>"urlPrefixesAllowed"</code> field, the API will forbid iOS and other applications that rely on this field to generate the key.</p>
-<p>The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and and terminate client package IDs with dots, to prevent extension attacks. In other words, if you set the prefix <code>com.example</code>, the API will treat it as <code>com.example.</code>, so that another party cannot register <code>com.exampleattacker</code> to match the <code>com.eaxmple</code> prefix. </p>
+<p>The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and and terminate client package IDs with dots, to prevent extension attacks. In other words, if you set the prefix <code>com.example</code>, the API will test if <code>com.example.</code> is a prefix of the string composed by concatenating a period onto your client application's package name. So, if an attacker registers the package name <code>com.exampleattacker</code>, they will not be able to match the <code>com.eaxmple</code> prefix. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

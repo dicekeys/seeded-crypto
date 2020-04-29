@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_2dderivation_20options_20json_20format_145',['Key-Derivation Options JSON Format',['../key_derivation_options_format.html',1,'']]]
+  ['json_20format_20for_20derivation_20options_145',['JSON Format for Derivation Options',['../derivation_options_format.html',1,'']]]
 ];

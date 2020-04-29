@@ -91,20 +91,20 @@ $(document).ready(function(){initNavTree('class_packaged_sealed_message.html',''
 </div><!--header-->
 <div class="contents">
 
-<p>When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>, as well as any optional post-decryption instructions it was sealed with (postDecryptionInstructions).  
+<p>When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>, as well as any optional post-decryption instructions it was sealed with (postDecryptionInstructions).  
  <a href="class_packaged_sealed_message.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="packaged-sealed-message_8hpp_source.html">packaged-sealed-message.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8f7b1ad56e2699c9b0592a79bffc1910"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a8f7b1ad56e2699c9b0592a79bffc1910">PackagedSealedMessage</a> (const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_packaged_sealed_message.html#adb7fc2d385b7da7aaea9908ef90d8532">ciphertext</a>, const std::string &amp;<a class="el" href="class_packaged_sealed_message.html#a7b7a554c9c21a3387f2d5a7e3c94b9db">keyDerivationOptionsJson</a>, const std::string &amp;<a class="el" href="class_packaged_sealed_message.html#a12f7637dfa4488bdc0f4841564f52c23">postDecryptionInstructions</a>)</td></tr>
-<tr class="memdesc:a8f7b1ad56e2699c9b0592a79bffc1910"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct directly from the constituent members.  <a href="class_packaged_sealed_message.html#a8f7b1ad56e2699c9b0592a79bffc1910">More...</a><br /></td></tr>
-<tr class="separator:a8f7b1ad56e2699c9b0592a79bffc1910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9307dc20d219688ed899a0e951b4003d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a9307dc20d219688ed899a0e951b4003d">PackagedSealedMessage</a> (const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_packaged_sealed_message.html#adb7fc2d385b7da7aaea9908ef90d8532">ciphertext</a>, const std::string &amp;<a class="el" href="class_packaged_sealed_message.html#a3ae100dd21c33c96ed4286b5c15572f8">derivationOptionsJson</a>, const std::string &amp;<a class="el" href="class_packaged_sealed_message.html#a12f7637dfa4488bdc0f4841564f52c23">postDecryptionInstructions</a>)</td></tr>
+<tr class="memdesc:a9307dc20d219688ed899a0e951b4003d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct directly from the constituent members.  <a href="class_packaged_sealed_message.html#a9307dc20d219688ed899a0e951b4003d">More...</a><br /></td></tr>
+<tr class="separator:a9307dc20d219688ed899a0e951b4003d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bc45a427290ba93543416242a79c24a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a8bc45a427290ba93543416242a79c24a">PackagedSealedMessage</a> (const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a> &amp;other)</td></tr>
 <tr class="separator:a8bc45a427290ba93543416242a79c24a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a6aafe2d46317c16c7682cbf3fc306a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a2a6aafe2d46317c16c7682cbf3fc306a">toSerializedBinaryForm</a> () const</td></tr>
-<tr class="memdesc:a2a6aafe2d46317c16c7682cbf3fc306a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (keyBytes, keyDerivationOptionsJson)  <a href="class_packaged_sealed_message.html#a2a6aafe2d46317c16c7682cbf3fc306a">More...</a><br /></td></tr>
+<tr class="memdesc:a2a6aafe2d46317c16c7682cbf3fc306a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (keyBytes, derivationOptionsJson)  <a href="class_packaged_sealed_message.html#a2a6aafe2d46317c16c7682cbf3fc306a">More...</a><br /></td></tr>
 <tr class="separator:a2a6aafe2d46317c16c7682cbf3fc306a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66068f249673d48f624f9924852109bf"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a66068f249673d48f624f9924852109bf">toJson</a> (int indent=-1, const char indent_char=' ') const</td></tr>
 <tr class="memdesc:a66068f249673d48f624f9924852109bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this object to a JSON-formatted string.  <a href="class_packaged_sealed_message.html#a66068f249673d48f624f9924852109bf">More...</a><br /></td></tr>
@@ -113,7 +113,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a4a0ee3eb2270d4e7a846d0b98ea2d501"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a4a0ee3eb2270d4e7a846d0b98ea2d501">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:a4a0ee3eb2270d4e7a846d0b98ea2d501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (keyBytes, keyDerivationOptionsJson)  <a href="class_packaged_sealed_message.html#a4a0ee3eb2270d4e7a846d0b98ea2d501">More...</a><br /></td></tr>
+<tr class="memdesc:a4a0ee3eb2270d4e7a846d0b98ea2d501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (keyBytes, derivationOptionsJson)  <a href="class_packaged_sealed_message.html#a4a0ee3eb2270d4e7a846d0b98ea2d501">More...</a><br /></td></tr>
 <tr class="separator:a4a0ee3eb2270d4e7a846d0b98ea2d501"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1b81268c708814f44bd8c3678308ca3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#af1b81268c708814f44bd8c3678308ca3">fromJson</a> (const std::string &amp;packagedSealedMessageAsJson)</td></tr>
 <tr class="memdesc:af1b81268c708814f44bd8c3678308ca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct by reconstituting this object from a JSON string.  <a href="class_packaged_sealed_message.html#af1b81268c708814f44bd8c3678308ca3">More...</a><br /></td></tr>
@@ -125,20 +125,20 @@ Public Attributes</h2></td></tr>
 const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#adb7fc2d385b7da7aaea9908ef90d8532">ciphertext</a></td></tr>
 <tr class="memdesc:adb7fc2d385b7da7aaea9908ef90d8532"><td class="mdescLeft">&#160;</td><td class="mdescRight">The sealed message as a raw array of bytes. <br /></td></tr>
 <tr class="separator:adb7fc2d385b7da7aaea9908ef90d8532"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b7a554c9c21a3387f2d5a7e3c94b9db"><td class="memItemLeft" align="right" valign="top"><a id="a7b7a554c9c21a3387f2d5a7e3c94b9db"></a>
-const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a7b7a554c9c21a3387f2d5a7e3c94b9db">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:a7b7a554c9c21a3387f2d5a7e3c94b9db"><td class="mdescLeft">&#160;</td><td class="mdescRight">The key-derivation options used to generate the encryption/decryption keys. <br /></td></tr>
-<tr class="separator:a7b7a554c9c21a3387f2d5a7e3c94b9db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ae100dd21c33c96ed4286b5c15572f8"><td class="memItemLeft" align="right" valign="top"><a id="a3ae100dd21c33c96ed4286b5c15572f8"></a>
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a3ae100dd21c33c96ed4286b5c15572f8">derivationOptionsJson</a></td></tr>
+<tr class="memdesc:a3ae100dd21c33c96ed4286b5c15572f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The derivation options used to generate the encryption/decryption keys. <br /></td></tr>
+<tr class="separator:a3ae100dd21c33c96ed4286b5c15572f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12f7637dfa4488bdc0f4841564f52c23"><td class="memItemLeft" align="right" valign="top"><a id="a12f7637dfa4488bdc0f4841564f52c23"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_packaged_sealed_message.html#a12f7637dfa4488bdc0f4841564f52c23">postDecryptionInstructions</a></td></tr>
 <tr class="memdesc:a12f7637dfa4488bdc0f4841564f52c23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional public instructions that the sealer requests the unsealer to follow as a condition of unsealing. <br /></td></tr>
 <tr class="separator:a12f7637dfa4488bdc0f4841564f52c23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>, as well as any optional post-decryption instructions it was sealed with (postDecryptionInstructions). </p>
+<div class="textblock"><p>When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>, as well as any optional post-decryption instructions it was sealed with (postDecryptionInstructions). </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8f7b1ad56e2699c9b0592a79bffc1910"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f7b1ad56e2699c9b0592a79bffc1910">&#9670;&nbsp;</a></span>PackagedSealedMessage() <span class="overload">[1/2]</span></h2>
+<a id="a9307dc20d219688ed899a0e951b4003d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9307dc20d219688ed899a0e951b4003d">&#9670;&nbsp;</a></span>PackagedSealedMessage() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,7 +153,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>keyDerivationOptionsJson</em>, </td>
+          <td class="paramname"><em>derivationOptionsJson</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -173,7 +173,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ciphertext</td><td>The binary sealed message </td></tr>
-    <tr><td class="paramname">keyDerivationOptionsJson</td><td>The key-derivation options used to generate the encryption/decryption keys. </td></tr>
+    <tr><td class="paramname">derivationOptionsJson</td><td>The derivation options used to generate the encryption/decryption keys. </td></tr>
     <tr><td class="paramname">postDecryptionInstructions</td><td>Optional public instructions that the sealer requests the unsealer to follow as a condition of unsealing. </td></tr>
   </table>
   </dd>
@@ -264,7 +264,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table>
 </div><div class="memdoc">
 
-<p>Deserialize from a byte array stored as a list of: (keyBytes, keyDerivationOptionsJson) </p>
+<p>Deserialize from a byte array stored as a list of: (keyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>
@@ -323,7 +323,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Serialize to byte array as a list of: (keyBytes, keyDerivationOptionsJson) </p>
+<p>Serialize to byte array as a list of: (keyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>

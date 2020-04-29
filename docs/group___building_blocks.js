@@ -1,31 +1,31 @@
 var group___building_blocks =
 [
+    [ "DerivationOptions", "class_derivation_options.html", [
+      [ "~DerivationOptions", "class_derivation_options.html#ae92da75912496585b1d0baa4ee1d69be", null ],
+      [ "DerivationOptions", "class_derivation_options.html#a1d058318ea36c4474a535bfd0d830c81", null ],
+      [ "derivationOptionsJsonWithAllOptionalParametersSpecified", "class_derivation_options.html#a59a4a45df67679e8c8b9369a5c204cf2", null ],
+      [ "deriveMasterSecret", "class_derivation_options.html#a5911bcdecdfbd25570e1e2d1cc876c5b", null ],
+      [ "algorithm", "class_derivation_options.html#aa504763e8e98aca5107863a71b403254", null ],
+      [ "derivationOptionsJson", "class_derivation_options.html#a404d2140971b120a19d306a9fe56f2c9", null ],
+      [ "hashFunction", "class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe", null ],
+      [ "hashFunctionImplementation", "class_derivation_options.html#aef860a1e30164f4a6dc8bd33bc710255", null ],
+      [ "hashFunctionMemoryLimitInBytes", "class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d", null ],
+      [ "hashFunctionMemoryPasses", "class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3", null ],
+      [ "lengthInBytes", "class_derivation_options.html#a158e560d6e2c510e93eaf7565efc3a3c", null ],
+      [ "type", "class_derivation_options.html#af9e0efe396d2c8e7e45ff90024837166", null ]
+    ] ],
     [ "HashFunction", "class_hash_function.html", [
       [ "~HashFunction", "class_hash_function.html#a38855b720b5445d5e1f01e2706dfcfce", null ],
       [ "hash", "class_hash_function.html#aec437df3699552dd4551aabe02bd447e", null ],
       [ "hash", "class_hash_function.html#aa9b8acdc93f6bb319db2085d1f21452d", null ]
     ] ],
-    [ "KeyDerivationOptions", "class_key_derivation_options.html", [
-      [ "~KeyDerivationOptions", "class_key_derivation_options.html#a4ae369e5a50a0e3beb150934308b5bf5", null ],
-      [ "KeyDerivationOptions", "class_key_derivation_options.html#a04490f7d7df84d3d4c75e851c91f7a36", null ],
-      [ "deriveMasterSecret", "class_key_derivation_options.html#a9ceb985f49d26a6b646dfefd0e2a14be", null ],
-      [ "keyDerivationOptionsJsonWithAllOptionalParametersSpecified", "class_key_derivation_options.html#a82007f3d9cf2b4a034510b43fbf1d930", null ],
-      [ "algorithm", "class_key_derivation_options.html#a88855da90081d0e1633e8fc88e49572c", null ],
-      [ "hashFunction", "class_key_derivation_options.html#a2eaefe480a03796ddcd4e8acf0c52cee", null ],
-      [ "hashFunctionImplementation", "class_key_derivation_options.html#af187a6b4f70698ae9eb183a65dd7ffc1", null ],
-      [ "hashFunctionIterations", "class_key_derivation_options.html#a1a7f659468b2aa150c6b45af1e40a4b1", null ],
-      [ "hashFunctionMemoryLimit", "class_key_derivation_options.html#a01f57d2939c4199407e5fb97a010a3b3", null ],
-      [ "keyDerivationOptionsJson", "class_key_derivation_options.html#aef2361cd534e5ed7823b513bfa08cc3f", null ],
-      [ "keyLengthInBytes", "class_key_derivation_options.html#a9c2acb1422bbf72001a5bdb7786744fe", null ],
-      [ "keyType", "class_key_derivation_options.html#ac2e290dcbb88f6587898734df950c9fd", null ]
-    ] ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", [
-      [ "PackagedSealedMessage", "class_packaged_sealed_message.html#a8f7b1ad56e2699c9b0592a79bffc1910", null ],
+      [ "PackagedSealedMessage", "class_packaged_sealed_message.html#a9307dc20d219688ed899a0e951b4003d", null ],
       [ "PackagedSealedMessage", "class_packaged_sealed_message.html#a8bc45a427290ba93543416242a79c24a", null ],
       [ "toJson", "class_packaged_sealed_message.html#a66068f249673d48f624f9924852109bf", null ],
       [ "toSerializedBinaryForm", "class_packaged_sealed_message.html#a2a6aafe2d46317c16c7682cbf3fc306a", null ],
       [ "ciphertext", "class_packaged_sealed_message.html#adb7fc2d385b7da7aaea9908ef90d8532", null ],
-      [ "keyDerivationOptionsJson", "class_packaged_sealed_message.html#a7b7a554c9c21a3387f2d5a7e3c94b9db", null ],
+      [ "derivationOptionsJson", "class_packaged_sealed_message.html#a3ae100dd21c33c96ed4286b5c15572f8", null ],
       [ "postDecryptionInstructions", "class_packaged_sealed_message.html#a12f7637dfa4488bdc0f4841564f52c23", null ]
     ] ],
     [ "SodiumBuffer", "class_sodium_buffer.html", [

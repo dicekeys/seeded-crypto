@@ -92,24 +92,24 @@ $(document).ready(function(){initNavTree('class_symmetric_key.html',''); initRes
 </div><!--header-->
 <div class="contents">
 
-<p>A <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> can be used to seal and unseal messages. This <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class can be (re) derived from a seed using set of key-derivation options specified in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. So, you can use this symmetric-key to seal a message, throw the key away, and re-generate the key when you need to unseal the message so long as you still have the original seed and keyDerivationOptionsJson.  
+<p>A <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> can be used to seal and unseal messages. This <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class can be (re) derived from a seed using set of derivation options specified in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. So, you can use this symmetric-key to seal a message, throw the key away, and re-generate the key when you need to unseal the message so long as you still have the original seed and derivationOptionsJson.  
  <a href="class_symmetric_key.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="symmetric-key_8hpp_source.html">symmetric-key.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab2c80fb4b4e9f8b6743003f4f4835fa4"><td class="memItemLeft" align="right" valign="top"><a id="ab2c80fb4b4e9f8b6743003f4f4835fa4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#ab2c80fb4b4e9f8b6743003f4f4835fa4">SymmetricKey</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;<a class="el" href="class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289">keyBytes</a>, std::string <a class="el" href="class_symmetric_key.html#a23ece4a7abbb13aec2e0f87b0df3cdd8">keyDerivationOptionsJson</a>)</td></tr>
-<tr class="memdesc:ab2c80fb4b4e9f8b6743003f4f4835fa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from its members. <br /></td></tr>
-<tr class="separator:ab2c80fb4b4e9f8b6743003f4f4835fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cb8cac98ac913c7020b85b7b43a310b"><td class="memItemLeft" align="right" valign="top"><a id="a3cb8cac98ac913c7020b85b7b43a310b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a3cb8cac98ac913c7020b85b7b43a310b">SymmetricKey</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;<a class="el" href="class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289">keyBytes</a>, std::string <a class="el" href="class_symmetric_key.html#a49744fd0283a5ae994b5ff79e26bfb2c">derivationOptionsJson</a>)</td></tr>
+<tr class="memdesc:a3cb8cac98ac913c7020b85b7b43a310b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from its members. <br /></td></tr>
+<tr class="separator:a3cb8cac98ac913c7020b85b7b43a310b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4093b83e9bfd58af4e3f77b3289f3039"><td class="memItemLeft" align="right" valign="top"><a id="a4093b83e9bfd58af4e3f77b3289f3039"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a4093b83e9bfd58af4e3f77b3289f3039">SymmetricKey</a> (const <a class="el" href="class_symmetric_key.html">SymmetricKey</a> &amp;other)</td></tr>
 <tr class="memdesc:a4093b83e9bfd58af4e3f77b3289f3039"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> by copying another one. <br /></td></tr>
 <tr class="separator:a4093b83e9bfd58af4e3f77b3289f3039"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11a221846e8f6a9aead2b4f329f30743"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a11a221846e8f6a9aead2b4f329f30743">SymmetricKey</a> (const std::string &amp;seedString, const std::string &amp;<a class="el" href="class_symmetric_key.html#a23ece4a7abbb13aec2e0f87b0df3cdd8">keyDerivationOptionsJson</a>)</td></tr>
-<tr class="memdesc:a11a221846e8f6a9aead2b4f329f30743"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> by (re)deriving it from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>.  <a href="class_symmetric_key.html#a11a221846e8f6a9aead2b4f329f30743">More...</a><br /></td></tr>
-<tr class="separator:a11a221846e8f6a9aead2b4f329f30743"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee9eb62f780aecf913dec1432704e355"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#aee9eb62f780aecf913dec1432704e355">SymmetricKey</a> (const std::string &amp;seedString, const std::string &amp;<a class="el" href="class_symmetric_key.html#a49744fd0283a5ae994b5ff79e26bfb2c">derivationOptionsJson</a>)</td></tr>
+<tr class="memdesc:aee9eb62f780aecf913dec1432704e355"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> by (re)deriving it from a seed string and a set of derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>.  <a href="class_symmetric_key.html#aee9eb62f780aecf913dec1432704e355">More...</a><br /></td></tr>
+<tr class="separator:aee9eb62f780aecf913dec1432704e355"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea82620c938268adeb78bbdaa1431987"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#aea82620c938268adeb78bbdaa1431987">sealToCiphertextOnly</a> (const unsigned char *message, const size_t messageLength, const std::string &amp;postDecryptionInstructions={}) const</td></tr>
 <tr class="memdesc:aea82620c938268adeb78bbdaa1431987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seal a plaintext message.  <a href="class_symmetric_key.html#aea82620c938268adeb78bbdaa1431987">More...</a><br /></td></tr>
 <tr class="separator:aea82620c938268adeb78bbdaa1431987"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,7 +141,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a94f3752039f5735b504f071d710ac01b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize this object to a JSON-formatted string.  <a href="class_symmetric_key.html#a94f3752039f5735b504f071d710ac01b">More...</a><br /></td></tr>
 <tr class="separator:a94f3752039f5735b504f071d710ac01b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac1f3f4afd908aba2f5780f2248a8f47"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#aac1f3f4afd908aba2f5780f2248a8f47">toSerializedBinaryForm</a> () const</td></tr>
-<tr class="memdesc:aac1f3f4afd908aba2f5780f2248a8f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (keyBytes, keyDerivationOptionsJson)  <a href="class_symmetric_key.html#aac1f3f4afd908aba2f5780f2248a8f47">More...</a><br /></td></tr>
+<tr class="memdesc:aac1f3f4afd908aba2f5780f2248a8f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (keyBytes, derivationOptionsJson)  <a href="class_symmetric_key.html#aac1f3f4afd908aba2f5780f2248a8f47">More...</a><br /></td></tr>
 <tr class="separator:aac1f3f4afd908aba2f5780f2248a8f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -150,7 +150,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a74190d5c5f3a46e6c5f4e131e6f3d5a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message by re-deriving the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from a seed.  <a href="class_symmetric_key.html#a74190d5c5f3a46e6c5f4e131e6f3d5a1">More...</a><br /></td></tr>
 <tr class="separator:a74190d5c5f3a46e6c5f4e131e6f3d5a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a995614d73b2553a2f73278da919a4c1a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_symmetric_key.html">SymmetricKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a995614d73b2553a2f73278da919a4c1a">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:a995614d73b2553a2f73278da919a4c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (keyBytes, keyDerivationOptionsJson)  <a href="class_symmetric_key.html#a995614d73b2553a2f73278da919a4c1a">More...</a><br /></td></tr>
+<tr class="memdesc:a995614d73b2553a2f73278da919a4c1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (keyBytes, derivationOptionsJson)  <a href="class_symmetric_key.html#a995614d73b2553a2f73278da919a4c1a">More...</a><br /></td></tr>
 <tr class="separator:a995614d73b2553a2f73278da919a4c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3534a81bb11dfc32b8b43b60b5a52a05"><td class="memItemLeft" align="right" valign="top"><a id="a3534a81bb11dfc32b8b43b60b5a52a05"></a>
 static <a class="el" href="class_symmetric_key.html">SymmetricKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a3534a81bb11dfc32b8b43b60b5a52a05">fromJson</a> (const std::string &amp;symmetricKeyAsJson)</td></tr>
@@ -162,10 +162,10 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a3c037459d7ccb3c6eac890d9eceb3289"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289">keyBytes</a></td></tr>
 <tr class="memdesc:a3c037459d7ccb3c6eac890d9eceb3289"><td class="mdescLeft">&#160;</td><td class="mdescRight">The binary representation of the symmetric key.  <a href="class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289">More...</a><br /></td></tr>
 <tr class="separator:a3c037459d7ccb3c6eac890d9eceb3289"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23ece4a7abbb13aec2e0f87b0df3cdd8"><td class="memItemLeft" align="right" valign="top"><a id="a23ece4a7abbb13aec2e0f87b0df3cdd8"></a>
-const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a23ece4a7abbb13aec2e0f87b0df3cdd8">keyDerivationOptionsJson</a></td></tr>
-<tr class="memdesc:a23ece4a7abbb13aec2e0f87b0df3cdd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a> string used to specify how this key is derived. <br /></td></tr>
-<tr class="separator:a23ece4a7abbb13aec2e0f87b0df3cdd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49744fd0283a5ae994b5ff79e26bfb2c"><td class="memItemLeft" align="right" valign="top"><a id="a49744fd0283a5ae994b5ff79e26bfb2c"></a>
+const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_symmetric_key.html#a49744fd0283a5ae994b5ff79e26bfb2c">derivationOptionsJson</a></td></tr>
+<tr class="memdesc:a49744fd0283a5ae994b5ff79e26bfb2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a> string used to specify how this key is derived. <br /></td></tr>
+<tr class="separator:a49744fd0283a5ae994b5ff79e26bfb2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -175,12 +175,12 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
 <tr class="separator:a9dd824b57903249d4cdaed657922ac27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> can be used to seal and unseal messages. This <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class can be (re) derived from a seed using set of key-derivation options specified in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. So, you can use this symmetric-key to seal a message, throw the key away, and re-generate the key when you need to unseal the message so long as you still have the original seed and keyDerivationOptionsJson. </p>
+<div class="textblock"><p>A <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> can be used to seal and unseal messages. This <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> class can be (re) derived from a seed using set of derivation options specified in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. So, you can use this symmetric-key to seal a message, throw the key away, and re-generate the key when you need to unseal the message so long as you still have the original seed and derivationOptionsJson. </p>
 <p>Sealing a message (<em>plaintext</em>) creates a _ciphertext which contains the message but from which observers who do not have the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> cannot discern the contents of the message. Sealing also provides integrity-protection, which will preven the message from being unsealed if it is modified. We use the verbs seal and unseal, rather than encrypt and decrypt, because the encrypting alone does not confer that the message includes an integrity (message authentication) code to prove that the ciphertext has not been tampered with.</p>
 <p>The seal operation is built on LibSodium's crypto_secretbox_easy function, but despite it's name the construct isn't as easy as it should be. The caller must store both the ciphertext AND a 24-byte nonce (crypto_secretbox_NONCEBYTES = 24). Hence, the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> seal operation outputs a <em>composite</em> ciphertext containing the nonce followed by the "secret box" ciphertext generated by LibSodium. Since the "secret box" is 16 bytes longer than the message size (crypto_secretbox_MACBYTES = 16), the composite ciphertext is is 40 bytes longer than the message length (24 for then nonce, plus the 16 added to create the secret box) </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a11a221846e8f6a9aead2b4f329f30743"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11a221846e8f6a9aead2b4f329f30743">&#9670;&nbsp;</a></span>SymmetricKey()</h2>
+<a id="aee9eb62f780aecf913dec1432704e355"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee9eb62f780aecf913dec1432704e355">&#9670;&nbsp;</a></span>SymmetricKey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +195,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>keyDerivationOptionsJson</em>&#160;</td>
+          <td class="paramname"><em>derivationOptionsJson</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -205,11 +205,11 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
       </table>
 </div><div class="memdoc">
 
-<p>Construct a new <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> by (re)deriving it from a seed string and a set of key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </p>
+<p>Construct a new <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> by (re)deriving it from a seed string and a set of derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">seedString</td><td>The private seed which is used to generate the key. Anyone who knows (or can guess) this seed can re-generate the key by passing it along with the keyDerivationOptionsJson. </td></tr>
-    <tr><td class="paramname">keyDerivationOptionsJson</td><td>The key-derivation options in <a class="el" href="key_derivation_options_format.html">Key-Derivation Options JSON Format</a>. </td></tr>
+    <tr><td class="paramname">seedString</td><td>The private seed which is used to generate the key. Anyone who knows (or can guess) this seed can re-generate the key by passing it along with the derivationOptionsJson. </td></tr>
+    <tr><td class="paramname">derivationOptionsJson</td><td>The derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </td></tr>
   </table>
   </dd>
 </dl>
@@ -241,7 +241,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
 </table>
 </div><div class="memdoc">
 
-<p>Deserialize from a byte array stored as a list of: (keyBytes, keyDerivationOptionsJson) </p>
+<p>Deserialize from a byte array stored as a list of: (keyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>
@@ -280,7 +280,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -318,7 +318,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -356,7 +356,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -401,7 +401,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the keyDerivationOptionsJson in Key-Derivat...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> Everything needed to re-derive the <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> from the seed (except the seed string iteslf) and unseal the message. </dd></dl>
 
 </div>
 </div>
@@ -439,7 +439,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const std::vector&lt;unsigned char&gt; The sealed <em>ciphertext</em> without the additional context needed to unseal (the keyDerivationOptionsJson required to re-derive the key and any postDecryptionInstructions which must match on unsealing.) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const std::vector&lt;unsigned char&gt; The sealed <em>ciphertext</em> without the additional context needed to unseal (the derivationOptionsJson required to re-derive the key and any postDecryptionInstructions which must match on unsealing.) </dd></dl>
 
 </div>
 </div>
@@ -484,7 +484,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>const std::vector&lt;unsigned char&gt; The sealed <em>ciphertext</em> without the additional context needed to unseal (the keyDerivationOptionsJson required to re-derive the key and any postDecryptionInstructions which must match on unsealing.) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>const std::vector&lt;unsigned char&gt; The sealed <em>ciphertext</em> without the additional context needed to unseal (the derivationOptionsJson required to re-derive the key and any postDecryptionInstructions which must match on unsealing.) </dd></dl>
 
 </div>
 </div>
@@ -542,7 +542,7 @@ const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><
       </table>
 </div><div class="memdoc">
 
-<p>Serialize to byte array as a list of: (keyBytes, keyDerivationOptionsJson) </p>
+<p>Serialize to byte array as a list of: (keyBytes, derivationOptionsJson) </p>
 <p>Stored in <a class="el" href="class_sodium_buffer.html" title="A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...">SodiumBuffer</a>'s fixed-length list format. Strings are stored as UTF8 byte arrays. </p>
 
 </div>

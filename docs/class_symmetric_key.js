@@ -1,8 +1,8 @@
 var class_symmetric_key =
 [
-    [ "SymmetricKey", "class_symmetric_key.html#ab2c80fb4b4e9f8b6743003f4f4835fa4", null ],
+    [ "SymmetricKey", "class_symmetric_key.html#a3cb8cac98ac913c7020b85b7b43a310b", null ],
     [ "SymmetricKey", "class_symmetric_key.html#a4093b83e9bfd58af4e3f77b3289f3039", null ],
-    [ "SymmetricKey", "class_symmetric_key.html#a11a221846e8f6a9aead2b4f329f30743", null ],
+    [ "SymmetricKey", "class_symmetric_key.html#aee9eb62f780aecf913dec1432704e355", null ],
     [ "seal", "class_symmetric_key.html#a77972abe1fcfe9de03e2f9a516918cc3", null ],
     [ "seal", "class_symmetric_key.html#a5376511c2065d01320348a39d8a61375", null ],
     [ "seal", "class_symmetric_key.html#a6829a38b4de25df75b36e747b255a866", null ],
@@ -15,6 +15,6 @@ var class_symmetric_key =
     [ "unseal", "class_symmetric_key.html#ae237c794aca622d52e0d8960c9915102", null ],
     [ "unseal", "class_symmetric_key.html#a234da2f0f965d74456f8db264cbd3c47", null ],
     [ "unsealMessageContents", "class_symmetric_key.html#a9dd824b57903249d4cdaed657922ac27", null ],
-    [ "keyBytes", "class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289", null ],
-    [ "keyDerivationOptionsJson", "class_symmetric_key.html#a23ece4a7abbb13aec2e0f87b0df3cdd8", null ]
+    [ "derivationOptionsJson", "class_symmetric_key.html#a49744fd0283a5ae994b5ff79e26bfb2c", null ],
+    [ "keyBytes", "class_symmetric_key.html#a3c037459d7ccb3c6eac890d9eceb3289", null ]
 ];

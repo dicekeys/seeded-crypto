@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hashfunction_67',['HashFunction',['../class_hash_function.html',1,'']]]
+  ['derivationoptions_67',['DerivationOptions',['../class_derivation_options.html',1,'']]]
 ];
