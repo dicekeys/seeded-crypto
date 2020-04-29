@@ -1,19 +1,19 @@
 var group___derived_from_seeds =
 [
-    [ "PublicKey", "class_public_key.html", [
-      [ "PublicKey", "class_public_key.html#aee870f2e1a28cc7d93b17b84f7e343f9", null ],
-      [ "getDerivationOptionsJson", "class_public_key.html#afd8a05781918cc13ba62e0bcc64df573", null ],
-      [ "getPublicKeyBytes", "class_public_key.html#a02e36c4c9a03a54e02cdf9eae44cd3d3", null ],
-      [ "seal", "class_public_key.html#ade51af3f61dd5b90a466756ab26b44d4", null ],
-      [ "seal", "class_public_key.html#ab3b49ec0f32b20538b67799734f78a17", null ],
-      [ "seal", "class_public_key.html#ad1e9d86705561fc03cf21b191c7a1094", null ],
-      [ "seal", "class_public_key.html#a6f06b2b57eee7e23b21f3b3e2b5f627f", null ],
-      [ "sealToCiphertextOnly", "class_public_key.html#ad58b54babf9c99b001bd7d25cd24ceb7", null ],
-      [ "sealToCiphertextOnly", "class_public_key.html#af4e3dccf419b8fdb2e15ccab3894e824", null ],
-      [ "toJson", "class_public_key.html#a8995e1456c51f610ebee3ce2c452ef47", null ],
-      [ "toSerializedBinaryForm", "class_public_key.html#a234a1ded392f749ccb4b3135f2a08823", null ],
-      [ "derivationOptionsJson", "class_public_key.html#ac7e9b3f88b07f2a8199476b99cf978cb", null ],
-      [ "publicKeyBytes", "class_public_key.html#a7e62a49618c5dbd4cc415a0aa44943a6", null ]
+    [ "SealingKey", "class_sealing_key.html", [
+      [ "SealingKey", "class_sealing_key.html#ad477b786a91836a9b39e1655b8af689e", null ],
+      [ "getDerivationOptionsJson", "class_sealing_key.html#ace3ff139932ab6ebf47b447014b3fadb", null ],
+      [ "getSealingKeyBytes", "class_sealing_key.html#a19dfdcd068c638c72083390d2ae8ce43", null ],
+      [ "seal", "class_sealing_key.html#ab5706bdc889e61d48763bc2ab71fe5dc", null ],
+      [ "seal", "class_sealing_key.html#a2ebe333ca0971ec1fb5af78d2a2b856c", null ],
+      [ "seal", "class_sealing_key.html#a08336c76ca363d31f4aa1ac872fb980f", null ],
+      [ "seal", "class_sealing_key.html#a21c3de10a6dfdfb75ba2536c0b7e6d1c", null ],
+      [ "sealToCiphertextOnly", "class_sealing_key.html#a9c8ce717a65496af9b69a7fb0bec0eb5", null ],
+      [ "sealToCiphertextOnly", "class_sealing_key.html#a0093e593c571fa022c7dded09923f2b3", null ],
+      [ "toJson", "class_sealing_key.html#a09f851344ddc524ad557e4791d8e1fe2", null ],
+      [ "toSerializedBinaryForm", "class_sealing_key.html#aed4782e59196c752810d474682c9b493", null ],
+      [ "derivationOptionsJson", "class_sealing_key.html#aed9887f84cb336cc6032a78f7cb8c233", null ],
+      [ "sealingKeyBytes", "class_sealing_key.html#af498fab872c9dfaa98d1ad0e67cfbcf9", null ]
     ] ],
     [ "Secret", "class_secret.html", [
       [ "Secret", "class_secret.html#a00a5f6dc1a2d0ad0a93d48ca08485911", null ],

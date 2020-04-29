@@ -85,10 +85,10 @@ $(document).ready(function(){initNavTree('derivation_options_format.html',''); i
 <div class="title">JSON Format for Derivation Options </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This JSON-format is used to specify how secrets (<a class="el" href="class_secret.html" title="A secret derived from a seed string and set of derivation specified options in JSON Format for Deriva...">Secret</a>) and keys (<a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>) and key pairs (<a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> &amp; <a class="el" href="class_public_key.html" title="A PublicKey is used to seal messages, in combination with a PrivateKey which can unseal them....">PublicKey</a>, <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> &amp; <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a>) should be derived from a seed string.</p>
+<div class="textblock"><p>This JSON-format is used to specify how secrets (<a class="el" href="class_secret.html" title="A secret derived from a seed string and set of derivation specified options in JSON Format for Deriva...">Secret</a>), keys (<a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>) and key pairs (<a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> &amp; <a class="el" href="class_sealing_key.html" title="A sealingKeyBytes is used to seal messages, in combination with a UnsealingKey which can unseal them....">SealingKey</a>, <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> &amp; <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a>) should be derived from a seed string.</p>
 <p>For example, the following is a valid Derivation Options JSON string used to generate a <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, using the <code>Argon2id</code> to derive the key bytes from a seed string:</p>
 <div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;type&quot;: &quot;Symmetric&quot;,</div>
+<div class="line">    &quot;type&quot;: &quot;SymmetricKey&quot;,</div>
 <div class="line">    &quot;hashFunction&quot;: &quot;Argon2id&quot;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The value of a derivation options JSON string must be either a valid JSON object specification, which is a set of fields enclosed in curly braces ("{}") per the JSON format, or an empty string.</p>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('derivation_options_format.html',''); i
 <p>The Seeded Cryptography Library uses a hash function to derive keys and secrets, and the input to that hash function includes both the seed string <em>and</em> the JSON string you provide with the derivation options. In cryptographic terms, this means the JSON string with your derivation options is used to <em>salt</em> the hash function. Thus, <em>any</em> change to this Derivation Options JSON string, even if just ordering or white space, will cause a different key or secret to be derived.</p>
 <p>Any fields in your JSON object that are not in this specification have no effect other than to change the input to the hash function and thus the derived key or secret. This allows other libraries to extend the spec without making changes to how this library derives keys and secrets. Those using the library can also embed arbitrary fields into the JSON object as they see fit. For example, the second field in the object specified by the following JSON string is not processed by the library, but since the entire string is passed to the hash function used to derive the key it ensure a different key will be derived than if the field were absent:</p>
 <div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;type&quot;: &quot;Symmetric&quot;,</div>
+<div class="line">    &quot;type&quot;: &quot;SymmetricKey&quot;,</div>
 <div class="line">    &quot;aRandomNumericSaltNotInTheSpec&quot;: 1299486243</div>
 <div class="line">}</div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md0"></a>
@@ -112,34 +112,35 @@ Universal Fields used by the Seeded Cryptography Library</h2>
 <p>The following fields are inspected and used by the seeded-crypto C++ library.</p>
 <h3><a class="anchor" id="autotoc_md2"></a>
 type</h3>
-<p>Specify whether this JSON object should be used to construct a <a class="el" href="class_secret.html">Secret</a>, <a class="el" href="class_symmetric_key.html">SymmetricKey</a>, <a class="el" href="class_private_key.html">PrivateKey</a>, or <a class="el" href="class_signing_key.html">SigningKey</a>.</p>
+<p>Specify whether this JSON object should be used to construct a <a class="el" href="class_secret.html">Secret</a>, <a class="el" href="class_symmetric_key.html">SymmetricKey</a>, <a class="el" href="class_unsealing_key.html">UnsealingKey</a>, or <a class="el" href="class_signing_key.html">SigningKey</a>.</p>
 <div class="fragment"><div class="line">&quot;type&quot;?:</div>
 <div class="line">    // For constructing a raw Secret</div>
 <div class="line">    &quot;Secret&quot; |</div>
 <div class="line">    // For constructing a SymmetricKey</div>
-<div class="line">    &quot;Symmetric&quot; |</div>
-<div class="line">    // For constructing a PrivateKey, from which a corresponding PublicKey can be instantiated</div>
-<div class="line">    &quot;Public&quot; |</div>
+<div class="line">    &quot;SymmetricKey&quot; |</div>
+<div class="line">    // For constructing an UnsealingKey, from which a corresponding SealingKey can be instantiated</div>
+<div class="line">    &quot;UnsealingKey&quot; |</div>
 <div class="line">    // For constructing a SigningKey, from which a SignatureVerificationKey can be instantiated</div>
-<div class="line">    &quot;Signing&quot;</div>
-</div><!-- fragment --><p>If not provided, the type is inferred from the type of object being constructed.</p>
-<p>If you attempt to construct an object of one <code>type</code> when the the <code>"type"</code> field specifies a different <code>type</code>, the constructor will throw an <a class="el" href="class_invalid_derivation_option_value_exception.html">InvalidDerivationOptionValueException</a>.</p>
+<div class="line">    &quot;SigningKey&quot;</div>
+</div><!-- fragment --><p>Instead of a generic Public and Private asymmetric key, we support separate key pairs for sealing (encrypting and integrity-protecting) messages, <a class="el" href="class_sealing_key.html" title="A sealingKeyBytes is used to seal messages, in combination with a UnsealingKey which can unseal them....">SealingKey</a> &amp; <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a>, and for digital signatures, the <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> &amp; <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a>. The <code>type</code> for an asymmetric key pair is the type of the private key, as you can obtain a public <a class="el" href="class_signature_verification_key.html" title="A SignatureVerificationKey is used to verify that messages were signed by its corresponding SigningKe...">SignatureVerificationKey</a> from the private <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>, and you can obtain the public <a class="el" href="class_sealing_key.html" title="A sealingKeyBytes is used to seal messages, in combination with a UnsealingKey which can unseal them....">SealingKey</a> from the private <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a>.</p>
+<p>If this field is not provided, the type is inferred from the type of object being constructed.</p>
+<p>If you attempt to construct an object of one <code>type</code> when the <code>"type"</code> field specifies a different <code>type</code>, the constructor will throw an <a class="el" href="class_invalid_derivation_option_value_exception.html">InvalidDerivationOptionValueException</a>.</p>
 <h3><a class="anchor" id="autotoc_md3"></a>
 algorithm</h3>
 <p>Specify the specific algorithm to use.</p>
 <div class="fragment"><div class="line">&quot;algorithm&quot;?: </div>
-<div class="line">    // valid only for &quot;type&quot;: &quot;Symmetric&quot;</div>
+<div class="line">    // valid only for &quot;type&quot;: &quot;SymmetricKey&quot;</div>
 <div class="line">    &quot;XSalsa20Poly1305&quot; | // the default for SymmetricKey</div>
-<div class="line">    // valid only for &quot;type&quot;: &quot;Public&quot;</div>
-<div class="line">    &quot;X25519&quot; |           // the default for PrivateKey</div>
-<div class="line">    // valid only for &quot;type&quot;: Signing</div>
+<div class="line">    // valid only for &quot;type&quot;: &quot;UnsealingKey&quot;</div>
+<div class="line">    &quot;X25519&quot; |           // the default for UnsealingKey</div>
+<div class="line">    // valid only for &quot;type&quot;: &quot;SigningKey&quot;</div>
 <div class="line">    &quot;Ed25519&quot;            // the default for SigningKey</div>
-</div><!-- fragment --><p>The <code>algorithm</code> field should never be set for <code>"type": "Secret"</code>.</p>
+</div><!-- fragment --><p>The <code>algorithm</code> field should never be set when <code>"type": "Secret"</code>.</p>
 <h3><a class="anchor" id="autotoc_md4"></a>
 lengthInBytes</h3>
 <div class="fragment"><div class="line">&quot;lengthInBytes&quot;?: number // e.g. &quot;lengthInBytes&quot;: 32</div>
-</div><!-- fragment --><p>Set this value when using <code>"type": "Secret"</code> to set the size of the secret to be derived (in bytes, as the name implies). If set for other <code>type</code>s, it must match the lengthInBytes of that algorithm (32 bytes for the current algorithms).</p>
-<p>If this library is extended to support <code>algorithm</code> values with multiple key-length options, this field can be used to specify which length varient of the algorithm to use.</p>
+</div><!-- fragment --><p>Use this field <code>"type": "Secret"</code> to set the size of the secret to be derived (in bytes, as the name implies). If set for other derived object <code>type</code>, it must the value assigned must match the lengthInBytes of that algorithm (32 bytes for the algorithms currently supported).</p>
+<p>If this library is extended to support <code>algorithm</code> values with multiple key-length options, this field will be used to specify which length varient of the algorithm to use.</p>
 <h3><a class="anchor" id="autotoc_md5"></a>
 hashFunction</h3>
 <p>The <code>hashFunction</code> field specifies the hash function to used to derive key seeds and secrets. The default is <code>"SHA256"</code>.</p>
@@ -190,7 +191,7 @@ DiceKeys API Fields</h2>
 <p>These fields specify who may generate keys and what they may do with them once generated.</p>
 <h3><a class="anchor" id="autotoc_md11"></a>
 clientMayRetrieveKey</h3>
-<p>Set <code>"clientMayRetrieveKey"?: true</code> to allow the client application to retrieve the <a class="el" href="class_private_key.html" title="A PrivateKey is used to unseal messages sealed with its corresponding PublicKey. The PrivateKey and P...">PrivateKey</a> (<code>"type": "Public"</code>), <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> (<code>"type": "Signing"</code>), or <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> (<code>"type": "Symmetric"</code>) subject to any restrictions specified in the <code>"restrictions"</code> field.</p>
+<p>Set <code>"clientMayRetrieveKey"?: true</code> to allow the client application to retrieve the <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> (<code>"type": "UnsealingKey"</code>), <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a> (<code>"type": "SigningKey"</code>), or <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a> (<code>"type": "SymmetricKey"</code>) subject to any restrictions specified in the <code>"restrictions"</code> field.</p>
 <div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;?: true | false // default false</div>
 </div><!-- fragment --><p>This allows client apps to derive keys that they can use private/signing/symmetric keys even when the seed is not present for re-derivation, but still have a key that is recoverable with the seed should it become necessary.</p>
 <h3><a class="anchor" id="autotoc_md12"></a>
