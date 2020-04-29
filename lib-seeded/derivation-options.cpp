@@ -67,13 +67,13 @@ DerivationOptions::DerivationOptions(
   algorithm = derivationOptionsObject.value<DerivationOptionsJson::Algorithm>(
     DerivationOptionsJson::FieldNames::algorithm,
     // Default value depends on the purpose
-    (type == DerivationOptionsJson::type::Symmetric) ?
+    (type == DerivationOptionsJson::type::SymmetricKey) ?
         // For symmetric crypto, default to XSalsa20Poly1305
         DerivationOptionsJson::Algorithm::XSalsa20Poly1305 :
-    (type == DerivationOptionsJson::type::Public) ?
+    (type == DerivationOptionsJson::type::UnsealingKey) ?
       // For public key crypto, default to X25519
       DerivationOptionsJson::Algorithm::X25519 :
-    (type == DerivationOptionsJson::type::Signing) ?
+    (type == DerivationOptionsJson::type::SigningKey) ?
       // For public key signing, default to Ed25519
     DerivationOptionsJson::Algorithm::Ed25519 :
       // Otherwise, the leave the key setting to invalid (we don't care about a specific key type)
@@ -81,7 +81,7 @@ DerivationOptions::DerivationOptions(
   );
 
   // Validate that the key type is allowed for this type
-  if (type == DerivationOptionsJson::type::Symmetric &&
+  if (type == DerivationOptionsJson::type::SymmetricKey &&
       algorithm != DerivationOptionsJson::Algorithm::XSalsa20Poly1305
   ) {
     throw InvalidDerivationOptionValueException(
@@ -89,14 +89,14 @@ DerivationOptions::DerivationOptions(
     );
   }
 
-  if (type == DerivationOptionsJson::type::Public &&
+  if (type == DerivationOptionsJson::type::UnsealingKey &&
     algorithm != DerivationOptionsJson::Algorithm::X25519
     ) {
     throw InvalidDerivationOptionValueException(
       "Invalid algorithm type for public key cryptography"
     );
   }
-  if (type == DerivationOptionsJson::type::Signing &&
+  if (type == DerivationOptionsJson::type::SigningKey &&
     algorithm != DerivationOptionsJson::Algorithm::Ed25519
     ) {
     throw InvalidDerivationOptionValueException(
@@ -207,9 +207,9 @@ const SodiumBuffer DerivationOptions::deriveMasterSecret(
       defaultType : type;
   const std::string typeString =
     finalType == DerivationOptionsJson::type::Secret ? "Secret" :
-		finalType == DerivationOptionsJson::type::Symmetric ? "Symmetric" :
-		finalType == DerivationOptionsJson::type::Public ? "Public" :
-		finalType == DerivationOptionsJson::type::Signing ? "Signing" :
+		finalType == DerivationOptionsJson::type::SymmetricKey ? "SymmetricKey" :
+		finalType == DerivationOptionsJson::type::UnsealingKey ? "UnsealingKey" :
+		finalType == DerivationOptionsJson::type::SigningKey ? "SigningKey" :
     "";
 
   // Create a hash preimage that is the seed string, followed by a null

@@ -3,7 +3,7 @@
 This Seeded Cryptography Library was written to support the DiceKeys project.
 
 It is an _object oriented_ cryptographic library, with keys
-(SymmetricKey, PrivateKey & PublicKey, SigningKey & SignatureVerificationKey)
+(SymmetricKey, UnsealingKey & SealingKey, SigningKey & SignatureVerificationKey)
 as first-class objects,
 and cryptographic operations implemented as methods on those keys.
 It also supports a derived Secret class, into which
@@ -23,7 +23,7 @@ keys using the random number generator with this library, but you would do so
 by having the generator create a random seed string.
 
 ```cpp
-const PrivateKey private_key(
+const UnsealingKey private_key(
     // The seed string. Hopefully better than Randall Munroe's
     "valid equine capacitor paperclip wrong bovine ground luxury",
     // Since the seed is still a bit short, use a memory-hard
@@ -66,8 +66,8 @@ freeing those using the library from having to implement their own
 serialization methods.
 
 ```cpp
-const auto public_key = PublicKey.fromJson(publicKeyAsJson);
+const auto public_key = SealingKey.fromJson(SealingKeyAsJson);
 const SodiumBuffer public_key_as_binary = public_key.toSerializedBinaryForm();
-const PublicKey copy_of_public_key = PublicKey.fromSerializedBinaryForm(public_key_as_binary);
+const SealingKey copy_of_public_key = SealingKey.fromSerializedBinaryForm(public_key_as_binary);
 ```
 

@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////
-// DerivationOptions JSON Specification
+// KeyDerivationOptions JSON Specification
 // - Automatically-generated file - NOT TO BE MODIFIED DIRECTLY
 //////////////////////////////////////////////////////////////////
 //
 // This c++ header file specifies the JSON parameter names
-// for DerivationOptions.
+// for KeyDerivationOptions.
 #pragma once
 
 #include <string>
@@ -31,16 +31,16 @@ namespace DerivationOptionsJson {
 	enum type {
 		_INVALID_TYPE_ = 0,
 		Secret,
-		Symmetric,
-		Public,
-		Signing
+		SymmetricKey,
+		UnsealingKey,
+		SigningKey
 	};
 	NLOHMANN_JSON_SERIALIZE_ENUM( type, {
 		{type::_INVALID_TYPE_, nullptr},
 		{type::Secret, "Secret"},
-		{type::Symmetric, "Symmetric"},
-		{type::Public, "Public"},
-		{type::Signing, "Signing"}
+		{type::SymmetricKey, "SymmetricKey"},
+		{type::UnsealingKey, "UnsealingKey"},
+		{type::SigningKey, "SigningKey"}
 	})
 	
 
@@ -88,7 +88,7 @@ namespace DecryptionRestrictionsJson {
 		const std::string userMustAcknowledgeThisMessage = "userMustAcknowledgeThisMessage";
 		const std::string alsoPostToUrl = "alsoPostToUrl";
 		const std::string onlyPostToUrl = "onlyPostToUrl";
-		const std::string reEncryptWithPublicKey = "reEncryptWithPublicKey";
+		const std::string reEncryptWithSealingKey = "reEncryptWithSealingKey";
 	}
 };
 

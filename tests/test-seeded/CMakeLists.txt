@@ -1,7 +1,7 @@
-package_add_test(test-key-derivation-options test-key-derivation-options.cpp lib-seeded)
+package_add_test(test-derivation-options test-derivation-options.cpp lib-seeded)
 
 target_include_directories(
-    test-key-derivation-options
+    test-derivation-options
         PRIVATE
         ${PROJECT_SOURCE_DIR}/lib-seeded
         ${PROJECT_SOURCE_DIR}/extern/libsodium/src/libsodium/include

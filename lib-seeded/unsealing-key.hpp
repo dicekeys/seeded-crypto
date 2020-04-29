@@ -1,57 +1,57 @@
 #pragma once
 
 #include "sodium-buffer.hpp"
-#include "public-key.hpp"
+#include "sealing-key.hpp"
 
 /**
- * @brief A PrivateKey is used to _unseal_ messages sealed with its
- * corresponding PublicKey.
- * The PrivateKey and PublicKey are generated
+ * @brief an UnsealingKey is used to _unseal_ messages sealed with its
+ * corresponding SealingKey.
+ * The UnsealingKey and SealingKey are generated
  * from a seed and a set of derivation specified options in
  * @ref derivation_options_format.
  * 
- * The PrivateKey includes a copy of the PublicKey, which can be
- * reconstituted as a PublicKey object via the getPublicKey method.
+ * The UnsealingKey includes a copy of the SealingKey, which can be
+ * reconstituted as a SealingKey object via the getSealingKey method.
  */
-class PrivateKey {
+class UnsealingKey {
 public:
   /**
    * @brief The libSodium private key used for unsealing
    */
-  const SodiumBuffer privateKeyBytes;
+  const SodiumBuffer UnsealingKeyBytes;
   /**
    * @brief The libsodium public key used for sealing
    */
-  const std::vector<unsigned char> publicKeyBytes;
+  const std::vector<unsigned char> SealingKeyBytes;
   /**
    * @brief A @ref derivation_options_format string used to specify how this key is derived.
    */
   const std::string derivationOptionsJson;
 
   /**
-   * @brief Construct a new PrivateKey by passing its members.
+   * @brief Construct a new UnsealingKey by passing its members.
    */
-  PrivateKey(
-    const SodiumBuffer privateKeyBytes,
-    const std::vector<unsigned char> publicKeyBytes,
+  UnsealingKey(
+    const SodiumBuffer UnsealingKeyBytes,
+    const std::vector<unsigned char> SealingKeyBytes,
     const std::string derivationOptionsJson
   );
 
   /**
-   * @brief Construct a new PrivateKey by deriving a public/private
+   * @brief Construct a new UnsealingKey by deriving a public/private
    * key pair from a seedBuffer and a set of derivation options
    * in @ref derivation_options_format.
    * 
    * @param seedBuffer The seed as sequence of bytes
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
-  PrivateKey(
+  UnsealingKey(
     const SodiumBuffer& seedBuffer,
     const std::string& derivationOptionsJson
   );
 
   /**
-   * @brief Construct a new PrivateKey by deriving a public/private
+   * @brief Construct a new UnsealingKey by deriving a public/private
    * key pair from a seed string and a set of derivation options
    * in @ref derivation_options_format.
    * 
@@ -60,7 +60,7 @@ public:
    * by passing it along with the derivationOptionsJson.
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
-  PrivateKey(
+  UnsealingKey(
     const std::string& seedString,
     const std::string& derivationOptionsJson
   );
@@ -68,25 +68,25 @@ public:
   /**
    * @brief Construct (reconstitute) from serialized JSON format
    * 
-   * @param PrivateKeyAsJson 
+   * @param UnsealingKeyAsJson 
    */
-  static PrivateKey fromJson(
-    const std::string& PrivateKeyAsJson
+  static UnsealingKey fromJson(
+    const std::string& UnsealingKeyAsJson
   );
 
 
   /**
-   * @brief Construct by copying another PrivateKey
+   * @brief Construct by copying another UnsealingKey
    */
-  PrivateKey(
-    const PrivateKey& other
+  UnsealingKey(
+    const UnsealingKey& other
   );
 
   /**
-   * @brief Get the PublicKey used to seal messages that can be unsealed 
-   * with this PrivateKey
+   * @brief Get the SealingKey used to seal messages that can be unsealed 
+   * with this UnsealingKey
    */
-  const PublicKey getPublicKey() const;
+  const SealingKey getSealingKey() const;
 
   /**
    * @brief Unseal a message 
@@ -94,7 +94,7 @@ public:
    * @param ciphertext The sealed message to be unsealed
    * @param ciphertextLength The length of the sealed message
    * @param postDecryptionInstructions If this optional value was
-   * set during the PublicKey::seal operation, the same value must
+   * set during the SealingKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * It can be used to pair a secret (sealed) message with public instructions
    * about what should happen after the message is unsealed.
@@ -114,7 +114,7 @@ public:
    * 
    * @param ciphertext The sealed message to be unsealed
    * @param postDecryptionInstructions If this optional value was
-   * set during the PublicKey::seal operation, the same value must
+   * set during the SealingKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * @return const SodiumBuffer 
    * 
@@ -128,7 +128,7 @@ public:
 
   /**
    * @brief Unseal a message from packaged format, ignoring the
-   * derivationOptionsJson since this PrivateKey has been
+   * derivationOptionsJson since this UnsealingKey has been
    * instantiated. (If it's the wrong key, the unseal will fail.)
    * 
    * @param packagedSealedMessage The message to be unsealed
@@ -139,18 +139,18 @@ public:
   ) const;
 
   /**
-   * @brief Unseal a message by re-deriving the PrivateKey from its seed. 
+   * @brief Unseal a message by re-deriving the UnsealingKey from its seed. 
    * 
    * @param packagedSealedMessage The message to be unsealed
    * @param seedString The seed string used to generate the key pair of the
-   * PublicKey used to seal this message and the PrivateKey needed to unseal it.
+   * SealingKey used to seal this message and the UnsealingKey needed to unseal it.
    * @return const SodiumBuffer The plaintesxt message that had been sealed
    */
   static const SodiumBuffer unseal(
     const PackagedSealedMessage &packagedSealedMessage,
       const std::string& seedString
   ) {
-    return PrivateKey(seedString, packagedSealedMessage.derivationOptionsJson)
+    return UnsealingKey(seedString, packagedSealedMessage.derivationOptionsJson)
       .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
   }
 
@@ -161,7 +161,7 @@ public:
    * 
    * @param indent The number of characters to indent the JSON (optional)
    * @param indent_char The character with which to indent the JSON (optional)
-   * @return const std::string A PrivateKey serialized to JSON format.
+   * @return const std::string an UnsealingKey serialized to JSON format.
    */
   const std::string toJson(
     int indent = -1,
@@ -170,7 +170,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (privateKeyBytes, publicKeyBytes, derivationOptionsJson)
+   *   (UnsealingKeyBytes, SealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -179,12 +179,12 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (privateKeyBytes, publicKeyBytes, derivationOptionsJson)
+   *   (UnsealingKeyBytes, SealingKeyBytes, derivationOptionsJson)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
    */
-  static PrivateKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+  static UnsealingKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
 
 
 };

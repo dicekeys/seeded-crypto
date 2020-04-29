@@ -21,6 +21,6 @@
 
 #include "secret.hpp"
 #include "symmetric-key.hpp"
-#include "public-key.hpp"
-#include "private-key.hpp"
+#include "sealing-key.hpp"
+#include "unsealing-key.hpp"
 #include "signing-key.hpp"

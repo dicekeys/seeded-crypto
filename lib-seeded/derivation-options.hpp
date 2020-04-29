@@ -96,7 +96,7 @@ public:
 
 	/**
 	 * @brief This function derives the master secrets for SymmetricKey,
-	 * for the PublicKey and PrivateKey pair,
+	 * for the SealingKey and UnsealingKey pair,
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
@@ -106,17 +106,17 @@ public:
 	 *   <seedString> + '\0' + <typeRequired> + <derivationOptionsJson>
 	 * ```
 	 * where typeRequired is converted to a string in
-	 * ["Secret", "Symmetric", "Public", "Signing"],
+	 * ["Secret", "SymmetricKey", "UnsealingKey", "SigningKey"],
 	 * based on the value of the typeRequired parameter.
 	 * 
 	 *   * For "Secret", the generated secret is placed directly into the
 	 *     `secretBytes` field of the Secret class.
-	 *   * For "Symmetric", the generated secret becomes the `keyBytes` field
+	 *   * For "SymmetricKey", the generated secret becomes the `keyBytes` field
 	 *     of the SymmetricKey class.
-	 *   * For "Public", the generated secret is the final parameter (input) to
+	 *   * For "UnsealingKey", the generated secret is the final parameter (input) to
 	 *     libsodium's `crypto_box_seed_keypair` function, which generates
-	 *     the key bytes for the PrivateKey and PublicKey.
-	 *   * For "Signing", the generated secret is the final parameter (input) to
+	 *     the key bytes for the UnsealingKey and SealingKey.
+	 *   * For "SigningKey", the generated secret is the final parameter (input) to
 	 *     libsodium's `crypto_sign_seed_keypair` function, which generates
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
@@ -143,7 +143,7 @@ public:
 
 	/**
 	 * @brief This function derives the master secrets for SymmetricKey,
-	 * for the PublicKey and PrivateKey pair,
+	 * for the SealingKey and UnsealingKey pair,
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
@@ -153,19 +153,19 @@ public:
 	 *   <seedString> + '\0' + <type> + <derivationOptionsJson>
 	 * ```
 	 * where type is converted to a string in
-	 * ["Secret", "Symmetric", "Public", "Signing"],
+	 * ["Secret", "SymmetricKey", "UnsealingKey", "SigningKey"],
 	 * based on the value of the type parameter,
 	 * defaultType if type is not set (_INVALID_TYPE_),
 	 * or "" if neither is set (both are _INVALID_TYPE_).
 	 * 
 	 *   * For "Secret", the generated secret is placed directly into the
 	 *     `secretBytes` field of the Secret class.
-	 *   * For "Symmetric", the generated secret becomes the `keyBytes` field
+	 *   * For "SymmetricKey", the generated secret becomes the `keyBytes` field
 	 *     of the SymmetricKey class.
-	 *   * For "Public", the generated secret is the final parameter (input) to
+	 *   * For "UnsealingKey", the generated secret is the final parameter (input) to
 	 *     libsodium's `crypto_box_seed_keypair` function, which generates
-	 *     the key bytes for the PrivateKey and PublicKey.
-	 *   * For "Signing", the generated secret is the final parameter (input) to
+	 *     the key bytes for the UnsealingKey and SealingKey.
+	 *   * For "SigningKey", the generated secret is the final parameter (input) to
 	 *     libsodium's `crypto_sign_seed_keypair` function, which generates
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 

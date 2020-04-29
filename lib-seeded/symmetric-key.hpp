@@ -14,7 +14,7 @@
  * derivationOptionsJson.
  *  
  * Sealing a message (_plaintext_) creates a _ciphertext which contains
- * the message but from which observers who do not have the PrivateKey
+ * the message but from which observers who do not have the UnsealingKey
  * cannot discern the contents of the message.
  * Sealing also provides integrity-protection, which will preven the
  * message from being unsealed if it is modified.

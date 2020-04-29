@@ -4,16 +4,16 @@
 
 TEST(DerivationOptions, GeneratesDefaults) {
 	DerivationOptions kgo = DerivationOptions(R"KGO({
-	"type": "Public"	
+	"type": "UnsealingKey"	
 })KGO",
-	DerivationOptionsJson::type::Public
+	DerivationOptionsJson::type::UnsealingKey
 );
 	ASSERT_EQ(
 		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "SHA256",
-	"type": "Public"
+	"type": "UnsealingKey"
 })KGO"
 	);
 }
@@ -53,17 +53,17 @@ TEST(DerivationOptions, FidoUseCase) {
 
 TEST(DerivationOptions, InitsWithClientPrefixes) {
 	DerivationOptions kgo = DerivationOptions(R"KGO({
-	"type": "Public",
+	"type": "UnsealingKey",
 	"restrictToClientApplicationsIdPrefixes": ["com.dicekeys.client", "com.dicekeys.another"]
 })KGO",
-	DerivationOptionsJson::type::Public
+	DerivationOptionsJson::type::UnsealingKey
 );
 	ASSERT_EQ(
 		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "SHA256",
-	"type": "Public"
+	"type": "UnsealingKey"
 })KGO"
 );
 }

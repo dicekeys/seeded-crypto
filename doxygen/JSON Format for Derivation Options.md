@@ -1,12 +1,12 @@
 # JSON Format for Derivation Options {#derivation_options_format}
 
-This JSON-format is used to specify how secrets (Secret) and keys (SymmetricKey) and key pairs (PrivateKey & PublicKey, SigningKey & SignatureVerificationKey) should be derived from a seed string.
+This JSON-format is used to specify how secrets (Secret), keys (SymmetricKey) and key pairs (UnsealingKey & SealingKey, SigningKey & SignatureVerificationKey) should be derived from a seed string.
 
 For example, the following is a valid Derivation Options JSON string used to generate a SymmetricKey, using the `Argon2id` to derive the key bytes from a seed string:
 
 ```TypeScript
 {
-    "type": "Symmetric",
+    "type": "SymmetricKey",
     "hashFunction": "Argon2id"
 }
 ```
@@ -32,7 +32,7 @@ but since the entire string is passed to the hash function used to derive the ke
 
 ```TypeScript
 {
-    "type": "Symmetric",
+    "type": "SymmetricKey",
     "aRandomNumericSaltNotInTheSpec": 1299486243
 }
 ```
@@ -62,23 +62,25 @@ The following fields are inspected and used by the seeded-crypto C++ library.
 #### type
 
 Specify whether this JSON object should be used to construct a
-@ref Secret, @ref SymmetricKey, @ref PrivateKey, or @ref SigningKey.
+@ref Secret, @ref SymmetricKey, @ref UnsealingKey, or @ref SigningKey.
 
 ```TypeScript
 "type"?:
     // For constructing a raw Secret
     "Secret" |
     // For constructing a SymmetricKey
-    "Symmetric" |
-    // For constructing a PrivateKey, from which a corresponding PublicKey can be instantiated
-    "Public" |
+    "SymmetricKey" |
+    // For constructing an UnsealingKey, from which a corresponding SealingKey can be instantiated
+    "UnsealingKey" |
     // For constructing a SigningKey, from which a SignatureVerificationKey can be instantiated
-    "Signing"
+    "SigningKey"
 ```
 
-If not provided, the type is inferred from the type of object being constructed.
+Instead of a generic Public and Private asymmetric key, we support separate key pairs for sealing (encrypting and integrity-protecting) messages, SealingKey & UnsealingKey, and for digital signatures, the SigningKey & SignatureVerificationKey. The `type` for an asymmetric key pair is the type of the private key, as you can obtain a public SignatureVerificationKey from the private SigningKey, and you can obtain the public SealingKey from the private UnsealingKey.
 
-If you attempt to construct an object of one `type` when the the `"type"` field specifies
+If this field is not provided, the type is inferred from the type of object being constructed.
+
+If you attempt to construct an object of one `type` when the `"type"` field specifies
 a different `type`, the constructor will throw an @ref InvalidDerivationOptionValueException.
 
 #### algorithm
@@ -87,26 +89,28 @@ Specify the specific algorithm to use.
 
 ```TypeScript
 "algorithm"?: 
-    // valid only for "type": "Symmetric"
+    // valid only for "type": "SymmetricKey"
     "XSalsa20Poly1305" | // the default for SymmetricKey
-    // valid only for "type": "Public"
-    "X25519" |           // the default for PrivateKey
-    // valid only for "type": Signing
+    // valid only for "type": "UnsealingKey"
+    "X25519" |           // the default for UnsealingKey
+    // valid only for "type": "SigningKey"
     "Ed25519"            // the default for SigningKey
 ```
 
-The `algorithm` field should never be set for `"type": "Secret"`.
+The `algorithm` field should never be set when `"type": "Secret"`.
 
 #### lengthInBytes
 ```TypeScript
 "lengthInBytes"?: number // e.g. "lengthInBytes": 32
 ```
 
-Set this value when using `"type": "Secret"` to set the size of the secret to be derived (in bytes, as the name implies). If set for other `type`s, it must
-match the lengthInBytes of that algorithm (32 bytes for the current algorithms).
+Use this field `"type": "Secret"` to set the size of the secret to be derived
+(in bytes, as the name implies). If set for other derived object `type`, it must
+the value assigned must match the lengthInBytes of that algorithm
+(32 bytes for the algorithms currently supported).
 
 If this library is extended to support `algorithm` values with multiple key-length
-options, this field can be used to specify which length varient of the algorithm to
+options, this field will be used to specify which length varient of the algorithm to
 use.
 
 #### hashFunction
@@ -216,9 +220,9 @@ These fields specify who may generate keys and what they may do with them once g
 #### clientMayRetrieveKey
 
 Set `"clientMayRetrieveKey"?: true` to allow the client application to retrieve the
-PrivateKey (`"type": "Public"`),
-SigningKey (`"type": "Signing"`), or
-SymmetricKey (`"type": "Symmetric"`)
+UnsealingKey (`"type": "UnsealingKey"`),
+SigningKey (`"type": "SigningKey"`), or
+SymmetricKey (`"type": "SymmetricKey"`)
 subject to any restrictions specified in the `"restrictions"` field.
 
 ```
