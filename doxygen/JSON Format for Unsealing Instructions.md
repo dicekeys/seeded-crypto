@@ -30,22 +30,31 @@ of parties allowed to see an unsealed message.
     }
 ```
 
-#### userMustAcknowledgeThisMessage
+#### requireUsersConsent
 
 If set, the DiceKeys app should display the message to the user before allowing
 the unsealed message to be returned to the requesting client app.
 The message should be in the user's native language.
-The options presented to the user will be the equivalents of the enlish words
-"allow" or "stop".
 
 ```TypeScript
-    "userMustAcknowledgeThisMessage"?: string
+    "requireUsersConsent"?: {
+        "question": String,
+        "actionButtonLabels": {
+            "allow": String,
+            "decline": String 
+        }
+    }
 ```
 
 For example
 ```TypeScript
 {
-    "userMustAcknowledgeThisMessage":
-        "Do you want to allow this application to reset the password for your SpoonerMail account."
+    "requireUsersConsent": {
+        "question": "Do you want use \"8fsd8pweDmqed\" as your SpoonerMail account password and remove your current password?",
+        "actionButtonLabels": {
+            "allow": "Make my password \"8fsd8pweDmqed\"",
+            "deny": "No" 
+        }
+    }
 }
 ```
