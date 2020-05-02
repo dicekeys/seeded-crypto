@@ -2,7 +2,7 @@
  * This is a small modification to crypto_box_seal.c in libsodium to
  * allow a salt to be added to public-key sealed boxes so that
  * DiceKeys can support messages that require processing of
- * post-decryption instructions
+ * unsealing instructions
  */
 
 #pragma once

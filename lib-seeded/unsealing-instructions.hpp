@@ -6,7 +6,7 @@
 // Must come after json.hpp
 #include "./externally-generated/derivation-parameters.hpp"
 
-class PostDecryptionInstructions {
+class UnsealingInstructions {
 /**
  * This class represents key generation options,
  * provided in JSON format, as an immutable class.
@@ -17,14 +17,14 @@ public:
 	std::string userMustAcknowledgeThisMessage;
 
 	/**
-	 * Create a PostDecryptionInstructions class from the JSON representation
+	 * Create a UnsealingInstructions class from the JSON representation
 	 * of the key generation options.
 	 **/
-	PostDecryptionInstructions(
-		const std::string& postDecryptionInstructions
+	UnsealingInstructions(
+		const std::string& unsealingInstructions
 	);
 
-	PostDecryptionInstructions(
+	UnsealingInstructions(
 		std::vector<std::string> clientApplicationIdMustHavePrefix,
 		std::string userMustAcknowledgeThisMessage = {}
 	);

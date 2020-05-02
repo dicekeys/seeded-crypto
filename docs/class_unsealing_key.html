@@ -116,12 +116,12 @@ Public Member Functions</h2></td></tr>
 const <a class="el" href="class_sealing_key.html">SealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a6a270e0fc1af19cc12ebbb341d6e6201">getSealingKey</a> () const</td></tr>
 <tr class="memdesc:a6a270e0fc1af19cc12ebbb341d6e6201"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the <a class="el" href="class_sealing_key.html" title="A sealingKeyBytes is used to seal messages, in combination with a UnsealingKey which can unseal them....">SealingKey</a> used to seal messages that can be unsealed with this <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a>. <br /></td></tr>
 <tr class="separator:a6a270e0fc1af19cc12ebbb341d6e6201"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa098a3a24b8d867096bb9462ccaf4ed"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#afa098a3a24b8d867096bb9462ccaf4ed">unseal</a> (const unsigned char *ciphertext, const size_t ciphertextLength, const std::string &amp;postDecryptionInstructions) const</td></tr>
-<tr class="memdesc:afa098a3a24b8d867096bb9462ccaf4ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message.  <a href="class_unsealing_key.html#afa098a3a24b8d867096bb9462ccaf4ed">More...</a><br /></td></tr>
-<tr class="separator:afa098a3a24b8d867096bb9462ccaf4ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b0bc669c88df5a173f355226f30621e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a7b0bc669c88df5a173f355226f30621e">unseal</a> (const std::vector&lt; unsigned char &gt; &amp;ciphertext, const std::string &amp;postDecryptionInstructions={}) const</td></tr>
-<tr class="memdesc:a7b0bc669c88df5a173f355226f30621e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message.  <a href="class_unsealing_key.html#a7b0bc669c88df5a173f355226f30621e">More...</a><br /></td></tr>
-<tr class="separator:a7b0bc669c88df5a173f355226f30621e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebf0cb88b4825eeb44af0387ea709686"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#aebf0cb88b4825eeb44af0387ea709686">unseal</a> (const unsigned char *ciphertext, const size_t ciphertextLength, const std::string &amp;unsealingInstructions) const</td></tr>
+<tr class="memdesc:aebf0cb88b4825eeb44af0387ea709686"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message.  <a href="class_unsealing_key.html#aebf0cb88b4825eeb44af0387ea709686">More...</a><br /></td></tr>
+<tr class="separator:aebf0cb88b4825eeb44af0387ea709686"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ad8c9e2b24486fe85ca39c8e8b44383"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a3ad8c9e2b24486fe85ca39c8e8b44383">unseal</a> (const std::vector&lt; unsigned char &gt; &amp;ciphertext, const std::string &amp;unsealingInstructions={}) const</td></tr>
+<tr class="memdesc:a3ad8c9e2b24486fe85ca39c8e8b44383"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message.  <a href="class_unsealing_key.html#a3ad8c9e2b24486fe85ca39c8e8b44383">More...</a><br /></td></tr>
+<tr class="separator:a3ad8c9e2b24486fe85ca39c8e8b44383"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b541488b48be70d5afe6a83d61cded4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a2b541488b48be70d5afe6a83d61cded4">unseal</a> (const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a> &amp;packagedSealedMessage) const</td></tr>
 <tr class="memdesc:a2b541488b48be70d5afe6a83d61cded4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message from packaged format, ignoring the derivationOptionsJson since this <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> has been instantiated. (If it's the wrong key, the unseal will fail.)  <a href="class_unsealing_key.html#a2b541488b48be70d5afe6a83d61cded4">More...</a><br /></td></tr>
 <tr class="separator:a2b541488b48be70d5afe6a83d61cded4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -433,8 +433,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a7b0bc669c88df5a173f355226f30621e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b0bc669c88df5a173f355226f30621e">&#9670;&nbsp;</a></span>unseal() <span class="overload">[3/4]</span></h2>
+<a id="a3ad8c9e2b24486fe85ca39c8e8b44383"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ad8c9e2b24486fe85ca39c8e8b44383">&#9670;&nbsp;</a></span>unseal() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -449,7 +449,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>postDecryptionInstructions</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>unsealingInstructions</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -463,7 +463,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ciphertext</td><td>The sealed message to be unsealed </td></tr>
-    <tr><td class="paramname">postDecryptionInstructions</td><td>If this optional value was set during the <a class="el" href="class_sealing_key.html#ab5706bdc889e61d48763bc2ab71fe5dc" title="Seal a plaintext message and then package the results along with its derivationOptionsJson and postDe...">SealingKey::seal</a> operation, the same value must be provided to unseal the message or the operation will fail. </td></tr>
+    <tr><td class="paramname">unsealingInstructions</td><td>If this optional value was set during the <a class="el" href="class_sealing_key.html#a407f03906488bb45ea26d77e26fe046c" title="Seal a plaintext message and then package the results along with its derivationOptionsJson and unseal...">SealingKey::seal</a> operation, the same value must be provided to unseal the message or the operation will fail. </td></tr>
   </table>
   </dd>
 </dl>
@@ -477,8 +477,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="afa098a3a24b8d867096bb9462ccaf4ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa098a3a24b8d867096bb9462ccaf4ed">&#9670;&nbsp;</a></span>unseal() <span class="overload">[4/4]</span></h2>
+<a id="aebf0cb88b4825eeb44af0387ea709686"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebf0cb88b4825eeb44af0387ea709686">&#9670;&nbsp;</a></span>unseal() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -499,7 +499,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>postDecryptionInstructions</em>&#160;</td>
+          <td class="paramname"><em>unsealingInstructions</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -514,7 +514,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   <table class="params">
     <tr><td class="paramname">ciphertext</td><td>The sealed message to be unsealed </td></tr>
     <tr><td class="paramname">ciphertextLength</td><td>The length of the sealed message </td></tr>
-    <tr><td class="paramname">postDecryptionInstructions</td><td>If this optional value was set during the <a class="el" href="class_sealing_key.html#ab5706bdc889e61d48763bc2ab71fe5dc" title="Seal a plaintext message and then package the results along with its derivationOptionsJson and postDe...">SealingKey::seal</a> operation, the same value must be provided to unseal the message or the operation will fail. It can be used to pair a secret (sealed) message with public instructions about what should happen after the message is unsealed. </td></tr>
+    <tr><td class="paramname">unsealingInstructions</td><td>If this optional value was set during the <a class="el" href="class_sealing_key.html#a407f03906488bb45ea26d77e26fe046c" title="Seal a plaintext message and then package the results along with its derivationOptionsJson and unseal...">SealingKey::seal</a> operation, the same value must be provided to unseal the message or the operation will fail. It can be used to pair a secret (sealed) message with public instructions about what should happen after the message is unsealed. </td></tr>
   </table>
   </dd>
 </dl>

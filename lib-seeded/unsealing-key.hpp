@@ -93,7 +93,7 @@ public:
    * 
    * @param ciphertext The sealed message to be unsealed
    * @param ciphertextLength The length of the sealed message
-   * @param postDecryptionInstructions If this optional value was
+   * @param unsealingInstructions If this optional value was
    * set during the SealingKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * It can be used to pair a secret (sealed) message with public instructions
@@ -106,14 +106,14 @@ public:
   const SodiumBuffer unseal(
     const unsigned char* ciphertext,
     const size_t ciphertextLength,
-    const std::string& postDecryptionInstructions
+    const std::string& unsealingInstructions
   ) const;
 
   /**
    * @brief Unseal a message 
    * 
    * @param ciphertext The sealed message to be unsealed
-   * @param postDecryptionInstructions If this optional value was
+   * @param unsealingInstructions If this optional value was
    * set during the SealingKey::seal operation, the same value must
    * be provided to unseal the message or the operation will fail.
    * @return const SodiumBuffer 
@@ -123,7 +123,7 @@ public:
    */
   const SodiumBuffer unseal(
     const std::vector<unsigned char> &ciphertext,
-    const std::string& postDecryptionInstructions = {}
+    const std::string& unsealingInstructions = {}
   ) const;
 
   /**
@@ -151,7 +151,7 @@ public:
       const std::string& seedString
   ) {
     return UnsealingKey(seedString, packagedSealedMessage.derivationOptionsJson)
-      .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
+      .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
   }
 
   /**

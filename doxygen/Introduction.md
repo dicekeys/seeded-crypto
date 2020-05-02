@@ -54,10 +54,10 @@ Those instructions are not public, and not encrypted. For example:
 ```cpp
 const SymmetricKey sk(...);
 const std::string plaintext("Wait long enough, and grilled cheese becomes its own spoonerism.")
-const std::string post_decryption_instructions(
+const std::string unsealing_instructions(
     "Unsealed messages should be shared only with those who like wordplay."
 );
-const auto sealed_message = sk.seal(plaintext, post_decryption_instructions);
+const auto sealed_message = sk.seal(plaintext, unsealing_instructions);
 ```
 
 All keys and mesage packages in this library can be easily serialized into

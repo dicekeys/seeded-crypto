@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['type_139',['type',['../class_derivation_options.html#af9e0efe396d2c8e7e45ff90024837166',1,'DerivationOptions']]]
+  ['unsealinginstructions_139',['unsealingInstructions',['../class_packaged_sealed_message.html#abb34602db8ce26556ea9be890c79c1d1',1,'PackagedSealedMessage']]],
+  ['unsealingkeybytes_140',['unsealingKeyBytes',['../class_unsealing_key.html#a9d7257ff35f2049e89a9ab616ed86fa5',1,'UnsealingKey']]]
 ];

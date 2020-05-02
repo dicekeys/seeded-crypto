@@ -6,8 +6,8 @@
 
 /**
  * @brief When a message is sealed, the ciphertext is packaged with the derivationOptionsJson
- * in @ref derivation_options_format, as well as any optional post-decryption instructions
- * it was sealed with (postDecryptionInstructions).
+ * in @ref derivation_options_format, as well as any optional unsealing instructions
+ * it was sealed with (unsealingInstructions).
  * 
  * @ingroup BuildingBlocks
  */
@@ -27,7 +27,7 @@ public:
      * @brief Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
      */
-    const std::string postDecryptionInstructions;
+    const std::string unsealingInstructions;
 
     /**
      * @brief Construct directly from the constituent members
@@ -35,13 +35,13 @@ public:
      * @param ciphertext  The binary sealed message
      * @param derivationOptionsJson  The derivation options used to generate the
      * encryption/decryption keys.
-     * @param postDecryptionInstructions Optional public instructions that the sealer
+     * @param unsealingInstructions Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
      */
     PackagedSealedMessage(
         const std::vector<unsigned char>& ciphertext,
         const std::string& derivationOptionsJson,
-        const std::string& postDecryptionInstructions
+        const std::string& unsealingInstructions
     );
 
     /**

@@ -1,8 +1,8 @@
-# Post-Decryption Instructions JSON Format {#post_decryption_instructions_format}
+# JSON Format for Unsealing Instructions {#unsealing_instructions_format}
 
-The SealingKey.seal and SymmetricKey.seal operations support a an optional _postDecryptionInstructions_ string parameter.
+The SealingKey.seal and SymmetricKey.seal operations support a an optional _unsealingInstructions_ string parameter.
 If the parameter is provided when a message is sealed, the same value must be present when the _unseal_
-operation is called.  The field is stored in plaintext (unencrypted) in the _postDecrytpionInstructions_
+operation is called.  The field is stored in plaintext (unencrypted) in the _unsealingInstructions_
 field of the PackagedSealedMessage returned by the _seal_ operation. (If the field is not provided, it is treated
 as an empty string.)
 
@@ -10,7 +10,7 @@ The Seeded Cryptography Library is agnostic to the format and value of this stri
 the same string is used both during sealing and unsealing.
 
 However, since it's format mirrors @ref derivation_options_format, and the DiceKeys API Fields
-are currently documented here, we currently document the Post-Decrytpion Instructions JSON
+are currently documented here, we currently document the JSON format for Unsealing Instructions
 fields below.
 
 ### DiceKeys API Fields

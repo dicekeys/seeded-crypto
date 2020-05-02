@@ -25,7 +25,7 @@ var NAVTREE =
   [ "DiceKeys Seeded Cryptography Library", "index.html", [
     [ "Introduction", "introduction.html", null ],
     [ "JSON Format for Derivation Options", "derivation_options_format.html", null ],
-    [ "Post-Decryption Instructions JSON Format", "post_decryption_instructions_format.html", null ],
+    [ "JSON Format for Unsealing Instructions", "unsealing_instructions_format.html", null ],
     [ "Modules", "modules.html", "modules" ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],

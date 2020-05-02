@@ -81,14 +81,14 @@ namespace Argoin2idDefaults {
 	const size_t hashFunctionMemoryLimitInBytes = 67108864;
 }
 
-namespace DecryptionRestrictionsJson {
+namespace UnsealingInstructionsJson {
 	namespace FieldNames {
 		const std::string androidPackagePrefixesAllowed = "androidPackagePrefixesAllowed";
 		const std::string urlPrefixesAllowed = "urlPrefixesAllowed";
 		const std::string userMustAcknowledgeThisMessage = "userMustAcknowledgeThisMessage";
 		const std::string alsoPostToUrl = "alsoPostToUrl";
 		const std::string onlyPostToUrl = "onlyPostToUrl";
-		const std::string reEncryptWithSealingKey = "reEncryptWithSealingKey";
+		const std::string reEncryptWithPublicKey = "reEncryptWithPublicKey";
 	}
 };
 

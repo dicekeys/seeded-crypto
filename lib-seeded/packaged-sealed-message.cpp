@@ -7,33 +7,33 @@
 namespace PackagedSealedMessageJsonFields {
   static const std::string ciphertext = "ciphertext";
   static const std::string derivationOptionsJson = "derivationOptionsJson";
-  static const std::string postDecryptionInstructions = "postDecryptionInstructions";
+  static const std::string unsealingInstructions = "unsealingInstructions";
 }
 
 PackagedSealedMessage::PackagedSealedMessage(
         const std::vector<unsigned char>& _ciphertext,
         const std::string& _derivationOptionsJson,
-        const std::string& _postDecryptionInstructions
+        const std::string& _unsealingInstructions
 ) : 
     ciphertext(_ciphertext),
     derivationOptionsJson(_derivationOptionsJson),
-    postDecryptionInstructions(_postDecryptionInstructions)
+    unsealingInstructions(_unsealingInstructions)
     {}
 
 PackagedSealedMessage::PackagedSealedMessage(const PackagedSealedMessage &other) :
   ciphertext(other.ciphertext),
   derivationOptionsJson(other.derivationOptionsJson),
-  postDecryptionInstructions(other.postDecryptionInstructions)
+  unsealingInstructions(other.unsealingInstructions)
   {}
 
 const SodiumBuffer PackagedSealedMessage::toSerializedBinaryForm() const {
   SodiumBuffer _ciphertext(ciphertext);
   SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
-  SodiumBuffer _postDecryptionInstructions(postDecryptionInstructions);
+  SodiumBuffer _unsealingInstructions(unsealingInstructions);
   return SodiumBuffer::combineFixedLengthList({
     &_ciphertext,
     &_derivationOptionsJson,
-    &_postDecryptionInstructions
+    &_unsealingInstructions
   });
 }
 
@@ -51,8 +51,8 @@ const std::string PackagedSealedMessage::toJson(
   if (derivationOptionsJson.size() > 0) {
     asJson[PackagedSealedMessageJsonFields::derivationOptionsJson] = derivationOptionsJson;
   }
-  if (postDecryptionInstructions.size() > 0) {
-    asJson[PackagedSealedMessageJsonFields::postDecryptionInstructions] = postDecryptionInstructions;
+  if (unsealingInstructions.size() > 0) {
+    asJson[PackagedSealedMessageJsonFields::unsealingInstructions] = unsealingInstructions;
   }
   return asJson.dump(indent, indent_char);
 }
@@ -64,7 +64,7 @@ PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string& package
     return PackagedSealedMessage(
       hexStrToByteVector(jsonObject.at(PackagedSealedMessageJsonFields::ciphertext)),
       jsonObject.value<std::string>(PackagedSealedMessageJsonFields::derivationOptionsJson, ""),
-      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::postDecryptionInstructions, "")
+      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::unsealingInstructions, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());

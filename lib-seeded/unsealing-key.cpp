@@ -51,7 +51,7 @@ UnsealingKey::UnsealingKey(
 const SodiumBuffer UnsealingKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
   if (ciphertextLength <= crypto_box_SEALBYTES) {
     throw CryptographicVerificationFailureException("Public/Private unseal failed: Invalid message length");
@@ -64,27 +64,27 @@ const SodiumBuffer UnsealingKey::unseal(
     ciphertextLength,
     sealingKeyBytes.data(),
     unsealingKeyBytes.data,
-    postDecryptionInstructions.c_str(),
-    postDecryptionInstructions.length()
+    unsealingInstructions.c_str(),
+    unsealingInstructions.length()
   );
   if (result != 0) {
-    throw CryptographicVerificationFailureException("Public/Private unseal failed: the private key doesn't match the public key used to seal the message, the post-decryption instructions do not match those used to seal the message, or the ciphertext was modified/corrupted.");
+    throw CryptographicVerificationFailureException("Public/Private unseal failed: the private key doesn't match the public key used to seal the message, the unsealing instructions do not match those used to seal the message, or the ciphertext was modified/corrupted.");
   }
   return plaintext;
 }
 
 const SodiumBuffer UnsealingKey::unseal(
   const std::vector<unsigned char> &ciphertext,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
-  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructions
+  return unseal(ciphertext.data(), ciphertext.size(), unsealingInstructions
   );
 };
 
 const SodiumBuffer UnsealingKey::unseal(
   const PackagedSealedMessage &packagedSealedMessage
 ) const {
-  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
 }
 
 const SealingKey UnsealingKey::getSealingKey() const {

@@ -102,10 +102,10 @@ $(document).ready(function(){initNavTree('introduction.html',''); initResizable(
 <p>When sealing data, you can also attach a string that must be known to anyone unsealing the message. This is separate from the key and is included in plaintext in <a class="el" href="class_packaged_sealed_message.html" title="When a message is sealed, the ciphertext is packaged with the derivationOptionsJson in JSON Format fo...">PackagedSealedMessage</a> returned by the seal operation. You can use it, for example, to attach instructions about how such messages should be treated when unsealing. Those instructions are not public, and not encrypted. For example:</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <a class="code" href="class_symmetric_key.html">SymmetricKey</a> sk(...);</div>
 <div class="line"><span class="keyword">const</span> std::string plaintext(<span class="stringliteral">&quot;Wait long enough, and grilled cheese becomes its own spoonerism.&quot;</span>)</div>
-<div class="line">const std::<span class="keywordtype">string</span> post_decryption_instructions(</div>
+<div class="line">const std::<span class="keywordtype">string</span> unsealing_instructions(</div>
 <div class="line">    &quot;Unsealed messages should be shared only with those who like wordplay.&quot;</div>
 <div class="line">);</div>
-<div class="line">const auto sealed_message = sk.seal(plaintext, post_decryption_instructions);</div>
+<div class="line">const auto sealed_message = sk.seal(plaintext, unsealing_instructions);</div>
 </div><!-- fragment --><p>All keys and mesage packages in this library can be easily serialized into either JSON format or a binary format, and deserialized, freeing those using the library from having to implement their own serialization methods.</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> public_key = <a class="code" href="class_sealing_key.html">SealingKey</a>.<a class="code" href="class_sealing_key.html#a67d9408d93e61f0b26ed2194d3231954">fromJson</a>(SealingKeyAsJson);</div>
 <div class="line"><span class="keyword">const</span> <a class="code" href="class_sodium_buffer.html">SodiumBuffer</a> public_key_as_binary = public_key.toSerializedBinaryForm();</div>

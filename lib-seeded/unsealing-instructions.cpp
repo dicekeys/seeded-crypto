@@ -2,31 +2,31 @@
 #include <cassert>
 #include <exception>
 #include "exceptions.hpp"
-#include "post-decryption-instructions.hpp"
+#include "unsealing-instructions.hpp"
 
-PostDecryptionInstructions::PostDecryptionInstructions(
-  const std::string& postDecryptionInstructions
+UnsealingInstructions::UnsealingInstructions(
+  const std::string& unsealingInstructions
 ) {
-  if (postDecryptionInstructions.size() == 0) {
-    // Empty post-decryption instructions
+  if (unsealingInstructions.size() == 0) {
+    // Empty unsealing instructions
     return;
   }
   // Use the nlohmann::json library to read the JSON-encoded
   // key generation options.
   try {
-    nlohmann::json decryptionOptionsObject =
-      nlohmann::json::parse(postDecryptionInstructions);
+    nlohmann::json unsealingOptionsObject =
+      nlohmann::json::parse(unsealingInstructions);
   
     clientApplicationIdMustHavePrefix =
-      decryptionOptionsObject.value<const std::vector<std::string>>(
-        DecryptionRestrictionsJson::FieldNames::androidPackagePrefixesAllowed,
+      unsealingOptionsObject.value<const std::vector<std::string>>(
+        UnsealingInstructionsJson::FieldNames::androidPackagePrefixesAllowed,
         // Default to empty list containing the empty string, which is a prefix of all strings
         {""}
       );
 
     userMustAcknowledgeThisMessage =
-      decryptionOptionsObject.value<std::string>(
-        DecryptionRestrictionsJson::FieldNames::userMustAcknowledgeThisMessage,
+      unsealingOptionsObject.value<std::string>(
+        UnsealingInstructionsJson::FieldNames::userMustAcknowledgeThisMessage,
         // Default to empty string
         ""
       );
@@ -36,7 +36,7 @@ PostDecryptionInstructions::PostDecryptionInstructions(
 
 }
 
-PostDecryptionInstructions::PostDecryptionInstructions(
+UnsealingInstructions::UnsealingInstructions(
 		std::vector<std::string> clientApplicationIdMustHavePrefix,
 		std::string userMustAcknowledgeThisMessage
 ) :
@@ -44,18 +44,18 @@ PostDecryptionInstructions::PostDecryptionInstructions(
   userMustAcknowledgeThisMessage(userMustAcknowledgeThisMessage)
   {}
 
-std::string	PostDecryptionInstructions::toJson(int indent,
+std::string	UnsealingInstructions::toJson(int indent,
   const char indent_char
 ) const {
 	nlohmann::json asJson;  
-  asJson[DecryptionRestrictionsJson::FieldNames::userMustAcknowledgeThisMessage] =
+  asJson[UnsealingInstructionsJson::FieldNames::userMustAcknowledgeThisMessage] =
     userMustAcknowledgeThisMessage;
-  asJson[DecryptionRestrictionsJson::FieldNames::androidPackagePrefixesAllowed] =
+  asJson[UnsealingInstructionsJson::FieldNames::androidPackagePrefixesAllowed] =
     clientApplicationIdMustHavePrefix;
   return asJson.dump(indent, indent_char);
 }
 
-bool PostDecryptionInstructions::isApplicationIdAllowed(const std::string& applicationId) const {
+bool UnsealingInstructions::isApplicationIdAllowed(const std::string& applicationId) const {
   if (clientApplicationIdMustHavePrefix.size() == 0) {
     // The applicationId is not required to match a prefix 
     return true;
@@ -72,7 +72,7 @@ bool PostDecryptionInstructions::isApplicationIdAllowed(const std::string& appli
   return false;
 }
 
-void PostDecryptionInstructions::validateApplicationId(const std::string& applicationId) const {
+void UnsealingInstructions::validateApplicationId(const std::string& applicationId) const {
   if (!isApplicationIdAllowed(applicationId)) {
     throw std::invalid_argument( ("Invalid application ID: " + applicationId).c_str() );
   }

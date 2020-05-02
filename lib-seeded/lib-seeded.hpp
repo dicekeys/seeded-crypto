@@ -11,7 +11,7 @@
 #include "hash-functions.hpp"
 #include "derivation-options.hpp"
 #include "packaged-sealed-message.hpp"
-#include "post-decryption-instructions.hpp"
+#include "unsealing-instructions.hpp"
 
 /** @defgroup DerivedFromSeeds Derived Keys
  * Keys derived from seed strings using 

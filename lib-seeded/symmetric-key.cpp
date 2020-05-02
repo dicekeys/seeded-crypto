@@ -51,7 +51,7 @@ SymmetricKey::SymmetricKey(
 const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const unsigned char* message,
   const size_t messageLength,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
   if (messageLength <= 0) {
     throw std::invalid_argument("Invalid message length");
@@ -65,7 +65,7 @@ const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   // Write a nonce derived from the message and symmeetric key
   _crypto_secretbox_nonce_salted(
     noncePtr, keyBytes.data, message, messageLength,
-    postDecryptionInstructions.c_str(), postDecryptionInstructions.length());
+    unsealingInstructions.c_str(), unsealingInstructions.length());
   
   // Create the ciphertext as a secret box
   crypto_secretbox_easy(
@@ -81,38 +81,38 @@ const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
 
 const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const SodiumBuffer &message,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
-  return sealToCiphertextOnly(message.data, message.length, postDecryptionInstructions);
+  return sealToCiphertextOnly(message.data, message.length, unsealingInstructions);
 }
 
 const PackagedSealedMessage SymmetricKey::seal(
   const SodiumBuffer& message,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
   return PackagedSealedMessage(
-    sealToCiphertextOnly(message, postDecryptionInstructions),
+    sealToCiphertextOnly(message, unsealingInstructions),
     derivationOptionsJson,
-    postDecryptionInstructions
+    unsealingInstructions
   );
 }
 
   const PackagedSealedMessage SymmetricKey::seal(
     const std::string& message,
-    const std::string& postDecryptionInstructions
+    const std::string& unsealingInstructions
   ) const {
-    return seal((const unsigned char*)message.c_str(), message.size(), postDecryptionInstructions);
+    return seal((const unsigned char*)message.c_str(), message.size(), unsealingInstructions);
   }
 
 
 const PackagedSealedMessage SymmetricKey::seal(
   const std::vector<unsigned char>& message,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
     return PackagedSealedMessage( 
-      sealToCiphertextOnly(message.data(), message.size(), postDecryptionInstructions),
+      sealToCiphertextOnly(message.data(), message.size(), unsealingInstructions),
       derivationOptionsJson,
-      postDecryptionInstructions
+      unsealingInstructions
   );
 }
 
@@ -120,19 +120,19 @@ const PackagedSealedMessage SymmetricKey::seal(
 const PackagedSealedMessage SymmetricKey::seal(
   const unsigned char* message,
   const size_t messageLength,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
     return PackagedSealedMessage( 
-      sealToCiphertextOnly(message, messageLength, postDecryptionInstructions),
+      sealToCiphertextOnly(message, messageLength, unsealingInstructions),
       derivationOptionsJson,
-      postDecryptionInstructions
+      unsealingInstructions
   );
 }
 
 const SodiumBuffer SymmetricKey::unsealMessageContents(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
   if (ciphertextLength <= (crypto_secretbox_MACBYTES + crypto_secretbox_NONCEBYTES)) {
     throw std::invalid_argument("Invalid message length");
@@ -149,18 +149,18 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
     keyBytes.data
       );
    if (result != 0) {
-     throw CryptographicVerificationFailureException("Symmetric key unseal failed: the key or post-decryption instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
+     throw CryptographicVerificationFailureException("Symmetric key unseal failed: the key or unsealing instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
    }
 
   // Recalculate nonce to validate that the provided
-  // postDecryptionInstructions is valid 
+  // unsealingInstructions is valid 
   unsigned char recalculatedNonce[crypto_secretbox_NONCEBYTES];
   _crypto_secretbox_nonce_salted(
     recalculatedNonce, keyBytes.data, plaintextBuffer.data, plaintextBuffer.length,
-    postDecryptionInstructions.c_str(), postDecryptionInstructions.length()
+    unsealingInstructions.c_str(), unsealingInstructions.length()
   );
   if (memcmp(recalculatedNonce, noncePtr, crypto_secretbox_NONCEBYTES) != 0) {
-     throw CryptographicVerificationFailureException("Symmetric key unseal failed: the key or post-decryption instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
+     throw CryptographicVerificationFailureException("Symmetric key unseal failed: the key or unsealing instructions must be different from those used to seal the message, or the ciphertext was modified/corrupted.");
   }
 
   return plaintextBuffer;
@@ -169,22 +169,22 @@ const SodiumBuffer SymmetricKey::unsealMessageContents(
 const SodiumBuffer SymmetricKey::unseal(
   const unsigned char* ciphertext,
   const size_t ciphertextLength,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
-  return unsealMessageContents(ciphertext, ciphertextLength, postDecryptionInstructions);
+  return unsealMessageContents(ciphertext, ciphertextLength, unsealingInstructions);
 };
 
 const SodiumBuffer SymmetricKey::unseal(
   const std::vector<unsigned char> &ciphertext,
-  const std::string& postDecryptionInstructions
+  const std::string& unsealingInstructions
 ) const {
-  return unseal(ciphertext.data(), ciphertext.size(), postDecryptionInstructions);
+  return unseal(ciphertext.data(), ciphertext.size(), unsealingInstructions);
 }
 
 const SodiumBuffer SymmetricKey::unseal(
   const PackagedSealedMessage &packagedSealedMessage
 ) const {
-  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
+  return unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
 }
 
 /* static */const SodiumBuffer SymmetricKey::unseal(
@@ -192,7 +192,7 @@ const SodiumBuffer SymmetricKey::unseal(
   const std::string& seedString
 ) {
   return SymmetricKey(seedString, packagedSealedMessage.derivationOptionsJson)
-    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.postDecryptionInstructions);
+    .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
 }
 
 
