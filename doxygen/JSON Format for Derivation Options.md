@@ -47,9 +47,10 @@ JSON string any changes to them will cause the library to derive a different key
 
 *DiceKeys Hardware fields* apply to keys seeded with a DiceKeys.
 
-*DiceKeys API fields* apply to keys generated through the DiceKeys API, which
-calls uses the DiceKeys app to generate keys and often to perform cryptographic
-operations. The DiceKeys app protects the keys so that other applications are not
+*Authentication and Authorization Requirements* apply to keys generated through
+the DiceKeys API, which calls uses the DiceKeys app to generate keys and often
+to perform cryptographic operations. The DiceKeys app protects the keys so
+that other applications are not
 able to see the raw DiceKey, and these options specify which applications are
 allowed to generate keys and what they are allowed to do with them.
 
@@ -213,61 +214,75 @@ in copying an orientation, that error will not prevent them from re-deriving the
     "excludeOrientationOfFaces"?: true | false // default false
 ```
 
-### DiceKeys API Fields
+### Authentication and Authorization Requirements
 
 These fields specify who may generate keys and what they may do with them once generated.
 
-#### clientMayRetrieveKey
+#### urlPrefixesAllowed
 
-Set `"clientMayRetrieveKey"?: true` to allow the client application to retrieve the
-UnsealingKey (`"type": "UnsealingKey"`),
-SigningKey (`"type": "SigningKey"`), or
-SymmetricKey (`"type": "SymmetricKey"`)
-subject to any restrictions specified in the `"restrictions"` field.
+The most universal form of identifying apps and services is via [URL](https://en.wikipedia.org/wiki/URL)s. The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient. Thus, the default way to restrict the use of a derived key or secret is to restrict the set of URLs which are allowed to access it. You can do this by adding a `urlPrefixesAllowed` field with a list of valid URL prefixes.
 
-```
-    "clientMayRetrieveKey"?: true | false // default false
-```
-
-This allows client apps to derive keys that they can use
-private/signing/symmetric keys even when the seed is not present
-for re-derivation, but still have a key that is recoverable with
-the seed should it become necessary.
-
-#### restrictions
-
-The DiceKeys app will restrict access to derived keys or secrets to so that only those apps that are specifically allowed can obtain or use them.
 
 ```TypeScript
-    "restrictions"?: {
-        "androidPackagePrefixesAllowed"?: string[],
-        "urlPrefixesAllowed"?: string[]
-    }
+    "urlPrefixesAllowed"?: string[]
+```
+
+If a request arrives to and the result is to being sent to a URL that does does not start with one of the prefixes on the list, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
+
+Example:
+
+```TypeScript
+        "urlPrefixesAllowed": [
+            "https://dicekeys.org/app/fido",
+            "https://dicekeys.com/app/fido"
+        ]
+```
+
+By default, this field is unset and any client may use the key (though, sealed data may be sealed with UnsealingInstructions that include `urlPrefixesAllowed`, protecting against data being unsealed and read by unauthorized cilents.)
+
+Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.
+
+Our DiceKeys client APIs generate 128-bit random request ID using APIs designed for cryptograhic randomness, and throw out respones for requests from IDs that they did not issue, and so are designed to protect against such attacks. Further, operations performed by the DiceKeys app in response to API requests do not have side effects, beyond causing the user to load in their DiceKey if needed and respond to requests.
+
+#### requireAuthenticationHandshake
+To harden your app against unauthorized client requests, you can set the `requireAuthenticationHandshake` field.
+```TypeScript
+  "requireAuthenticationHandshake": Boolean
+```
+
+Since the default is false, the only reason to include this field in your derivation options is to set it to true.
+
+```TypeScript
+  "requireAuthenticationHandshake": true
+```
+
+When set, clients will need to issue a handshake request to the API, and receive an authorization token (a random shared secret), before issuing other requests where the URL at which they received the token starts with one of the authorized prefixes. The DiceKeys app will map the authorization token to that URL and, when reqeusts include that token, validate that the URL associated with the token has a valid prefix. The DiceKeys app will continue to validate that responses are also sent to a valid prefix. 
+
+#### androidPackagePrefixesAllowed
+
+While the Android platform supports issuing requests and receiving responses via URLs, the platform has better support for authentication via application package names. Specifically, an application receiving an explicit intent issued to its package receives an OS-validated package name of the client.  Authenticating clients via packages does not require a handshake, is faster, and potentially more secure.
+
+If `androidPackagePrefixesAllowed` is set to a list of package prefixes, clients may contact the DiceKeys app on Android without going through the URL interface, need not have a URL on the `urlPrefixesAllowed` list, and need not use a handshake even if `requireAuthenticationHandshake` is set to true.  If this value is set, `urlPrefixesAllowed` should always be set, even if to an empty list.
+
+
+```TypeScript
+    "androidPackagePrefixesAllowed"?: string[],
 ```
 
 For example:
 ```TypeScript
 {
     "type": "Secret",
-    "restrictions": {
-        "androidPackagePrefixesAllowed": [
-            "org.dicekeys.apps.fido",
-            "com.dicekeys.apps.fido"
-        ],
-        "urlPrefixesAllowed": [
-            "https://dicekeys.org/app/fido",
-            "https://dicekeys.com/app/fido"
-        ]
-    }
+    "androidPackagePrefixesAllowed": [
+        "org.dicekeys.apps.fido",
+        "com.dicekeys.apps.fido"
+    ],
+    "urlPrefixesAllowed": [
+        "https://dicekeys.org/app/fido",
+        "https://dicekeys.com/app/fido"
+    ]
 }
 ```
-
-If the `"restrictions"` field is set, but the object it is set to does not contain an
-`"androidPackagePrefixesAllowed"` field, the API will forbid Android applications from
-generating the key.
-If the `"restrictions"` field is set, but the object it is set to does not contain a
-`"urlPrefixesAllowed"` field, the API will forbid iOS and other applications that
-rely on this field to generate the key.
 
 The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and
 and terminate client package IDs with dots, to prevent extension attacks.  In other words,
@@ -275,3 +290,55 @@ if you set the prefix `com.example`, the API will test if `com.example.` is a pr
 of the string composed by concatenating a period onto your client application's package name.
 So, if an attacker registers the package name `com.exampleattacker`, they will not be
 able to match the `com.eaxmple` prefix.
+
+#### requireUsersConsent
+
+For signing key pairs (`"type": "SigningKey"`), 
+
+```TypeScript
+    "requireUsersConsent"?: {
+        "question": String,
+        "actionButtonLabels": {
+            "allow": String,
+            "decline": String 
+        }
+    }
+```
+
+For example
+```TypeScript
+{
+    "requireUsersConsent": {
+        "question": "Do you want use \"8fsd8pweDmqed\" as your SpoonerMail account password and remove your current password?",
+        "actionButtonLabels": {
+            "allow": "Make my password \"8fsd8pweDmqed\"",
+            "deny": "No" 
+        }
+    }
+}
+```
+
+#### clientMayRetrieveKey
+
+By default, the DiceKeys app will forbid clients from retrieving a
+SigningKey, SymmetricKey, or UnsealingKey
+even when all authentication restrictions (e.g., `urlPrefixesAllowed`) are met.
+
+To derive keys that an authorized client will be permitted to retrieve, use the `clientMayRetrieveKey` field.
+
+```TypeScript
+    "clientMayRetrieveKey"?: Boolean
+```
+
+Since the default is false, it is primarily used as follows:
+
+```TypeScript
+    "clientMayRetrieveKey": true
+```
+
+Clients can this field to generate keys that they can get a copy of,
+use for any purpose they want without having to interact with the DiceKeys API or app,
+yet which they can ask the DiceKeys app to recover for them should the key be lost.
+For example, an end-to-end encrypted app could generate a key pair it uses for
+communication and storage, keep the key locally, but ask the DiceKeys app to re-derive
+it if the user is recovering their data on a new device.

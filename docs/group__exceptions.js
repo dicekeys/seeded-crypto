@@ -13,13 +13,15 @@ var group__exceptions =
     [ "DiceKeys Hardware Fields", "derivation_options_format.html#autotoc_md8", [
       [ "excludeOrientationOfFaces", "derivation_options_format.html#autotoc_md9", null ]
     ] ],
-    [ "DiceKeys API Fields", "derivation_options_format.html#autotoc_md10", [
-      [ "clientMayRetrieveKey", "derivation_options_format.html#autotoc_md11", null ],
-      [ "restrictions", "derivation_options_format.html#autotoc_md12", null ]
+    [ "Authentication and Authorization Requirements", "derivation_options_format.html#autotoc_md10", [
+      [ "urlPrefixesAllowed", "derivation_options_format.html#autotoc_md11", null ],
+      [ "requireAuthenticationHandshake", "derivation_options_format.html#autotoc_md12", null ],
+      [ "androidPackagePrefixesAllowed", "derivation_options_format.html#autotoc_md13", null ],
+      [ "requireUsersConsent", "derivation_options_format.html#autotoc_md14", null ],
+      [ "clientMayRetrieveKey", "derivation_options_format.html#autotoc_md15", null ]
     ] ],
-    [ "DiceKeys API Fields", "unsealing_instructions_format.html#autotoc_md13", [
-      [ "restrictions", "unsealing_instructions_format.html#autotoc_md14", null ],
-      [ "userMustAcknowledgeThisMessage", "unsealing_instructions_format.html#autotoc_md15", null ]
+    [ "Authentication and authorization requirements", "unsealing_instructions_format.html#autotoc_md16", [
+      [ "requireUsersConsent", "unsealing_instructions_format.html#autotoc_md17", null ]
     ] ],
     [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html", [
       [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html#a194cc8bd3b13fa6b26775c02cf5cb4f8", null ]

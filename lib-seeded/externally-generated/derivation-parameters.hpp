@@ -9,22 +9,17 @@
 
 #include <string>
 
-namespace KeyUseRestrictionsJson {
+namespace DerivationOptionsJson {
 	namespace FieldNames {
 		const std::string androidPackagePrefixesAllowed = "androidPackagePrefixesAllowed";
 		const std::string urlPrefixesAllowed = "urlPrefixesAllowed";
-	}
-}
-
-namespace DerivationOptionsJson {
-	namespace FieldNames {
+		const std::string requireAuthenticationHandshake = "requireAuthenticationHandshake";
 		const std::string algorithm = "algorithm";
 		const std::string hashFunction = "hashFunction";
 		const std::string hashFunctionMemoryLimitInBytes = "hashFunctionMemoryLimitInBytes";
 		const std::string hashFunctionMemoryPasses = "hashFunctionMemoryPasses";
 		const std::string lengthInBytes = "lengthInBytes";
 		const std::string type = "type";
-		const std::string restrictions = "restrictions";
 		const std::string excludeOrientationOfFaces = "excludeOrientationOfFaces";
 	}
 
@@ -85,10 +80,8 @@ namespace UnsealingInstructionsJson {
 	namespace FieldNames {
 		const std::string androidPackagePrefixesAllowed = "androidPackagePrefixesAllowed";
 		const std::string urlPrefixesAllowed = "urlPrefixesAllowed";
-		const std::string userMustAcknowledgeThisMessage = "userMustAcknowledgeThisMessage";
-		const std::string alsoPostToUrl = "alsoPostToUrl";
-		const std::string onlyPostToUrl = "onlyPostToUrl";
-		const std::string reEncryptWithPublicKey = "reEncryptWithPublicKey";
+		const std::string requireAuthenticationHandshake = "requireAuthenticationHandshake";
+		const std::string requireUsersConsent = "requireUsersConsent";
 	}
 };
 

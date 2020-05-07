@@ -14,7 +14,7 @@ class UnsealingInstructions {
 
 public:
 	std::vector<std::string> clientApplicationIdMustHavePrefix;
-	std::string userMustAcknowledgeThisMessage;
+	// ConsentRequirement requireUsersConsent = {}
 
 	/**
 	 * Create a UnsealingInstructions class from the JSON representation
@@ -25,8 +25,8 @@ public:
 	);
 
 	UnsealingInstructions(
-		std::vector<std::string> clientApplicationIdMustHavePrefix,
-		std::string userMustAcknowledgeThisMessage = {}
+		std::vector<std::string> clientApplicationIdMustHavePrefix//,
+		// ConsentRequirement requireUsersConsent = {}
 	);
 
 	bool isApplicationIdAllowed(const std::string& applicationId) const;

@@ -13,28 +13,17 @@ However, since it's format mirrors @ref derivation_options_format, and the DiceK
 are currently documented here, we currently document the JSON format for Unsealing Instructions
 fields below.
 
-### DiceKeys API Fields
+### Authentication and authorization requirements
 
-The fields provide instructions the DiceKeys app about when unsealed data
-may be released to a client application.
-
-#### restrictions
-
-This field mirrors the field in @ref derivation_options_format, restricting the set
-of parties allowed to see an unsealed message.
-
-```TypeScript
-    "restrictions"?: {
-        "androidPackagePrefixesAllowed"?: string[],
-        "urlPrefixesAllowed"?: string[]
-    }
-```
+The unsealing instructions support require authentication requirements via the
+`urlPrefixesAllowed`, `requireAuthenticationHandshake`, and `androidPackagePrefixesAllowed` fields
+from the derivation options format.
 
 #### requireUsersConsent
 
-If set, the DiceKeys app should display the message to the user before allowing
-the unsealed message to be returned to the requesting client app.
-The message should be in the user's native language.
+Yyou can instruct the DiceKeys app to display a consent question to the user
+before unsealing the message and returning it to the client app.
+The message should be in the client's preferred language at time of sealing.
 
 ```TypeScript
     "requireUsersConsent"?: {

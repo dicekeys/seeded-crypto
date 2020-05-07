@@ -78,19 +78,19 @@ TEST(UnsealingInstructions, ThowsOnInvalidJson) {
 	);
 }
 
-TEST(UnsealingInstructions, Handles0LengthJsonObject) {
-	ASSERT_STREQ(
-		UnsealingInstructions("").userMustAcknowledgeThisMessage.c_str(),
-		""
-	);
-}
+// TEST(UnsealingInstructions, Handles0LengthJsonObject) {
+// 	ASSERT_STREQ(
+// 		UnsealingInstructions("").userMustAcknowledgeThisMessage.c_str(),
+// 		""
+// 	);
+// }
 
-TEST(UnsealingInstructions, HandlesEmptyJsonObject) {
-	ASSERT_STREQ(
-		UnsealingInstructions("{}").userMustAcknowledgeThisMessage.c_str(),
-		""
-	);
-}
+// TEST(UnsealingInstructions, HandlesEmptyJsonObject) {
+// 	ASSERT_STREQ(
+// 		UnsealingInstructions("{}").userMustAcknowledgeThisMessage.c_str(),
+// 		""
+// 	);
+// }
 
 TEST(SealingKey, GetsSealingKey) {
 	const UnsealingKey testUnsealingKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);

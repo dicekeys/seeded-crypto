@@ -24,12 +24,12 @@ UnsealingInstructions::UnsealingInstructions(
         {""}
       );
 
-    userMustAcknowledgeThisMessage =
-      unsealingOptionsObject.value<std::string>(
-        UnsealingInstructionsJson::FieldNames::userMustAcknowledgeThisMessage,
-        // Default to empty string
-        ""
-      );
+    // requireUsersConsent =
+    //   unsealingOptionsObject.value<FIXME>(
+    //     UnsealingInstructionsJson::FieldNames::requireUsersConsent,
+    //     // Default to empty string
+    //     ""
+    //   );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
   }
@@ -37,19 +37,19 @@ UnsealingInstructions::UnsealingInstructions(
 }
 
 UnsealingInstructions::UnsealingInstructions(
-		std::vector<std::string> clientApplicationIdMustHavePrefix,
-		std::string userMustAcknowledgeThisMessage
+		std::vector<std::string> clientApplicationIdMustHavePrefix //,
+//		ConsentRequirement requireUsersConsent
 ) :
-  clientApplicationIdMustHavePrefix(clientApplicationIdMustHavePrefix),
-  userMustAcknowledgeThisMessage(userMustAcknowledgeThisMessage)
+  clientApplicationIdMustHavePrefix(clientApplicationIdMustHavePrefix)//,
+//  requireUsersConsent(requireUsersConsent)
   {}
 
 std::string	UnsealingInstructions::toJson(int indent,
   const char indent_char
 ) const {
 	nlohmann::json asJson;  
-  asJson[UnsealingInstructionsJson::FieldNames::userMustAcknowledgeThisMessage] =
-    userMustAcknowledgeThisMessage;
+  // asJson[UnsealingInstructionsJson::FieldNames::requireUsersConsent] =
+  //   requireUsersConsent;
   asJson[UnsealingInstructionsJson::FieldNames::androidPackagePrefixesAllowed] =
     clientApplicationIdMustHavePrefix;
   return asJson.dump(indent, indent_char);
