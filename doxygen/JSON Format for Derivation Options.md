@@ -291,22 +291,6 @@ of the string composed by concatenating a period onto your client application's 
 So, if an attacker registers the package name `com.exampleattacker`, they will not be
 able to match the `com.eaxmple` prefix.
 
-#### requireUsersConsent
-
-For signing key pairs (`"type": "SigningKey"`), 
-
-```TypeScript
-    "requireUsersConsent"?: {
-        "question": String,
-        "actionButtonLabels": {
-            "allow": String,
-            "decline": String 
-        }
-    }
-```
-
-For example
-```TypeScript
 {
     "requireUsersConsent": {
         "question": "Do you want use \"8fsd8pweDmqed\" as your SpoonerMail account password and remove your current password?",

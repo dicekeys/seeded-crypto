@@ -21,9 +21,13 @@ from the derivation options format.
 
 #### requireUsersConsent
 
-Yyou can instruct the DiceKeys app to display a consent question to the user
+You can instruct the DiceKeys app to display a consent question to the user
 before unsealing the message and returning it to the client app.
-The message should be in the client's preferred language at time of sealing.
+You specify the `question`, the text for the button that will `allow` the data
+to be unsealed, and the text for the button that will `deny` the client access
+to the unsealed data.
+The language of the warning is chosen by the sealer of the message, which should use
+it's best knowledge about the language of the user at the time of sealing.
 
 ```TypeScript
     "requireUsersConsent"?: {
