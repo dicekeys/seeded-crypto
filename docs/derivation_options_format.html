@@ -225,30 +225,19 @@ androidPackagePrefixesAllowed</h3>
 <div class="line">    ]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and and terminate client package IDs with dots, to prevent extension attacks. In other words, if you set the prefix <code>com.example</code>, the API will test if <code>com.example.</code> is a prefix of the string composed by concatenating a period onto your client application's package name. So, if an attacker registers the package name <code>com.exampleattacker</code>, they will not be able to match the <code>com.eaxmple</code> prefix.</p>
-<h3><a class="anchor" id="autotoc_md14"></a>
-requireUsersConsent</h3>
-<p>For signing key pairs (<code>"type": "SigningKey"</code>),</p>
-<div class="fragment"><div class="line">&quot;requireUsersConsent&quot;?: {</div>
-<div class="line">    &quot;question&quot;: String,</div>
-<div class="line">    &quot;actionButtonLabels&quot;: {</div>
-<div class="line">        &quot;allow&quot;: String,</div>
-<div class="line">        &quot;decline&quot;: String </div>
-<div class="line">    }</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>For example </p><div class="fragment"><div class="line">{</div>
-<div class="line">    &quot;requireUsersConsent&quot;: {</div>
-<div class="line">        &quot;question&quot;: &quot;Do you want use \&quot;8fsd8pweDmqed\&quot; as your SpoonerMail account password and remove your current password?&quot;,</div>
-<div class="line">        &quot;actionButtonLabels&quot;: {</div>
-<div class="line">            &quot;allow&quot;: &quot;Make my password \&quot;8fsd8pweDmqed\&quot;&quot;,</div>
-<div class="line">            &quot;deny&quot;: &quot;No&quot; </div>
-<div class="line">        }</div>
-<div class="line">    }</div>
-<div class="line">}</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md15"></a>
-clientMayRetrieveKey</h3>
-<p>By default, the DiceKeys app will forbid clients from retrieving a <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>, <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, or <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> even when all authentication restrictions (e.g., <code>urlPrefixesAllowed</code>) are met.</p>
-<p>To derive keys that an authorized client will be permitted to retrieve, use the <code>clientMayRetrieveKey</code> field.</p>
-<div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;?: Boolean</div>
+<p>{ "requireUsersConsent": { "question": "Do you want use \"8fsd8pweDmqed" as your SpoonerMail account password and remove your current password?",
+        "actionButtonLabels": {
+            "allow": "Make my password "8fsd8pweDmqed"",
+            "deny": "No" } } } </p><div class="fragment"><div class="line">#### clientMayRetrieveKey</div>
+<div class="line"> </div>
+<div class="line">By default, the DiceKeys app will forbid clients from retrieving a</div>
+<div class="line">SigningKey, SymmetricKey, or UnsealingKey</div>
+<div class="line">even when all authentication restrictions (e.g., `urlPrefixesAllowed`) are met.</div>
+<div class="line"> </div>
+<div class="line">To derive keys that an authorized client will be permitted to retrieve, use the `clientMayRetrieveKey` field.</div>
+<div class="line"> </div>
+<div class="line">```TypeScript</div>
+<div class="line">    &quot;clientMayRetrieveKey&quot;?: Boolean</div>
 </div><!-- fragment --><p>Since the default is false, it is primarily used as follows:</p>
 <div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;: true</div>
 </div><!-- fragment --><p>Clients can this field to generate keys that they can get a copy of, use for any purpose they want without having to interact with the DiceKeys API or app, yet which they can ask the DiceKeys app to recover for them should the key be lost. For example, an end-to-end encrypted app could generate a key pair it uses for communication and storage, keep the key locally, but ask the DiceKeys app to re-derive it if the user is recovering their data on a new device. </p>

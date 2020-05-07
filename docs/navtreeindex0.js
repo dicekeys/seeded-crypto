@@ -138,8 +138,6 @@ var NAVTREEINDEX0 =
 "derivation_options_format.html#autotoc_md11":[2,0],
 "derivation_options_format.html#autotoc_md12":[2,1],
 "derivation_options_format.html#autotoc_md13":[2,2],
-"derivation_options_format.html#autotoc_md14":[2,3],
-"derivation_options_format.html#autotoc_md15":[2,4],
 "derivation_options_format.html#autotoc_md2":[0,1],
 "derivation_options_format.html#autotoc_md3":[0,2],
 "derivation_options_format.html#autotoc_md4":[0,3],
@@ -175,6 +173,6 @@ var NAVTREEINDEX0 =
 "unsealing-instructions_8hpp_source.html":[5,0,0,13],
 "unsealing-key_8hpp_source.html":[5,0,0,14],
 "unsealing_instructions_format.html":[2],
-"unsealing_instructions_format.html#autotoc_md16":[3],
-"unsealing_instructions_format.html#autotoc_md17":[3,0]
+"unsealing_instructions_format.html#autotoc_md14":[3],
+"unsealing_instructions_format.html#autotoc_md15":[3,0]
 };
