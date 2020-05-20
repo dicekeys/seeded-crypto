@@ -35,18 +35,20 @@ SymmetricKey::SymmetricKey(
   const SymmetricKey &other
 ) : SymmetricKey(other.keyBytes, other.derivationOptionsJson) {}
 
-SymmetricKey::SymmetricKey(
+SymmetricKey SymmetricKey::deriveFromSeed(
   const std::string& seedString,
   const std::string& _derivationOptionsJson
-) : SymmetricKey(
-  DerivationOptions::deriveMasterSecret(
-    seedString,
-    _derivationOptionsJson,
-    DerivationOptionsJson::type::SymmetricKey,
-    crypto_secretbox_KEYBYTES
-  ),
-  _derivationOptionsJson
-) {}
+) {
+  return SymmetricKey(
+    DerivationOptions::deriveMasterSecret(
+      seedString,
+      _derivationOptionsJson,
+      DerivationOptionsJson::type::SymmetricKey,
+      crypto_secretbox_KEYBYTES
+    ),
+    _derivationOptionsJson
+  );
+}
 
 const std::vector<unsigned char> SymmetricKey::sealToCiphertextOnly(
   const unsigned char* message,

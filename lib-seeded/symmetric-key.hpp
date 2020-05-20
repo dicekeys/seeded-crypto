@@ -85,7 +85,7 @@ class SymmetricKey {
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    * 
    */
-  SymmetricKey(
+  static SymmetricKey deriveFromSeed(
     const std::string& seedString,
     const std::string& derivationOptionsJson
   );

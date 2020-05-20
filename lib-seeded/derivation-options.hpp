@@ -1,6 +1,8 @@
 #pragma once
 
-#pragma warning( disable : 26812 )
+#ifndef EMSCRIPTEN
+ #pragma warning( disable : 26812 )
+#endif
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
 #include "./externally-generated/derivation-parameters.hpp"
