@@ -62,7 +62,7 @@ const SodiumBuffer Secret::toSerializedBinaryForm() const {
   });
 }
 
-Secret Secret::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+Secret Secret::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return Secret(fields[0], fields[1].toUtf8String());
 }

@@ -130,7 +130,7 @@ const SodiumBuffer SignatureVerificationKey::toSerializedBinaryForm() const {
 }
 
 SignatureVerificationKey SignatureVerificationKey::fromSerializedBinaryForm(
-  SodiumBuffer serializedBinaryForm
+  const SodiumBuffer &serializedBinaryForm
 ) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SignatureVerificationKey(

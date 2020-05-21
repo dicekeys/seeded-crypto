@@ -142,7 +142,7 @@ const SodiumBuffer SigningKey::toSerializedBinaryForm(
 }
 
 SigningKey SigningKey::fromSerializedBinaryForm(
-  SodiumBuffer serializedBinaryForm
+  const SodiumBuffer &serializedBinaryForm
 ) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(3);
   return SigningKey(

@@ -228,7 +228,7 @@ public:
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
    */
-  static SignatureVerificationKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+  static SignatureVerificationKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
 };
 

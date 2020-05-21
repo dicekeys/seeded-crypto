@@ -96,7 +96,7 @@ public:
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
    */
-  static Secret fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+  static Secret fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
   /**
    * @brief Construct (reconstitute) a Secret from its JSON

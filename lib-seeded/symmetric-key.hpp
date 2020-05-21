@@ -291,7 +291,7 @@ class SymmetricKey {
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
    */
-  static SymmetricKey fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+  static SymmetricKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
   /**
    * @brief Internal implementation of JSON parser for the JSON contructor

@@ -138,7 +138,7 @@ const SodiumBuffer UnsealingKey::toSerializedBinaryForm() const {
   });
 }
 
-UnsealingKey UnsealingKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+UnsealingKey UnsealingKey::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(3);
   return UnsealingKey(fields[0], fields[1].toVector(), fields[2].toUtf8String());
 }

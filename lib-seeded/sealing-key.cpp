@@ -152,7 +152,7 @@ const SodiumBuffer SealingKey::toSerializedBinaryForm() const {
   });
 }
 
-SealingKey SealingKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+SealingKey SealingKey::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SealingKey(fields[0].toVector(), fields[1].toUtf8String());
 }

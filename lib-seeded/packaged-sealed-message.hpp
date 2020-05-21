@@ -67,7 +67,7 @@ public:
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
    */
-  static PackagedSealedMessage fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm);
+  static PackagedSealedMessage fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
   /**
    * @brief Serialize this object to a JSON-formatted string

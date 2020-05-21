@@ -37,7 +37,7 @@ const SodiumBuffer PackagedSealedMessage::toSerializedBinaryForm() const {
   });
 }
 
-PackagedSealedMessage PackagedSealedMessage::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+PackagedSealedMessage PackagedSealedMessage::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(3);
   return PackagedSealedMessage(fields[0].toVector(), fields[1].toUtf8String(), fields[2].toUtf8String());
 }

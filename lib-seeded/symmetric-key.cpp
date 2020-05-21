@@ -193,7 +193,7 @@ const SodiumBuffer SymmetricKey::unseal(
   const PackagedSealedMessage& packagedSealedMessage,
   const std::string& seedString
 ) {
-  return SymmetricKey(seedString, packagedSealedMessage.derivationOptionsJson)
+  return SymmetricKey::deriveFromSeed(seedString, packagedSealedMessage.derivationOptionsJson)
     .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
 }
 
@@ -238,7 +238,7 @@ const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
   });
 }
 
-SymmetricKey SymmetricKey::fromSerializedBinaryForm(SodiumBuffer serializedBinaryForm) {
+SymmetricKey SymmetricKey::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SymmetricKey(fields[0], fields[1].toUtf8String());
 }
