@@ -64,19 +64,19 @@ SigningKey SigningKey::fromJson(
 }
 
 SigningKey::SigningKey(
-  const std::string& seedString,
+  const std::string& _seedString,
   const std::string& _derivationOptionsJson
-) : SigningKey(deriveFromSeed(seedString, derivationOptionsJson)) {}
+) : SigningKey(deriveFromSeed(_seedString, _derivationOptionsJson)) {}
 
 
 SigningKey SigningKey::deriveFromSeed(
-  const std::string& seedString,
-  const std::string& derivationOptionsJson
+  const std::string& _seedString,
+  const std::string& _derivationOptionsJson
 ) {
   // Turn the seed string into a seed of the appropriate length
   SodiumBuffer seed = DerivationOptions::deriveMasterSecret(
-    seedString,
-    derivationOptionsJson,
+    _seedString,
+    _derivationOptionsJson,
     DerivationOptionsJson::type::SigningKey,
     crypto_sign_SEEDBYTES
   );
@@ -84,7 +84,7 @@ SigningKey SigningKey::deriveFromSeed(
   SodiumBuffer signingKeyBytes(crypto_sign_SECRETKEYBYTES);
   std::vector<unsigned char> signatureVerificationKeyBytes(crypto_sign_PUBLICKEYBYTES);
   crypto_sign_seed_keypair(signatureVerificationKeyBytes.data(), signingKeyBytes.data, seed.data);
-  return SigningKey(signingKeyBytes, signatureVerificationKeyBytes, derivationOptionsJson);
+  return SigningKey(signingKeyBytes, signatureVerificationKeyBytes, _derivationOptionsJson);
 }
 
 

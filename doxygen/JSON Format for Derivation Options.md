@@ -247,7 +247,7 @@ Our DiceKeys client APIs generate 128-bit random request ID using APIs designed 
 #### requireAuthenticationHandshake
 To harden your app against unauthorized client requests, you can set the `requireAuthenticationHandshake` field.
 ```TypeScript
-  "requireAuthenticationHandshake": Boolean
+  "requireAuthenticationHandshake"?: boolean
 ```
 
 Since the default is false, the only reason to include this field in your derivation options is to set it to true.
@@ -311,7 +311,7 @@ even when all authentication restrictions (e.g., `urlPrefixesAllowed`) are met.
 To derive keys that an authorized client will be permitted to retrieve, use the `clientMayRetrieveKey` field.
 
 ```TypeScript
-    "clientMayRetrieveKey"?: Boolean
+    "clientMayRetrieveKey"?: boolean
 ```
 
 Since the default is false, it is primarily used as follows:
