@@ -88,6 +88,20 @@ public:
     const std::string& derivationOptionsJson
   );
 
+    /**
+   * @brief Construct a new SigningKey by deriving a signing key pair from a seed
+   * string and a set of derivation options in @ref derivation_options_format.
+   * 
+   * @param seedString The private seed which is used to generate the key pair.
+   * Anyone who knows (or can guess) this seed can re-generate the key pair
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   */
+  static SigningKey deriveFromSeed(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson
+  );
+
   /**
    * @brief Construct (reconsitute) the SigningKey from JSON format.
    * The JSON object may or may not contain the signatureVerificationKeyBytes.

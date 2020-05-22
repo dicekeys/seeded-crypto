@@ -56,15 +56,30 @@ public:
    * @brief Derive a secret from a seed secret and a set of
    * derivation options in @ref derivation_options_format.
    * 
-   * @param secretSeedString The secret seed string from which this secret should be
+   * @param seedString The secret seed string from which this secret should be
    * derived. Once the secret is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this secret.
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   Secret(
-    const std::string& secretSeedString,
+    const std::string& seedString,
     const std::string& derivationOptionsJson
   );
+
+  /**
+   * @brief Derive a secret from a seed secret and a set of
+   * derivation options in @ref derivation_options_format.
+   * 
+   * @param seedString The secret seed string from which this secret should be
+   * derived. Once the secret is derived, you won't need the secretSeedBytes
+   * again unless you need to re-derive this secret.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   */
+  static Secret deriveFromSeed(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson
+  );
+
 
   /**
    * @brief Serialize this object to a JSON-formatted string

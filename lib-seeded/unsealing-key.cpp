@@ -32,13 +32,21 @@ UnsealingKey::UnsealingKey(
   crypto_box_seed_keypair((unsigned char *) sealingKeyBytes.data(), unsealingKeyBytes.data, seedBuffer.data);
 }
 
-  UnsealingKey::UnsealingKey(
-    const std::string& _seedString,
-    const std::string& _derivationOptionsJson
-  ) : UnsealingKey(
-      DerivationOptions::deriveMasterSecret(_seedString, _derivationOptionsJson, DerivationOptionsJson::type::UnsealingKey, crypto_box_SEEDBYTES),
-      _derivationOptionsJson
-  ) {}
+UnsealingKey::UnsealingKey(
+  const std::string& _seedString,
+  const std::string& _derivationOptionsJson
+) : UnsealingKey(deriveFromSeed(_seedString, _derivationOptionsJson)) {}
+
+UnsealingKey UnsealingKey::deriveFromSeed(
+  const std::string& seedString,
+  const std::string& derivationOptionsJson
+) {
+  return UnsealingKey(
+    DerivationOptions::deriveMasterSecret(seedString, derivationOptionsJson, DerivationOptionsJson::type::UnsealingKey, crypto_box_SEEDBYTES),
+    derivationOptionsJson
+  );
+}
+
 
 UnsealingKey::UnsealingKey(
   const UnsealingKey &other

@@ -85,6 +85,21 @@ class SymmetricKey {
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    * 
    */
+  SymmetricKey(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson
+  );
+
+  /**
+   * @brief Construct a new SymmetricKey by (re)deriving it from a seed string
+   * and a set of derivation options in @ref derivation_options_format.
+   * 
+   * @param seedString The private seed which is used to generate the key.
+   * Anyone who knows (or can guess) this seed can re-generate the key
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * 
+   */
   static SymmetricKey deriveFromSeed(
     const std::string& seedString,
     const std::string& derivationOptionsJson

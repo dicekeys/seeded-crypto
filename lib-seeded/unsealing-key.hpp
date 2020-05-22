@@ -66,6 +66,23 @@ public:
   );
 
   /**
+   * @brief Construct a new UnsealingKey by deriving a public/private
+   * key pair from a seed string and a set of derivation options
+   * in @ref derivation_options_format.
+   * 
+   * @param seedString The private seed which is used to generate the key pair.
+   * Anyone who knows (or can guess) this seed can re-generate the key pair
+   * by passing it along with the derivationOptionsJson.
+   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   */
+  static UnsealingKey deriveFromSeed(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson
+  );
+
+
+
+  /**
    * @brief Construct (reconstitute) from serialized JSON format
    * 
    * @param unsealingKeyAsJson 

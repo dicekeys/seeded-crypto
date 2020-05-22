@@ -10,14 +10,27 @@ Secret::Secret(
 Secret::Secret(
   const std::string& seedString,
   const std::string& _derivationOptionsJson
-) : Secret(
+) : secretBytes(
   DerivationOptions::deriveMasterSecret(
     seedString,
     _derivationOptionsJson,
     DerivationOptionsJson::type::Secret
-  ),
-  _derivationOptionsJson
-) {}
+  )), derivationOptionsJson(_derivationOptionsJson) {}
+
+Secret Secret::deriveFromSeed(
+  const std::string& seedString,
+  const std::string& derivationOptionsJson
+) {
+  return Secret(
+    DerivationOptions::deriveMasterSecret(
+      seedString,
+      derivationOptionsJson,
+      DerivationOptionsJson::type::Secret
+    ),
+    derivationOptionsJson
+  );
+}
+
 
 Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.derivationOptionsJson) {}
 

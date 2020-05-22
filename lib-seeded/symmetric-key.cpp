@@ -35,6 +35,11 @@ SymmetricKey::SymmetricKey(
   const SymmetricKey &other
 ) : SymmetricKey(other.keyBytes, other.derivationOptionsJson) {}
 
+SymmetricKey::SymmetricKey(
+  const std::string& seedString,
+  const std::string& derivationOptionsJson
+) : SymmetricKey(deriveFromSeed(seedString, derivationOptionsJson)) {}
+
 SymmetricKey SymmetricKey::deriveFromSeed(
   const std::string& seedString,
   const std::string& _derivationOptionsJson
