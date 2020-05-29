@@ -11,7 +11,7 @@ cryptographic-strength secrets can be derived and shared with
 clients that want to implement their own operations.
 
 ```cpp
-const SymmetricKey(...);
+const SymmetricKey sk(...);
 const std::string plaintext("Wait long enough, and grilled cheese becomes its own spoonerism.");
 const auto sealed_message = sk.seal(plaintext);
 ```
@@ -23,17 +23,17 @@ keys using the random number generator with this library, but you would do so
 by having the generator create a random seed string.
 
 ```cpp
-const UnsealingKey private_key(
+const UnsealingKey private_key = UnsealingKey::deriveFromSeed(
     // The seed string. Hopefully better than Randall Munroe's
     "valid equine capacitor paperclip wrong bovine ground luxury",
     // Since the seed is still a bit short, use a memory-hard
     // derivation function to derive the key, not just a simple hash.
-    "{hashFunction=\"Argon2id\"}"
+    "{hashFunction:\"Argon2id\"}"
 );
 ```
 
 Like [LibSodium](https://libsodium.gitbook.io/doc/), the cryptogrpahic library
-on which the Seeded Cryptography Library it built, this library is opnionated.
+on which the Seeded Cryptography Library is built, this library is opnionated.
 It offers a small number of safe options to direct users to good choices, rather
 than offering a wide variety with some potentially-dangerous choices.
 For example, instead of _encrypt_ and
@@ -49,7 +49,7 @@ to anyone unsealing the message.  This is separate from the key and is
 included in plaintext in PackagedSealedMessage returned by the seal operation.
 You can use it, for example, to attach
 instructions about how such messages should be treated when unsealing.
-Those instructions are not public, and not encrypted. For example:
+Those instructions are public, and not encrypted. For example:
 
 ```cpp
 const SymmetricKey sk(...);
