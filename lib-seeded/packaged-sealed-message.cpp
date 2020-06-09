@@ -60,7 +60,6 @@ const std::string PackagedSealedMessage::toJson(
 PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string& packagedSealedMessageAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(packagedSealedMessageAsJson);
-    auto kdo = jsonObject.value<std::string>(PackagedSealedMessageJsonFields::derivationOptionsJson, "");
     return PackagedSealedMessage(
       hexStrToByteVector(jsonObject.at(PackagedSealedMessageJsonFields::ciphertext)),
       jsonObject.value<std::string>(PackagedSealedMessageJsonFields::derivationOptionsJson, ""),
