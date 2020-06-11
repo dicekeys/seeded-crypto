@@ -39,16 +39,14 @@ public:
   );
 
   /**
-   * @brief Derive a secret from a seed secret and a set of
-   * derivation options in @ref derivation_options_format.
+   * Construct a secret from its two fields: the secretBytes
+   * and the derivationOptionsJson.
    * 
-   * @param secretSeedBytes The secret seed from which this secret should be
-   * derived. Once the secret is derived, you won't need the secretSeedBytes
-   * again unless you need to re-derive this secret.
+   * @param secretBytes The derived secret.
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   Secret(
-    const SodiumBuffer& secretSeedBytes,
+    const SodiumBuffer& secretBytes,
     const std::string& derivationOptionsJson = {}
   );
 
