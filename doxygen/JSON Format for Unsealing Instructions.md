@@ -16,7 +16,7 @@ fields below.
 ### Authentication and authorization requirements
 
 The unsealing instructions support require authentication requirements via the
-`urlPrefixesAllowed`, `requireAuthenticationHandshake`, and `androidPackagePrefixesAllowed` fields
+`allow`, `requireAuthenticationHandshake`, and `androidPackagePrefixesAllowed` fields
 from the derivation options format.
 
 #### requireUsersConsent

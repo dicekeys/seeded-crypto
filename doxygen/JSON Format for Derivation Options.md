@@ -200,12 +200,16 @@ here to keep the specification from being split into too many locations.
 #### excludeOrientationOfFaces
 
 When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:
- * The uppercase letter on the die
- * The digit on the die
- * The orientation relative to the top of the square in canonical form
+ 1 The uppercase letter on the die
+ 2 The digit on the die
+ 3 The orientation relative to the top of the square in canonical form
 
-If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be excluded
-resulting in a 50-character seed.
+If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be
+set to "?" before the canonical form is determined
+(the choice of the top left corner that results in the human readable
+form earliest in the sort order) and "?" will be the third character
+in each triple.
+
 This option exists because orientations may be harder for users to copy correctly than letters and digits are.
 With this option on, should a user choose to manually copy the contents of a DiceKey and make an error
 in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.
@@ -218,27 +222,42 @@ in copying an orientation, that error will not prevent them from re-deriving the
 
 These fields specify who may generate keys and what they may do with them once generated.
 
-#### urlPrefixesAllowed
+#### allow
 
-The most universal form of identifying apps and services is via [URL](https://en.wikipedia.org/wiki/URL)s. The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient. Thus, the default way to restrict the use of a derived key or secret is to restrict the set of URLs which are allowed to access it. You can do this by adding a `urlPrefixesAllowed` field with a list of valid URL prefixes.
+The most universal form of identifying apps and services is via compoennts of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
+The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
+For intra-browser communication between web-apps, communication via postMessage provides authentication via origins.
+Thus, the default way to restrict the use of a derived key or secret is via these web stanards using the `allow` field.
 
 
 ```TypeScript
-    "urlPrefixesAllowed"?: string[]
+    "allow"?: {"host": string, "paths"?: string[]}[]
 ```
 
-If a request arrives to and the result is to being sent to a URL that does does not start with one of the prefixes on the list, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
+A request is allowed if any of the entries in the array matches the host and one of the paths from an entry in the list.
+
+The specification uses hosts and not origins as the scheme must always be "https://".
+Unless a custom port is in use, the host field is the same as the hostname (e.g. "example.com").
+If the host field starts with "*.", then any subdomain will match, as will the domain that
+follows the "*." prefix.  So, "*.example.com" is satisified by both "sub.example.com" and "example.com."
+
+If the optional paths field is specified, the for URL-based APIs (those where messages are passed via page loads, as opposed to postMessage requests),
+the path of the URL to which the resposne will be sent must match one of the paths.  Path specifications may end in "*", in which case
+the path must start with the prefix before the "*".  For example, "https://example.com/iamgroot" satisfies path "/iam\*".
+All paths must start with a "/" per web specifications, but if you forget to include the "/" the validator will assume you intended to include it.
+
+If the `allow` clause is not satisified, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
 
 Example:
 
 ```TypeScript
-        "urlPrefixesAllowed": [
-            "https://dicekeys.org/app/fido",
-            "https://dicekeys.com/app/fido"
-        ]
+    "allow": [
+        {"host": "dicekeys.org", "paths": ["/app/fido*"]},
+        {"host": "dicekeys.com", "paths": ["/app/fido*"]}
+    ]
 ```
 
-By default, this field is unset and any client may use the key (though, sealed data may be sealed with UnsealingInstructions that include `urlPrefixesAllowed`, protecting against data being unsealed and read by unauthorized cilents.)
+By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include `allow`, protecting against data being unsealed and read by unauthorized cilents.)
 
 Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.
 
@@ -262,7 +281,7 @@ When set, clients will need to issue a handshake request to the API, and receive
 
 While the Android platform supports issuing requests and receiving responses via URLs, the platform has better support for authentication via application package names. Specifically, an application receiving an explicit intent issued to its package receives an OS-validated package name of the client.  Authenticating clients via packages does not require a handshake, is faster, and potentially more secure.
 
-If `androidPackagePrefixesAllowed` is set to a list of package prefixes, clients may contact the DiceKeys app on Android without going through the URL interface, need not have a URL on the `urlPrefixesAllowed` list, and need not use a handshake even if `requireAuthenticationHandshake` is set to true.  If this value is set, `urlPrefixesAllowed` should always be set, even if to an empty list.
+If `androidPackagePrefixesAllowed` is set to a list of package prefixes, clients may contact the DiceKeys app on Android without going through the URL interface, need not have a URL on the `allow` list, and need not use a handshake even if `requireAuthenticationHandshake` is set to true.  If this value is set, `allow` should always be set, even if to an empty list.
 
 
 ```TypeScript
@@ -277,9 +296,9 @@ For example:
         "org.dicekeys.apps.fido",
         "com.dicekeys.apps.fido"
     ],
-    "urlPrefixesAllowed": [
-        "https://dicekeys.org/app/fido",
-        "https://dicekeys.com/app/fido"
+    "allow": [
+        {"host": "dicekeys.org", "paths": ["/app/fido"]},
+        {"host": "dicekeys.com", "paths": ["/app/fido"]}
     ]
 }
 ```
@@ -291,6 +310,7 @@ of the string composed by concatenating a period onto your client application's 
 So, if an attacker registers the package name `com.exampleattacker`, they will not be
 able to match the `com.eaxmple` prefix.
 
+```TypeScript
 {
     "requireUsersConsent": {
         "question": "Do you want use \"8fsd8pweDmqed\" as your SpoonerMail account password and remove your current password?",
@@ -306,7 +326,7 @@ able to match the `com.eaxmple` prefix.
 
 By default, the DiceKeys app will forbid clients from retrieving a
 SigningKey, SymmetricKey, or UnsealingKey
-even when all authentication restrictions (e.g., `urlPrefixesAllowed`) are met.
+even when all authentication restrictions (e.g., `allow`) are met.
 
 To derive keys that an authorized client will be permitted to retrieve, use the `clientMayRetrieveKey` field.
 
