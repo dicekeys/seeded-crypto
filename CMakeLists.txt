@@ -85,8 +85,9 @@ add_subdirectory("lib-seeded")
 
 # first we can indicate the documentation build as an option and set it to ON by default
 option(SEEDED_CRYPTO_BUILD_DOC "Build documentation" ON)
+message("SEEDED_CRYPTO_BUILD_DOC ${SEEDED_CRYPTO_BUILD_DOC}")
 
-if ({SEEDED_CRYPTO_BUILD_DOC})
+if (${SEEDED_CRYPTO_BUILD_DOC})
     # check if Doxygen is installed
     find_package(Doxygen)
     if (DOXYGEN_FOUND)
@@ -96,8 +97,8 @@ if ({SEEDED_CRYPTO_BUILD_DOC})
 
         # request to configure the file
         configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-        message("Doxygen build started")
 
+        message("COMMAND ${DOXYGEN_EXECUTABLE} :: ${DOXYGEN_OUT}")
         # note the option ALL which allows to build the docs together with the application
         add_custom_target( doc_doxygen ALL
             COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
