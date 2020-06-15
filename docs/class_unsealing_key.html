@@ -134,15 +134,18 @@ const <a class="el" href="class_sealing_key.html">SealingKey</a>&#160;</td><td c
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a35fe5dd9b4b82b855886553624d11966"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_unsealing_key.html">UnsealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a35fe5dd9b4b82b855886553624d11966">deriveFromSeed</a> (const std::string &amp;seedString, const std::string &amp;<a class="el" href="class_unsealing_key.html#ad466d6f09a84d3d8d8bb65fd835dc9dc">derivationOptionsJson</a>)</td></tr>
+<tr class="memdesc:a35fe5dd9b4b82b855886553624d11966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> by deriving a public/private key pair from a seed string and a set of derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>.  <a href="class_unsealing_key.html#a35fe5dd9b4b82b855886553624d11966">More...</a><br /></td></tr>
+<tr class="separator:a35fe5dd9b4b82b855886553624d11966"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53eb15972217eebf0ac0adf39b9e7b1e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_unsealing_key.html">UnsealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a53eb15972217eebf0ac0adf39b9e7b1e">fromJson</a> (const std::string &amp;unsealingKeyAsJson)</td></tr>
 <tr class="memdesc:a53eb15972217eebf0ac0adf39b9e7b1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct (reconstitute) from serialized JSON format.  <a href="class_unsealing_key.html#a53eb15972217eebf0ac0adf39b9e7b1e">More...</a><br /></td></tr>
 <tr class="separator:a53eb15972217eebf0ac0adf39b9e7b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3a15b1adb87202c7d332009002fb5e6"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#ac3a15b1adb87202c7d332009002fb5e6">unseal</a> (const <a class="el" href="class_packaged_sealed_message.html">PackagedSealedMessage</a> &amp;packagedSealedMessage, const std::string &amp;seedString)</td></tr>
 <tr class="memdesc:ac3a15b1adb87202c7d332009002fb5e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unseal a message by re-deriving the <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> from its seed.  <a href="class_unsealing_key.html#ac3a15b1adb87202c7d332009002fb5e6">More...</a><br /></td></tr>
 <tr class="separator:ac3a15b1adb87202c7d332009002fb5e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97203052df71379ae5b48e3e95b7b3f9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_unsealing_key.html">UnsealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a97203052df71379ae5b48e3e95b7b3f9">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:a97203052df71379ae5b48e3e95b7b3f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)  <a href="class_unsealing_key.html#a97203052df71379ae5b48e3e95b7b3f9">More...</a><br /></td></tr>
-<tr class="separator:a97203052df71379ae5b48e3e95b7b3f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a025ae13be3de17447ccf7d8476769d47"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_unsealing_key.html">UnsealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a025ae13be3de17447ccf7d8476769d47">fromSerializedBinaryForm</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;serializedBinaryForm)</td></tr>
+<tr class="memdesc:a025ae13be3de17447ccf7d8476769d47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)  <a href="class_unsealing_key.html#a025ae13be3de17447ccf7d8476769d47">More...</a><br /></td></tr>
+<tr class="separator:a025ae13be3de17447ccf7d8476769d47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -238,6 +241,51 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a35fe5dd9b4b82b855886553624d11966"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35fe5dd9b4b82b855886553624d11966">&#9670;&nbsp;</a></span>deriveFromSeed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_unsealing_key.html">UnsealingKey</a> UnsealingKey::deriveFromSeed </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>seedString</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>derivationOptionsJson</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct a new <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> by deriving a public/private key pair from a seed string and a set of derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seedString</td><td>The private seed which is used to generate the key pair. Anyone who knows (or can guess) this seed can re-generate the key pair by passing it along with the derivationOptionsJson. </td></tr>
+    <tr><td class="paramname">derivationOptionsJson</td><td>The derivation options in <a class="el" href="derivation_options_format.html">JSON Format for Derivation Options</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a53eb15972217eebf0ac0adf39b9e7b1e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a53eb15972217eebf0ac0adf39b9e7b1e">&#9670;&nbsp;</a></span>fromJson()</h2>
 
@@ -272,8 +320,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a97203052df71379ae5b48e3e95b7b3f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97203052df71379ae5b48e3e95b7b3f9">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
+<a id="a025ae13be3de17447ccf7d8476769d47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a025ae13be3de17447ccf7d8476769d47">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -284,7 +332,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname"><a class="el" href="class_unsealing_key.html">UnsealingKey</a> UnsealingKey::fromSerializedBinaryForm </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;&#160;</td>
           <td class="paramname"><em>serializedBinaryForm</em></td><td>)</td>
           <td></td>
         </tr>

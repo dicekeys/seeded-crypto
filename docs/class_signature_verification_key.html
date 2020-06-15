@@ -137,9 +137,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a9fd9205220db9c4f1a6ca404ecd56faa"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a9fd9205220db9c4f1a6ca404ecd56faa">verify</a> (const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_signature_verification_key.html#a306eec6284f14859e596a815313ebc95">signatureVerificationKeyBytes</a>, const unsigned char *message, const size_t messageLength, const std::vector&lt; unsigned char &gt; &amp;signature)</td></tr>
 <tr class="memdesc:a9fd9205220db9c4f1a6ca404ecd56faa"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Avoid Using</em> Verify a message's signature using a raw libsodium verification key  <a href="class_signature_verification_key.html#a9fd9205220db9c4f1a6ca404ecd56faa">More...</a><br /></td></tr>
 <tr class="separator:a9fd9205220db9c4f1a6ca404ecd56faa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_signature_verification_key.html">SignatureVerificationKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a1228b5b66833ab09fc6dafd6c2fe4ce3">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, derivationOptionsJson)  <a href="class_signature_verification_key.html#a1228b5b66833ab09fc6dafd6c2fe4ce3">More...</a><br /></td></tr>
-<tr class="separator:a1228b5b66833ab09fc6dafd6c2fe4ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65718b7903ffb6a266dbedd514888e78"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_signature_verification_key.html">SignatureVerificationKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signature_verification_key.html#a65718b7903ffb6a266dbedd514888e78">fromSerializedBinaryForm</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;serializedBinaryForm)</td></tr>
+<tr class="memdesc:a65718b7903ffb6a266dbedd514888e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (signatureVerificationKeyBytes, derivationOptionsJson)  <a href="class_signature_verification_key.html#a65718b7903ffb6a266dbedd514888e78">More...</a><br /></td></tr>
+<tr class="separator:a65718b7903ffb6a266dbedd514888e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -228,8 +228,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a1228b5b66833ab09fc6dafd6c2fe4ce3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1228b5b66833ab09fc6dafd6c2fe4ce3">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
+<a id="a65718b7903ffb6a266dbedd514888e78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65718b7903ffb6a266dbedd514888e78">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -240,7 +240,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname"><a class="el" href="class_signature_verification_key.html">SignatureVerificationKey</a> SignatureVerificationKey::fromSerializedBinaryForm </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;&#160;</td>
           <td class="paramname"><em>serializedBinaryForm</em></td><td>)</td>
           <td></td>
         </tr>

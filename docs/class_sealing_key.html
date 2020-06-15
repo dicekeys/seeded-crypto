@@ -144,9 +144,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a161087ae72cf6ddb39a26e22989c7f0a"><td class="memItemLeft" align="right" valign="top">static const std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sealing_key.html#a161087ae72cf6ddb39a26e22989c7f0a">sealToCiphertextOnly</a> (const unsigned char *message, const size_t messageLength, const std::vector&lt; unsigned char &gt; &amp;<a class="el" href="class_sealing_key.html#af498fab872c9dfaa98d1ad0e67cfbcf9">sealingKeyBytes</a>, const std::string &amp;unsealingInstructions={})</td></tr>
 <tr class="memdesc:a161087ae72cf6ddb39a26e22989c7f0a"><td class="mdescLeft">&#160;</td><td class="mdescRight"><em>Avoid Using</em> Seal a message using a raw libsodium public key.  <a href="class_sealing_key.html#a161087ae72cf6ddb39a26e22989c7f0a">More...</a><br /></td></tr>
 <tr class="separator:a161087ae72cf6ddb39a26e22989c7f0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab82f7be2da87caebba1fd93a52e5b833"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_sealing_key.html">SealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sealing_key.html#ab82f7be2da87caebba1fd93a52e5b833">fromSerializedBinaryForm</a> (<a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> serializedBinaryForm)</td></tr>
-<tr class="memdesc:ab82f7be2da87caebba1fd93a52e5b833"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (sealingKeyBytes, derivationOptionsJson)  <a href="class_sealing_key.html#ab82f7be2da87caebba1fd93a52e5b833">More...</a><br /></td></tr>
-<tr class="separator:ab82f7be2da87caebba1fd93a52e5b833"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11faf194c22483e5933cccf0ae0f75fd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_sealing_key.html">SealingKey</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sealing_key.html#a11faf194c22483e5933cccf0ae0f75fd">fromSerializedBinaryForm</a> (const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;serializedBinaryForm)</td></tr>
+<tr class="memdesc:a11faf194c22483e5933cccf0ae0f75fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserialize from a byte array stored as a list of: (sealingKeyBytes, derivationOptionsJson)  <a href="class_sealing_key.html#a11faf194c22483e5933cccf0ae0f75fd">More...</a><br /></td></tr>
+<tr class="separator:a11faf194c22483e5933cccf0ae0f75fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -199,8 +199,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="ab82f7be2da87caebba1fd93a52e5b833"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab82f7be2da87caebba1fd93a52e5b833">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
+<a id="a11faf194c22483e5933cccf0ae0f75fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11faf194c22483e5933cccf0ae0f75fd">&#9670;&nbsp;</a></span>fromSerializedBinaryForm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -211,7 +211,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname"><a class="el" href="class_sealing_key.html">SealingKey</a> SealingKey::fromSerializedBinaryForm </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a> &amp;&#160;</td>
           <td class="paramname"><em>serializedBinaryForm</em></td><td>)</td>
           <td></td>
         </tr>

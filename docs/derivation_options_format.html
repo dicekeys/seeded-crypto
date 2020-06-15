@@ -179,39 +179,39 @@ DiceKeys Hardware Fields</h2>
 <p>This Seeded Cryptography Library is oblivious to these fields, but they are documented here to keep the specification from being split into too many locations.</p>
 <h3><a class="anchor" id="autotoc_md9"></a>
 excludeOrientationOfFaces</h3>
-<p>When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:</p><ul>
-<li>The uppercase letter on the die</li>
-<li>The digit on the die</li>
-<li>The orientation relative to the top of the square in canonical form</li>
-</ul>
-<p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be excluded resulting in a 50-character seed. This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.</p>
+<p>When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order: 1 The uppercase letter on the die 2 The digit on the die 3 The orientation relative to the top of the square in canonical form</p>
+<p>If <code>excludeOrientationOfFaces</code> is set to <code>true</code> set to true, the orientation character (the third member of each triple) will be set to "?" before the canonical form is determined (the choice of the top left corner that results in the human readable form earliest in the sort order) and "?" will be the third character in each triple.</p>
+<p>This option exists because orientations may be harder for users to copy correctly than letters and digits are. With this option on, should a user choose to manually copy the contents of a DiceKey and make an error in copying an orientation, that error will not prevent them from re-deriving the specified key or secret.</p>
 <div class="fragment"><div class="line">&quot;excludeOrientationOfFaces&quot;?: true | false // default false</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 Authentication and Authorization Requirements</h2>
 <p>These fields specify who may generate keys and what they may do with them once generated.</p>
 <h3><a class="anchor" id="autotoc_md11"></a>
-urlPrefixesAllowed</h3>
-<p>The most universal form of identifying apps and services is via <a href="https://en.wikipedia.org/wiki/URL">URL</a>s. The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient. Thus, the default way to restrict the use of a derived key or secret is to restrict the set of URLs which are allowed to access it. You can do this by adding a <code>urlPrefixesAllowed</code> field with a list of valid URL prefixes.</p>
-<div class="fragment"><div class="line">&quot;urlPrefixesAllowed&quot;?: string[]</div>
-</div><!-- fragment --><p>If a request arrives to and the result is to being sent to a URL that does does not start with one of the prefixes on the list, the DiceKeys app must not send the response (unless it is allowed by <code>androidPackagePrefixesAllowed</code>, below).</p>
+allow</h3>
+<p>The most universal form of identifying apps and services is via compoennts of <a href="https://en.wikipedia.org/wiki/URL">URL</a>s: origins and paths. The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient. For intra-browser communication between web-apps, communication via postMessage provides authentication via origins. Thus, the default way to restrict the use of a derived key or secret is via these web stanards using the <code>allow</code> field.</p>
+<div class="fragment"><div class="line">&quot;allow&quot;?: {&quot;host&quot;: string, &quot;paths&quot;?: string[]}[]</div>
+</div><!-- fragment --><p>A request is allowed if any of the entries in the array matches the host and one of the paths from an entry in the list.</p>
+<p>The specification uses hosts and not origins as the scheme must always be "https://". Unless a custom port is in use, the host field is the same as the hostname (e.g. "example.com"). If the host field starts with "*.", then any subdomain will match, as will the domain that follows the "*." prefix. So, "*.example.com" is satisified by both "sub.example.com" and "example.com."</p>
+<p>If the optional paths field is specified, the for URL-based APIs (those where messages are passed via page loads, as opposed to postMessage requests), the path of the URL to which the resposne will be sent must match one of the paths. Path specifications may end in "*", in which case the path must start with the prefix before the "*". For example, "https://example.com/iamgroot" satisfies path "/iam\*". All paths must start with a "/" per web specifications, but if you forget to include the "/" the validator will assume you intended to include it.</p>
+<p>If the <code>allow</code> clause is not satisified, the DiceKeys app must not send the response (unless it is allowed by <code>androidPackagePrefixesAllowed</code>, below).</p>
 <p>Example:</p>
-<div class="fragment"><div class="line">&quot;urlPrefixesAllowed&quot;: [</div>
-<div class="line">    &quot;https://dicekeys.org/app/fido&quot;,</div>
-<div class="line">    &quot;https://dicekeys.com/app/fido&quot;</div>
+<div class="fragment"><div class="line">&quot;allow&quot;: [</div>
+<div class="line">    {&quot;host&quot;: &quot;dicekeys.org&quot;, &quot;paths&quot;: [&quot;/app/fido*&quot;]},</div>
+<div class="line">    {&quot;host&quot;: &quot;dicekeys.com&quot;, &quot;paths&quot;: [&quot;/app/fido*&quot;]}</div>
 <div class="line">]</div>
-</div><!-- fragment --><p>By default, this field is unset and any client may use the key (though, sealed data may be sealed with UnsealingInstructions that include <code>urlPrefixesAllowed</code>, protecting against data being unsealed and read by unauthorized cilents.)</p>
+</div><!-- fragment --><p>By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include <code>allow</code>, protecting against data being unsealed and read by unauthorized cilents.)</p>
 <p>Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.</p>
 <p>Our DiceKeys client APIs generate 128-bit random request ID using APIs designed for cryptograhic randomness, and throw out respones for requests from IDs that they did not issue, and so are designed to protect against such attacks. Further, operations performed by the DiceKeys app in response to API requests do not have side effects, beyond causing the user to load in their DiceKey if needed and respond to requests.</p>
 <h3><a class="anchor" id="autotoc_md12"></a>
 requireAuthenticationHandshake</h3>
-<p>To harden your app against unauthorized client requests, you can set the <code>requireAuthenticationHandshake</code> field. </p><div class="fragment"><div class="line">&quot;requireAuthenticationHandshake&quot;: Boolean</div>
+<p>To harden your app against unauthorized client requests, you can set the <code>requireAuthenticationHandshake</code> field. </p><div class="fragment"><div class="line">&quot;requireAuthenticationHandshake&quot;?: boolean</div>
 </div><!-- fragment --><p>Since the default is false, the only reason to include this field in your derivation options is to set it to true.</p>
 <div class="fragment"><div class="line">&quot;requireAuthenticationHandshake&quot;: true</div>
 </div><!-- fragment --><p>When set, clients will need to issue a handshake request to the API, and receive an authorization token (a random shared secret), before issuing other requests where the URL at which they received the token starts with one of the authorized prefixes. The DiceKeys app will map the authorization token to that URL and, when reqeusts include that token, validate that the URL associated with the token has a valid prefix. The DiceKeys app will continue to validate that responses are also sent to a valid prefix.</p>
 <h3><a class="anchor" id="autotoc_md13"></a>
 androidPackagePrefixesAllowed</h3>
 <p>While the Android platform supports issuing requests and receiving responses via URLs, the platform has better support for authentication via application package names. Specifically, an application receiving an explicit intent issued to its package receives an OS-validated package name of the client. Authenticating clients via packages does not require a handshake, is faster, and potentially more secure.</p>
-<p>If <code>androidPackagePrefixesAllowed</code> is set to a list of package prefixes, clients may contact the DiceKeys app on Android without going through the URL interface, need not have a URL on the <code>urlPrefixesAllowed</code> list, and need not use a handshake even if <code>requireAuthenticationHandshake</code> is set to true. If this value is set, <code>urlPrefixesAllowed</code> should always be set, even if to an empty list.</p>
+<p>If <code>androidPackagePrefixesAllowed</code> is set to a list of package prefixes, clients may contact the DiceKeys app on Android without going through the URL interface, need not have a URL on the <code>allow</code> list, and need not use a handshake even if <code>requireAuthenticationHandshake</code> is set to true. If this value is set, <code>allow</code> should always be set, even if to an empty list.</p>
 <div class="fragment"><div class="line">&quot;androidPackagePrefixesAllowed&quot;?: string[],</div>
 </div><!-- fragment --><p>For example: </p><div class="fragment"><div class="line">{</div>
 <div class="line">    &quot;type&quot;: &quot;Secret&quot;,</div>
@@ -219,25 +219,26 @@ androidPackagePrefixesAllowed</h3>
 <div class="line">        &quot;org.dicekeys.apps.fido&quot;,</div>
 <div class="line">        &quot;com.dicekeys.apps.fido&quot;</div>
 <div class="line">    ],</div>
-<div class="line">    &quot;urlPrefixesAllowed&quot;: [</div>
-<div class="line">        &quot;https://dicekeys.org/app/fido&quot;,</div>
-<div class="line">        &quot;https://dicekeys.com/app/fido&quot;</div>
+<div class="line">    &quot;allow&quot;: [</div>
+<div class="line">        {&quot;host&quot;: &quot;dicekeys.org&quot;, &quot;paths&quot;: [&quot;/app/fido&quot;]},</div>
+<div class="line">        {&quot;host&quot;: &quot;dicekeys.com&quot;, &quot;paths&quot;: [&quot;/app/fido&quot;]}</div>
 <div class="line">    ]</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The API will terminate prefixes set via "`androidPackagePrefixesAllowed`" with dots, and and terminate client package IDs with dots, to prevent extension attacks. In other words, if you set the prefix <code>com.example</code>, the API will test if <code>com.example.</code> is a prefix of the string composed by concatenating a period onto your client application's package name. So, if an attacker registers the package name <code>com.exampleattacker</code>, they will not be able to match the <code>com.eaxmple</code> prefix.</p>
-<p>{ "requireUsersConsent": { "question": "Do you want use \"8fsd8pweDmqed" as your SpoonerMail account password and remove your current password?",
-        "actionButtonLabels": {
-            "allow": "Make my password "8fsd8pweDmqed"",
-            "deny": "No" } } } </p><div class="fragment"><div class="line">#### clientMayRetrieveKey</div>
-<div class="line"> </div>
-<div class="line">By default, the DiceKeys app will forbid clients from retrieving a</div>
-<div class="line">SigningKey, SymmetricKey, or UnsealingKey</div>
-<div class="line">even when all authentication restrictions (e.g., `urlPrefixesAllowed`) are met.</div>
-<div class="line"> </div>
-<div class="line">To derive keys that an authorized client will be permitted to retrieve, use the `clientMayRetrieveKey` field.</div>
-<div class="line"> </div>
-<div class="line">```TypeScript</div>
-<div class="line">    &quot;clientMayRetrieveKey&quot;?: Boolean</div>
+<div class="fragment"><div class="line">{</div>
+<div class="line">    &quot;requireUsersConsent&quot;: {</div>
+<div class="line">        &quot;question&quot;: &quot;Do you want use \&quot;8fsd8pweDmqed\&quot; as your SpoonerMail account password and remove your current password?&quot;,</div>
+<div class="line">        &quot;actionButtonLabels&quot;: {</div>
+<div class="line">            &quot;allow&quot;: &quot;Make my password \&quot;8fsd8pweDmqed\&quot;&quot;,</div>
+<div class="line">            &quot;deny&quot;: &quot;No&quot; </div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md14"></a>
+clientMayRetrieveKey</h3>
+<p>By default, the DiceKeys app will forbid clients from retrieving a <a class="el" href="class_signing_key.html" title="SigningKeys generate signatures of messages which can then be used by the corresponding SignatureVeri...">SigningKey</a>, <a class="el" href="class_symmetric_key.html" title="A SymmetricKey can be used to seal and unseal messages. This SymmetricKey class can be (re) derived f...">SymmetricKey</a>, or <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> even when all authentication restrictions (e.g., <code>allow</code>) are met.</p>
+<p>To derive keys that an authorized client will be permitted to retrieve, use the <code>clientMayRetrieveKey</code> field.</p>
+<div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;?: boolean</div>
 </div><!-- fragment --><p>Since the default is false, it is primarily used as follows:</p>
 <div class="fragment"><div class="line">&quot;clientMayRetrieveKey&quot;: true</div>
 </div><!-- fragment --><p>Clients can this field to generate keys that they can get a copy of, use for any purpose they want without having to interact with the DiceKeys API or app, yet which they can ask the DiceKeys app to recover for them should the key be lost. For example, an end-to-end encrypted app could generate a key pair it uses for communication and storage, keep the key locally, but ask the DiceKeys app to re-derive it if the user is recovering their data on a new device. </p>

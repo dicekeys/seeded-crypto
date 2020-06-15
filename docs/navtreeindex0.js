@@ -54,10 +54,10 @@ var NAVTREEINDEX0 =
 "class_secret.html#a00a5f6dc1a2d0ad0a93d48ca08485911":[3,2,1,0],
 "class_secret.html#a60852279e3a5112acbed1a0eef4290fc":[3,2,1,3],
 "class_secret.html#a6cd37fe3b725cf86e5f0c4500db77f24":[3,2,1,5],
-"class_secret.html#a8cfec874077e70f936e9603757e3fda5":[3,2,1,2],
 "class_secret.html#a9aff4f8515ecab78a350128e09f32ba7":[3,2,1,4],
-"class_secret.html#a9de1063f79c3334fad1c57ad4790e40a":[3,2,1,1],
 "class_secret.html#aac1d446019b7ea90f6e993ee26027dcc":[3,2,1,6],
+"class_secret.html#ac28b52c5d5dfcdeefd809ee59e752457":[3,2,1,2],
+"class_secret.html#ada1b804d9059706ee14c3b6e19c5ee47":[3,2,1,1],
 "class_signature_verification_key.html":[3,2,2],
 "class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de":[3,2,2,3],
 "class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29":[3,2,2,5],
@@ -138,6 +138,7 @@ var NAVTREEINDEX0 =
 "derivation_options_format.html#autotoc_md11":[2,0],
 "derivation_options_format.html#autotoc_md12":[2,1],
 "derivation_options_format.html#autotoc_md13":[2,2],
+"derivation_options_format.html#autotoc_md14":[2,3],
 "derivation_options_format.html#autotoc_md2":[0,1],
 "derivation_options_format.html#autotoc_md3":[0,2],
 "derivation_options_format.html#autotoc_md4":[0,3],
@@ -173,6 +174,6 @@ var NAVTREEINDEX0 =
 "unsealing-instructions_8hpp_source.html":[5,0,0,13],
 "unsealing-key_8hpp_source.html":[5,0,0,14],
 "unsealing_instructions_format.html":[2],
-"unsealing_instructions_format.html#autotoc_md14":[3],
-"unsealing_instructions_format.html#autotoc_md15":[3,0]
+"unsealing_instructions_format.html#autotoc_md15":[3],
+"unsealing_instructions_format.html#autotoc_md16":[3,0]
 };
