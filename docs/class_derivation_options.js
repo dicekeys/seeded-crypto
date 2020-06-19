@@ -3,7 +3,7 @@ var class_derivation_options =
     [ "~DerivationOptions", "class_derivation_options.html#ae92da75912496585b1d0baa4ee1d69be", null ],
     [ "DerivationOptions", "class_derivation_options.html#a1d058318ea36c4474a535bfd0d830c81", null ],
     [ "derivationOptionsJsonWithAllOptionalParametersSpecified", "class_derivation_options.html#a59a4a45df67679e8c8b9369a5c204cf2", null ],
-    [ "deriveMasterSecret", "class_derivation_options.html#a5911bcdecdfbd25570e1e2d1cc876c5b", null ],
+    [ "derivePrimarySecret", "class_derivation_options.html#a52d0eb127a6f988defacc87861e3ce2a", null ],
     [ "algorithm", "class_derivation_options.html#aa504763e8e98aca5107863a71b403254", null ],
     [ "derivationOptionsJson", "class_derivation_options.html#a404d2140971b120a19d306a9fe56f2c9", null ],
     [ "hashFunction", "class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe", null ],

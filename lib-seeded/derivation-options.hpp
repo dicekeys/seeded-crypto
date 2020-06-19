@@ -71,17 +71,17 @@ public:
 	 * 
 	 * @param derivationOptionsJson The JSON formatted key-deriation object to parse
 	 * as specified by @ref derivation_options_format
-	 * @param typeExpected The expected type, which will be the default if the JSON doesn't
+	 * @param typeRequired The required type, which will be the default if the JSON doesn't
 	 * contain a type field and which will cause an exception to be thrown if the
 	 * JSON has a conflicting type.  If not set
 	 * (default: DerivationOptionsJson::type::_INVALID_TYPE_)
-	 * there is no default type.
+	 * there is no required type and any type is allowed.
 	 * @throws InvalidDerivationOptionsJsonException
 	 * @throws InvalidDerivationOptionValueException
 	 **/
 	DerivationOptions(
 		const std::string& derivationOptionsJson,
-		const DerivationOptionsJson::type typeExpected =
+		const DerivationOptionsJson::type typeRequired =
 			DerivationOptionsJson::type::_INVALID_TYPE_
 	);
 

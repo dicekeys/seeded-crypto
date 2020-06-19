@@ -19,6 +19,15 @@ TEST(DerivationOptions, GeneratesDefaults) {
 }
 
 
+TEST(DerivationOptions, derivesPrimarySecrets) {
+	const SodiumBuffer seed = DerivationOptions::derivePrimarySecret(
+		"Avocado",
+		R"KGO({"lengthInBytes": 64})KGO"
+	);
+	ASSERT_EQ(seed.length, 64);
+}
+
+
 TEST(DerivationOptions, FidoUseCase) {
 	DerivationOptions kgo = DerivationOptions(R"KGO({
 	"type": "Secret",

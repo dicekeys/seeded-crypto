@@ -34,7 +34,7 @@ nlohmann::json parseJsonWithKeyDerviationOptionsExceptions(std::string json) {
 //   https://github.com/nlohmann/json#specializing-enum-conversion
 DerivationOptions::DerivationOptions(
   const std::string& _derivationOptionsJson,
-  const DerivationOptionsJson::type typeExpected
+  const DerivationOptionsJson::type typeRequired
 ) : derivationOptionsJson(_derivationOptionsJson) {
   const nlohmann::json& derivationOptionsObject = parseJsonWithKeyDerviationOptionsExceptions(
     derivationOptionsJson.size() == 0 ? "{}" : derivationOptionsJson
@@ -45,21 +45,19 @@ DerivationOptions::DerivationOptions(
   //
   type = derivationOptionsObject.value<DerivationOptionsJson::type>(
       DerivationOptionsJson::FieldNames::type,
-      typeExpected
+      typeRequired
     );
 
-  if (typeExpected != DerivationOptionsJson::type::_INVALID_TYPE_ &&
-      type != typeExpected) {
-    // We were expecting type == typeExpected since typeExpected wasn't invalid,
+  if (typeRequired != DerivationOptionsJson::type::_INVALID_TYPE_ &&
+      type != typeRequired) {
+    // We required type == typeRequired since typeRequired wasn't invalid,
     // but the JSON specified a different key type
     throw InvalidDerivationOptionValueException("Unexpected type in DerivationOptions");
   }
 
-  if (type == DerivationOptionsJson::type::_INVALID_TYPE_) {
-    // No valid type was specified
-    throw InvalidDerivationOptionValueException("Invalid type in DerivationOptions");
+  if (type != DerivationOptionsJson::type::_INVALID_TYPE_) {
+    derivationOptionsExplicit[DerivationOptionsJson::FieldNames::type] = type;
   }
-  derivationOptionsExplicit[DerivationOptionsJson::FieldNames::type] = type;
 
   //
   // algorithm
@@ -269,15 +267,6 @@ const SodiumBuffer DerivationOptions::derivePrimarySecret(
 		const size_t lengthInBytesRequired
 	) {
     const DerivationOptions DerivationOptions(derivationOptionsJson,typeRequired);
-    // Ensure that the type in the key derivation options matches the requirement
-    if (
-      typeRequired != DerivationOptionsJson::type::_INVALID_TYPE_ &&
-      typeRequired != DerivationOptions.type  
-    ) {
-      throw InvalidDerivationOptionValueException( (
-        "Key generation options must have type " + std::to_string(typeRequired)
-      ).c_str() );
-    }
 
     // Verify key-length requirements (if specified)
     if (lengthInBytesRequired > 0 &&
