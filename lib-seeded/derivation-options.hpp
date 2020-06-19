@@ -139,7 +139,7 @@ public:
 	static const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,
 		const std::string& derivationOptionsJson,
-		const DerivationOptionsJson::type typeRequired,
+		const DerivationOptionsJson::type typeRequired = DerivationOptionsJson::type::_INVALID_TYPE_,
 		const size_t lengthInBytesRequired = 0
 	);
 
