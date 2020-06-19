@@ -47,8 +47,8 @@ endif()
 ################# CMake Project ############################
 # The main options of project                              #
 ############################################################
-set(MASTER_PROJECT_NAME lib-seeded)
-project(${MASTER_PROJECT_NAME}
+set(PRIMARY_PROJECT_NAME lib-seeded)
+project(${PRIMARY_PROJECT_NAME}
     VERSION 0.10
     DESCRIPTION "Libraries for working with seeded cryptography built on lib-sodium."
     LANGUAGES CXX
@@ -60,10 +60,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif(NOT CMAKE_BUILD_TYPE)
 get_filename_component(SEEDED_PROJECT_DIR "${CMAKE_CURRENT_SOURCE_DIR}" ABSOLUTE)
 
-message("${MASTER_PROJECT_NAME}: MAIN PROJECT CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
-message("${MASTER_PROJECT_NAME}: MAIN PROJECT CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-message("${MASTER_PROJECT_NAME}: MAIN PROJECT CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
-message("${MASTER_PROJECT_NAME}: MAIN PROJECT CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+message("${PRIMARY_PROJECT_NAME}: MAIN PROJECT CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+message("${PRIMARY_PROJECT_NAME}: MAIN PROJECT CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+message("${PRIMARY_PROJECT_NAME}: MAIN PROJECT CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+message("${PRIMARY_PROJECT_NAME}: MAIN PROJECT CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 
 ####################################################
 # External libraries to build
@@ -143,23 +143,23 @@ endif(NOT MSVC)
 
 # Preprocessor definitions
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_definitions(${MASTER_PROJECT_NAME} PRIVATE 
+    target_compile_definitions(${PRIMARY_PROJECT_NAME} PRIVATE 
    -D_DEBUG 
    -D_CONSOLE
     )
     if(MSVC)
-        target_compile_options(${MASTER_PROJECT_NAME} PRIVATE /W3 /Od /EHsc) # / Zi /MD
+        target_compile_options(${PRIMARY_PROJECT_NAME} PRIVATE /W3 /Od /EHsc) # / Zi /MD
 		message("*************************************")
     endif()
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(${MASTER_PROJECT_NAME} PRIVATE 
+    target_compile_definitions(${PRIMARY_PROJECT_NAME} PRIVATE 
    -DNDEBUG 
    -D_CONSOLE 
     )
     if(MSVC)
-        target_compile_options(${MASTER_PROJECT_NAME} PRIVATE /W3 /GL /Oi /Gy /EHsc) # /Zi
+        target_compile_options(${PRIMARY_PROJECT_NAME} PRIVATE /W3 /GL /Oi /Gy /EHsc) # /Zi
     endif()
 endif()
 
@@ -168,5 +168,5 @@ endif()
 ############################################################
 
 if(MSVC)
-#   target_link_libraries(${MASTER_PROJECT_NAME} PRIVATE Ws2_32.lib )
+#   target_link_libraries(${PRIMARY_PROJECT_NAME} PRIVATE Ws2_32.lib )
 endif(MSVC)

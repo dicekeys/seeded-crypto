@@ -45,7 +45,7 @@ SymmetricKey SymmetricKey::deriveFromSeed(
   const std::string& _derivationOptionsJson
 ) {
   return SymmetricKey(
-    DerivationOptions::deriveMasterSecret(
+    DerivationOptions::derivePrimarySecret(
       seedString,
       _derivationOptionsJson,
       DerivationOptionsJson::type::SymmetricKey,

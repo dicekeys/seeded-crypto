@@ -74,7 +74,7 @@ SigningKey SigningKey::deriveFromSeed(
   const std::string& _derivationOptionsJson
 ) {
   // Turn the seed string into a seed of the appropriate length
-  SodiumBuffer seed = DerivationOptions::deriveMasterSecret(
+  SodiumBuffer seed = DerivationOptions::derivePrimarySecret(
     _seedString,
     _derivationOptionsJson,
     DerivationOptionsJson::type::SigningKey,

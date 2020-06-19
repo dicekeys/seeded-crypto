@@ -136,7 +136,7 @@ public:
 	 * @throw InvalidDerivationOptionValueException
 	 * @throw InvalidDerivationOptionsJsonException
 	 */
-	static const SodiumBuffer deriveMasterSecret(
+	static const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,
 		const std::string& derivationOptionsJson,
 		const DerivationOptionsJson::type typeRequired,
@@ -180,7 +180,7 @@ public:
 	 * 
 	 * @throw InvalidDerivationOptionValueException
 	 */
-	const SodiumBuffer deriveMasterSecret(
+	const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,
 		const DerivationOptionsJson::type defaultType =
 			DerivationOptionsJson::type::_INVALID_TYPE_

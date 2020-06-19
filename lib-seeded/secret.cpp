@@ -11,7 +11,7 @@ Secret::Secret(
   const std::string& seedString,
   const std::string& _derivationOptionsJson
 ) : secretBytes(
-  DerivationOptions::deriveMasterSecret(
+  DerivationOptions::derivePrimarySecret(
     seedString,
     _derivationOptionsJson,
     DerivationOptionsJson::type::Secret
@@ -22,7 +22,7 @@ Secret Secret::deriveFromSeed(
   const std::string& derivationOptionsJson
 ) {
   return Secret(
-    DerivationOptions::deriveMasterSecret(
+    DerivationOptions::derivePrimarySecret(
       seedString,
       derivationOptionsJson,
       DerivationOptionsJson::type::Secret

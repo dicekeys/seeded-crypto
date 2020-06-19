@@ -42,7 +42,7 @@ UnsealingKey UnsealingKey::deriveFromSeed(
   const std::string& derivationOptionsJson
 ) {
   return UnsealingKey(
-    DerivationOptions::deriveMasterSecret(seedString, derivationOptionsJson, DerivationOptionsJson::type::UnsealingKey, crypto_box_SEEDBYTES),
+    DerivationOptions::derivePrimarySecret(seedString, derivationOptionsJson, DerivationOptionsJson::type::UnsealingKey, crypto_box_SEEDBYTES),
     derivationOptionsJson
   );
 }

@@ -198,7 +198,7 @@ const std::string DerivationOptions::derivationOptionsJsonWithAllOptionalParamet
 }
 
 
-const SodiumBuffer DerivationOptions::deriveMasterSecret(
+const SodiumBuffer DerivationOptions::derivePrimarySecret(
   const std::string& seedString,
   const DerivationOptionsJson::type defaultType
 ) const {
@@ -262,7 +262,7 @@ const SodiumBuffer DerivationOptions::deriveMasterSecret(
   return derivedKey;
 }
 
-const SodiumBuffer DerivationOptions::deriveMasterSecret(
+const SodiumBuffer DerivationOptions::derivePrimarySecret(
 		const std::string& seedString,
 		const std::string& derivationOptionsJson,
 		const DerivationOptionsJson::type typeRequired,
@@ -289,5 +289,5 @@ const SodiumBuffer DerivationOptions::deriveMasterSecret(
       );
     }
 
-    return DerivationOptions.deriveMasterSecret(seedString, typeRequired);
+    return DerivationOptions.derivePrimarySecret(seedString, typeRequired);
   }
