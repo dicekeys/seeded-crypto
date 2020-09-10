@@ -310,18 +310,6 @@ of the string composed by concatenating a period onto your client application's 
 So, if an attacker registers the package name `com.exampleattacker`, they will not be
 able to match the `com.example` prefix.
 
-```TypeScript
-{
-    "requireUsersConsent": {
-        "question": "Do you want use \"8fsd8pweDmqed\" as your SpoonerMail account password and remove your current password?",
-        "actionButtonLabels": {
-            "allow": "Make my password \"8fsd8pweDmqed\"",
-            "deny": "No" 
-        }
-    }
-}
-```
-
 #### clientMayRetrieveKey
 
 By default, the DiceKeys app will forbid clients from retrieving a
