@@ -32,8 +32,8 @@ const UnsealingKey private_key = UnsealingKey::deriveFromSeed(
 );
 ```
 
-Like [LibSodium](https://libsodium.gitbook.io/doc/), the cryptogrpahic library
-on which the Seeded Cryptography Library is built, this library is opnionated.
+Like [LibSodium](https://libsodium.gitbook.io/doc/), the cryptographic library
+on which the Seeded Cryptography Library is built, this library is opinionated.
 It offers a small number of safe options to direct users to good choices, rather
 than offering a wide variety with some potentially-dangerous choices.
 For example, instead of _encrypt_ and
@@ -60,7 +60,7 @@ const std::string unsealing_instructions(
 const auto sealed_message = sk.seal(plaintext, unsealing_instructions);
 ```
 
-All keys and mesage packages in this library can be easily serialized into
+All keys and message packages in this library can be easily serialized into
 either JSON format or a binary format, and deserialized,
 freeing those using the library from having to implement their own
 serialization methods.
