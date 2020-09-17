@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['hash_24',['hash',['../class_hash_function.html#aec437df3699552dd4551aabe02bd447e',1,'HashFunction::hash(const void *message, unsigned long long message_length, unsigned long long hash_length_in_bytes) const =0'],['../class_hash_function.html#aa9b8acdc93f6bb319db2085d1f21452d',1,'HashFunction::hash(SodiumBuffer message, unsigned long long hash_length_in_bytes) const']]],
-  ['hashfunction_25',['HashFunction',['../class_hash_function.html',1,'HashFunction'],['../class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe',1,'DerivationOptions::hashFunction()']]],
-  ['hashfunctionimplementation_26',['hashFunctionImplementation',['../class_derivation_options.html#aef860a1e30164f4a6dc8bd33bc710255',1,'DerivationOptions']]],
-  ['hashfunctionmemorylimitinbytes_27',['hashFunctionMemoryLimitInBytes',['../class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d',1,'DerivationOptions']]],
-  ['hashfunctionmemorypasses_28',['hashFunctionMemoryPasses',['../class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3',1,'DerivationOptions']]]
+  ['hash_25',['hash',['../class_hash_function.html#aec437df3699552dd4551aabe02bd447e',1,'HashFunction::hash(const void *message, unsigned long long message_length, unsigned long long hash_length_in_bytes) const =0'],['../class_hash_function.html#aa9b8acdc93f6bb319db2085d1f21452d',1,'HashFunction::hash(SodiumBuffer message, unsigned long long hash_length_in_bytes) const']]],
+  ['hashfunction_26',['HashFunction',['../class_hash_function.html',1,'HashFunction'],['../class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe',1,'DerivationOptions::hashFunction()']]],
+  ['hashfunctionimplementation_27',['hashFunctionImplementation',['../class_derivation_options.html#aef860a1e30164f4a6dc8bd33bc710255',1,'DerivationOptions']]],
+  ['hashfunctionmemorylimitinbytes_28',['hashFunctionMemoryLimitInBytes',['../class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d',1,'DerivationOptions']]],
+  ['hashfunctionmemorypasses_29',['hashFunctionMemoryPasses',['../class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3',1,'DerivationOptions']]]
 ];

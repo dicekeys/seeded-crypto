@@ -8,6 +8,7 @@ var hierarchy =
     [ "JsonParsingException", "class_json_parsing_exception.html", null ],
     [ "KeyLengthException", "class_key_length_exception.html", null ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", null ],
+    [ "Password", "class_password.html", null ],
     [ "SealingKey", "class_sealing_key.html", null ],
     [ "Secret", "class_secret.html", null ],
     [ "SignatureVerificationKey", "class_signature_verification_key.html", null ],

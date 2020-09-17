@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['combinefixedlengthlist_82',['combineFixedLengthList',['../class_sodium_buffer.html#a9655a1bd5cf21bfd0080732c8903380f',1,'SodiumBuffer']]],
-  ['cryptographicverificationfailureexception_83',['CryptographicVerificationFailureException',['../class_cryptographic_verification_failure_exception.html#a194cc8bd3b13fa6b26775c02cf5cb4f8',1,'CryptographicVerificationFailureException']]]
+  ['aswordvector_88',['asWordVector',['../class_password.html#a2cf4fd067078d102ec4198c3eebb4cee',1,'Password']]]
 ];

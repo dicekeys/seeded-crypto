@@ -25,10 +25,10 @@ You will need to set SEEDED_CREATE_AND_RUN_TESTS in order to create/run tests.
 Open this directory in Visual Studio 2019 to automatically build and load tests into test explorer.
 
 
-#### Compiling and running tests on unix/macos
+#### Compiling and running tests on unix/MacOS
 
 ```
-cd seeded-crypto
+cd dicekeys-seeded-crypto
 cmake -B build
 cd build
 make
@@ -36,8 +36,8 @@ ctest
 ```
 #### Important note if using Visual Studio (Windows without WSL) with this project
 
-Visual Studio unfortunatly defaults to overriding the working directory for Google Test set by CMAKE. If you don't fix this before running tests, they will fail due to being unable to find the test files.
+Visual Studio unfortunately defaults to overriding the working directory for Google Test set by CMAKE. If you don't fix this before running tests, they will fail due to being unable to find the test files.
 
  To fix this go to Visual Studio's debug menu or tool menu, choose the "options" item, and then go to the "Test Adapter For GoogleTest" tab.
-Clear the "Working Directory" field to "${SolutionDir}" (quotes for provided here for dilineation, and should not be copied).
+Clear the "Working Directory" field to "${SolutionDir}" (quotes for provided here for delineation, and should not be copied).
 
