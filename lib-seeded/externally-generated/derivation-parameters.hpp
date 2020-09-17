@@ -18,24 +18,30 @@ namespace DerivationOptionsJson {
 		const std::string hashFunction = "hashFunction";
 		const std::string hashFunctionMemoryLimitInBytes = "hashFunctionMemoryLimitInBytes";
 		const std::string hashFunctionMemoryPasses = "hashFunctionMemoryPasses";
+		const std::string lengthInBits = "lengthInBits";
 		const std::string lengthInBytes = "lengthInBytes";
+		const std::string lengthInWords = "lengthInWords";
 		const std::string type = "type";
 		const std::string excludeOrientationOfFaces = "excludeOrientationOfFaces";
+		const std::string wordList = "wordList";
+
 	}
 
 	enum type {
 		_INVALID_TYPE_ = 0,
-		Secret,
-		SymmetricKey,
-		UnsealingKey,
-		SigningKey
+		Password = 1,
+		Secret = 2,
+		SymmetricKey = 3,
+		UnsealingKey = 4,
+		SigningKey = 5
 	};
 	NLOHMANN_JSON_SERIALIZE_ENUM( type, {
 		{type::_INVALID_TYPE_, nullptr},
+		{type::Password, "Password"},
 		{type::Secret, "Secret"},
 		{type::SymmetricKey, "SymmetricKey"},
 		{type::UnsealingKey, "UnsealingKey"},
-		{type::SigningKey, "SigningKey"}
+		{type::SigningKey, "SigningKey"},
 	})
 	
 
@@ -51,7 +57,20 @@ namespace DerivationOptionsJson {
 		{Algorithm::X25519, "X25519"},
 		{Algorithm::Ed25519, "Ed25519"}
 	})
+
+
+	enum WordList {
+		_INVALID_WORD_LIST_ = 0,
+		EN_512_words_5_chars_max_ed_4_20200917,
+		EN_1024_words_6_chars_max_ed_4_20200917
+	};
+	NLOHMANN_JSON_SERIALIZE_ENUM( WordList, {
+		{WordList::_INVALID_WORD_LIST_, nullptr},
+		{WordList::EN_512_words_5_chars_max_ed_4_20200917, "EN_512_words_5_chars_max_ed_4_20200917"},
+		{WordList::EN_1024_words_6_chars_max_ed_4_20200917, "EN_1024_words_6_chars_max_ed_4_20200917"}
+	})
 	
+
 
 	enum HashFunction {
 		_INVALID_HASHFUNCTION_ = 0,
@@ -71,18 +90,10 @@ namespace DerivationOptionsJson {
 
 };
 
-namespace Argoin2idDefaults {
+namespace Argon2idDefaults {
 	const unsigned long long hashFunctionMemoryPasses = 2;
 	const size_t hashFunctionMemoryLimitInBytes = 67108864;
 }
 
-namespace UnsealingInstructionsJson {
-	namespace FieldNames {
-		const std::string androidPackagePrefixesAllowed = "androidPackagePrefixesAllowed";
-		const std::string urlPrefixesAllowed = "urlPrefixesAllowed";
-		const std::string requireAuthenticationHandshake = "requireAuthenticationHandshake";
-		const std::string requireUsersConsent = "requireUsersConsent";
-	}
-};
 
 

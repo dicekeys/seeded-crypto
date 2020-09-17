@@ -72,11 +72,73 @@ TEST(Secret, fromJsonWithoutDerivationOptions) {
 }
 
 
-TEST(UnsealingInstructions, ThowsOnInvalidJson) {
-	ASSERT_ANY_THROW(
-		UnsealingInstructions("badjson")
-	);
+TEST(Password, GeneratesExtraBytes) {
+	Password password(orderedTestKey, R"KDO({
+	"lengthInBits": 300
+})KDO");
+
+	const std::string pw = password.password();
+	const auto serialized = password.toSerializedBinaryForm();
+	const auto replica = Password::fromSerializedBinaryForm(serialized);
+	std::string rpw = replica.password();
+	ASSERT_STREQ(rpw.c_str(), pw.c_str());
+	const auto lengthInWords = password.asWordVector().size();
+	const size_t expectedLengthInWords = 308 / 9;
+	ASSERT_EQ(lengthInWords, expectedLengthInWords);
+	ASSERT_STREQ("34-", pw.substr(0, 3).c_str());
 }
+
+TEST(Password, TenWordsViaLengthInBits) {
+	Password password(orderedTestKey, R"KDO({
+	"type": "Password",
+	"lengthInBits": 90
+})KDO");
+
+	const std::string pw = password.password();
+	const auto lengthInWords = password.asWordVector().size();
+	ASSERT_EQ(lengthInWords, 10);
+	ASSERT_STREQ(pw.c_str(), "10-Ionic-Cadet-Width-Clerk-Virus-Trade-Level-Satin-Cross-Groom");
+}
+
+TEST(Password, ElevenWordsViaLengthInWords) {
+	Password password(orderedTestKey, R"KDO({
+	"type": "Password",
+	"lengthInWords": 11
+})KDO");
+
+	const std::string pw = password.password();
+	const auto lengthInWords = password.asWordVector().size();
+	ASSERT_EQ(lengthInWords, 11);
+	ASSERT_STREQ(pw.c_str(), "11-Siren-Attic-Sedan-Frail-Dance-Tarot-April-Alias-Ember-Patio-Fifth");
+}
+
+
+TEST(Password, ThirteenWordsViaDefaultWithAltWordList) {
+	Password password(orderedTestKey, R"KDO({
+	"wordList": "EN_1024_words_6_chars_max_ed_4_20200917"
+})KDO");
+
+	const std::string pw = password.password();
+	const auto lengthInWords = password.asWordVector().size();
+	ASSERT_EQ(lengthInWords, 13);
+	ASSERT_STREQ(pw.c_str(), "13-Ivory-Paddle-Cedar-Upbeat-Think-Fabric-Halves-Outbid-Unmade-Scurvy-Corner-Hula-Garter");
+}
+
+
+TEST(Password, FifteenWordsViaDefaults) {
+	Password password(orderedTestKey, R"KDO({})KDO");
+
+	const std::string pw = password.password();
+	const auto lengthInWords = password.asWordVector().size();
+	ASSERT_EQ(lengthInWords, 15);
+	ASSERT_STREQ(pw.c_str(), "15-Slick-Tabby-Squad-Chest-Evoke-Judge-Petri-Snide-Affix-Savor-Plaza-Dove-Crust-Poise-Thigh");
+}
+
+//TEST(UnsealingInstructions, ThowsOnInvalidJson) {
+//	ASSERT_ANY_THROW(
+//		UnsealingInstructions("badjson")
+//	);
+//}
 
 // TEST(UnsealingInstructions, Handles0LengthJsonObject) {
 // 	ASSERT_STREQ(

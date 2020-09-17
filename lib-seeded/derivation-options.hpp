@@ -46,6 +46,18 @@ public:
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
+		unsigned int lengthInBits;
+	/**
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 */
+		unsigned int lengthInWords;
+	/**
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 */
+		DerivationOptionsJson::WordList wordList;
+	/**
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 */
 	size_t hashFunctionMemoryLimitInBytes;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
@@ -69,7 +81,7 @@ public:
 	 * Create a DerivationOptions class from the JSON representation
 	 * of the key generation options.
 	 * 
-	 * @param derivationOptionsJson The JSON formatted key-deriation object to parse
+	 * @param derivationOptionsJson The JSON formatted derivation options object to parse
 	 * as specified by @ref derivation_options_format
 	 * @param typeRequired The required type, which will be the default if the JSON doesn't
 	 * contain a type field and which will cause an exception to be thrown if the
@@ -88,7 +100,7 @@ public:
 	/**
 	 * @brief Return JSON with default parameters filled in.
 	 *
-	 * @param indent JSON indent ddpth
+	 * @param indent JSON indent depth
 	 * @param indent_char The char used for JSON indenting
 	 */
 	const std::string derivationOptionsJsonWithAllOptionalParametersSpecified(
@@ -160,7 +172,7 @@ public:
 	 * defaultType if type is not set (_INVALID_TYPE_),
 	 * or "" if neither is set (both are _INVALID_TYPE_).
 	 * 
-	 *   * For "Secret", the generated secret is placed directly into the
+	 *   * For "Secret" and "Password", the generated secret is placed directly into the
 	 *     `secretBytes` field of the Secret class.
 	 *   * For "SymmetricKey", the generated secret becomes the `keyBytes` field
 	 *     of the SymmetricKey class.

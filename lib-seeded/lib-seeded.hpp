@@ -11,7 +11,6 @@
 #include "hash-functions.hpp"
 #include "derivation-options.hpp"
 #include "packaged-sealed-message.hpp"
-#include "unsealing-instructions.hpp"
 
 /** @defgroup DerivedFromSeeds Derived Keys
  * Keys derived from seed strings using 
@@ -19,6 +18,7 @@
  * (and  which clients can use to derive their own keys).
  */
 
+#include "password.hpp"
 #include "secret.hpp"
 #include "symmetric-key.hpp"
 #include "sealing-key.hpp"
