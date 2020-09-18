@@ -42,7 +42,7 @@ This specification separates the JSON object fields into three categories:
 
 *Universal fields* are used by the Seeded Cryptography Library directly to derive secrets and key seeds. These are generalizable to any type of seed string, not just the DiceKeys use case for which we created this library.
 
-The Seeded Cryptogpraphy Library is oblivious to other fields, but since they are part of the
+The Seeded Cryptography Library is oblivious to other fields, but since they are part of the
 JSON string any changes to them will cause the library to derive a different key.
 
 *DiceKeys Hardware fields* apply to keys seeded with a DiceKeys.
@@ -67,6 +67,8 @@ Specify whether this JSON object should be used to construct a
 
 ```TypeScript
 "type"?:
+    // For constructing a password
+    "Password" |
     // For constructing a raw Secret
     "Secret" |
     // For constructing a SymmetricKey
@@ -98,14 +100,14 @@ Specify the specific algorithm to use.
     "Ed25519"            // the default for SigningKey
 ```
 
-The `algorithm` field should never be set when `"type": "Secret"`.
+The `algorithm` field should never be set when `"type": "Secret"` or `"type": "Password"`.
 
 #### lengthInBytes
 ```TypeScript
 "lengthInBytes"?: number // e.g. "lengthInBytes": 32
 ```
 
-Use this field `"type": "Secret"` to set the size of the secret to be derived
+Use this field when `"type": "Secret"` to set the size of the secret to be derived
 (in bytes, as the name implies). If set for other derived object `type`, it must
 the value assigned must match the lengthInBytes of that algorithm
 (32 bytes for the algorithms currently supported).
@@ -113,6 +115,37 @@ the value assigned must match the lengthInBytes of that algorithm
 If this library is extended to support `algorithm` values with multiple key-length
 options, this field will be used to specify which length varient of the algorithm to
 use.
+
+#### lengthInBits
+```TypeScript
+"lengthInBits"?: number
+```
+
+Use this field when `"type": "Password` to set the required minimum bit strength of the
+password.  For example, if using a 512 word list (9 bits) and setting this value to
+95, an 11-word password (99 bit) password will be generated.
+
+If neither this field nor `lengthInWords` is set, the default lengthInBits for a password
+will be 128.
+
+#### lengthInWords
+```TypeScript
+"lengthInWords"?: number
+```
+
+Use this field when `"type": "Password` to set the required minimum number of words
+from a word list to join together to form a password.
+
+#### wordList
+```TypeScript
+"wordList"?:  "EN_512_words_5_chars_max_ed_4_20200917" | "EN_1024_words_6_chars_max_ed_4_20200917"
+
+```
+
+Use this field when `"type": "Password` to set the word list to be used to create
+a password from the binary secret.
+Defaults to `"EN_512_words_5_chars_max_ed_4_20200917"`, a 512-word list of words of max length 5 characters
+all of which are at least an edit distance of four from every other word on the list.
 
 #### hashFunction
 
@@ -131,7 +164,7 @@ The `hashFunction` field specifies the hash function to used to derive key seeds
 "hashFunctionMemoryPasses": number // default 2
 ```
 
-The `hashFunctionMemoryLimitInBytes` field is the amount of memory that `Argoin2id` or `Scrypt` will be required to iterate (pass) through
+The `hashFunctionMemoryLimitInBytes` field is the amount of memory that `Argon2id` or `Scrypt` will be required to iterate (pass) through
 in order to compute the correct output,
 and `hashFunctionMemoryPasses` is the number of passes it will need
 to make through that memory to do so.
@@ -164,21 +197,21 @@ not be set.
 ##### Hash defaults and recommendations
 
 The default hash function is `SHA256` as this library was designed for DiceKeys,
-which are random and rawn from such a large number of possible values (~2^196)
-to make `Scrypt` and `Argon2id` unncessary.
+which are random and drawn from such a large number of possible values (~2^196)
+to make `Scrypt` and `Argon2id` unnecessary.
 This default ensures that keys can be re-derived cheaply
 on just about any hardware platform.
 
-Applcations that need a more expensive key derivation to protect against
+Applications that need a more expensive key derivation to protect against
 brute-forcing of the derivation algorithm will want to use
 `Scrypt` if _and only if_ keys will _always_ be derived on hardware where
 no untrusted code will run during the derivation process.
 If keys may sometimes be derived on hardware shared with untrusted code,
-even if that code is sanboxed, we recommend using `Argon2id`.
+even if that code is sandboxed, we recommend using `Argon2id`.
 
 We purposely chose _not_ to support multiple iterations of `BLAKE2b` or `SHA256`
 via the `hashFunctionMemoryPasses` field, as applications that want to increase the
-cost of key derviation to prevent brute forcing should use `Argon2id` or `Scrypt`.
+cost of key derivation to prevent brute forcing should use `Argon2id` or `Scrypt`.
 
 ##### Preimage construction
 
@@ -199,7 +232,7 @@ here to keep the specification from being split into too many locations.
 
 #### excludeOrientationOfFaces
 
-When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonoical order:
+When using a DiceKey as a seed, the default seed string will be a 75-character string consisting of triples for each die in canonical order:
  1 The uppercase letter on the die
  2 The digit on the die
  3 The orientation relative to the top of the square in canonical form
@@ -224,7 +257,7 @@ These fields specify who may generate keys and what they may do with them once g
 
 #### allow
 
-The most universal form of identifying apps and services is via compoennts of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
+The most universal form of identifying apps and services is via components of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
 The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
 For intra-browser communication between web-apps, communication via postMessage provides authentication via origins.
 Thus, the default way to restrict the use of a derived key or secret is via these web stanards using the `allow` field.
@@ -239,14 +272,14 @@ A request is allowed if any of the entries in the array matches the host and one
 The specification uses hosts and not origins as the scheme must always be "https://".
 Unless a custom port is in use, the host field is the same as the hostname (e.g. "example.com").
 If the host field starts with "*.", then any subdomain will match, as will the domain that
-follows the "*." prefix.  So, "*.example.com" is satisified by both "sub.example.com" and "example.com."
+follows the "*." prefix.  So, "*.example.com" is satisfied by both "sub.example.com" and "example.com."
 
 If the optional paths field is specified, the for URL-based APIs (those where messages are passed via page loads, as opposed to postMessage requests),
-the path of the URL to which the resposne will be sent must match one of the paths.  Path specifications may end in "*", in which case
+the path of the URL to which the response will be sent must match one of the paths.  Path specifications may end in "*", in which case
 the path must start with the prefix before the "*".  For example, "https://example.com/iamgroot" satisfies path "/iam\*".
 All paths must start with a "/" per web specifications, but if you forget to include the "/" the validator will assume you intended to include it.
 
-If the `allow` clause is not satisified, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
+If the `allow` clause is not satisfied, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
 
 Example:
 
@@ -261,7 +294,7 @@ By default, this field is unset and any client may use the key (though the seal 
 
 Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.
 
-Our DiceKeys client APIs generate 128-bit random request ID using APIs designed for cryptograhic randomness, and throw out respones for requests from IDs that they did not issue, and so are designed to protect against such attacks. Further, operations performed by the DiceKeys app in response to API requests do not have side effects, beyond causing the user to load in their DiceKey if needed and respond to requests.
+Our DiceKeys client APIs generate 128-bit random request ID using APIs designed for cryptographic randomness, and throw out responses for requests from IDs that they did not issue, and so are designed to protect against such attacks. Further, operations performed by the DiceKeys app in response to API requests do not have side effects, beyond causing the user to load in their DiceKey if needed and respond to requests.
 
 #### requireAuthenticationHandshake
 To harden your app against unauthorized client requests, you can set the `requireAuthenticationHandshake` field.
@@ -275,7 +308,7 @@ Since the default is false, the only reason to include this field in your deriva
   "requireAuthenticationHandshake": true
 ```
 
-When set, clients will need to issue a handshake request to the API, and receive an authorization token (a random shared secret), before issuing other requests where the URL at which they received the token starts with one of the authorized prefixes. The DiceKeys app will map the authorization token to that URL and, when reqeusts include that token, validate that the URL associated with the token has a valid prefix. The DiceKeys app will continue to validate that responses are also sent to a valid prefix. 
+When set, clients will need to issue a handshake request to the API, and receive an authorization token (a random shared secret), before issuing other requests where the URL at which they received the token starts with one of the authorized prefixes. The DiceKeys app will map the authorization token to that URL and, when requests include that token, validate that the URL associated with the token has a valid prefix. The DiceKeys app will continue to validate that responses are also sent to a valid prefix. 
 
 #### androidPackagePrefixesAllowed
 
