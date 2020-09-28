@@ -1,9 +1,7 @@
 #include "password.hpp"
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
-#include "./externally-generated/derivation-parameters.hpp"
-#include "externally-generated/word-lists/EN_512_words_5_chars_max_ed_4_20200917.hpp"
-#include "externally-generated/word-lists/EN_1024_words_6_chars_max_ed_4_20200917.hpp"
+#include "word-lists.hpp"
 #include <algorithm>    // std::min
 #include <sstream> 
 
@@ -107,14 +105,10 @@ const std::vector<std::string> Password::asWordVector() const {
     DerivationOptionsJson::type::Password
   );
 
-  const auto wordList =
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ?
-    EN_512_words_5_chars_max_ed_4_20200917 :
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ?
-    EN_1024_words_6_chars_max_ed_4_20200917 :
-    // default
-    EN_512_words_5_chars_max_ed_4_20200917;
+  const auto wordList = getWordList(derivationOptions->wordList);
 
+  // FUTURE -- this code needs to be fixed if we're ever using word lists that are not powers of 2.
+  // Likely use a BIGINT library for those cases (and, to maintain backwards compat, only those cases)
   const unsigned int bitsPerWord =
     derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ? 9 :
     derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ? 10 : 9;

@@ -14,5 +14,6 @@ var dir_bfa3ca4d7245ff604c8870e56fc2b60a =
     [ "sodium-buffer.hpp", "sodium-buffer_8hpp_source.html", null ],
     [ "sodium-initializer.hpp", "sodium-initializer_8hpp_source.html", null ],
     [ "symmetric-key.hpp", "symmetric-key_8hpp_source.html", null ],
-    [ "unsealing-key.hpp", "unsealing-key_8hpp_source.html", null ]
+    [ "unsealing-key.hpp", "unsealing-key_8hpp_source.html", null ],
+    [ "word-lists.hpp", "word-lists_8hpp_source.html", null ]
 ];

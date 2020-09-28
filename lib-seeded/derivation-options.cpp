@@ -6,6 +6,7 @@
 
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
+#include "word-lists.hpp"
 
 DerivationOptions::~DerivationOptions() {
   if (hashFunctionImplementation) {
@@ -130,16 +131,9 @@ DerivationOptions::DerivationOptions(
     wordList = derivationOptionsObject.value<DerivationOptionsJson::WordList>(
       DerivationOptionsJson::FieldNames::wordList, DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917
     );
-    unsigned int bitsPerWord;
     // Determine the bitsPerWord from the password;
-    switch(wordList) {
-      case DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917:
-        bitsPerWord = 9; break;
-      case DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917:
-        bitsPerWord = 10; break;
-      default:
-        bitsPerWord = 9;
-    }
+    double bitsPerWord = log2(getWordList(wordList).size());
+
     // For password derivations, a length may be specified in bits of entropy
     // or in words.
     lengthInBits = derivationOptionsObject.value<unsigned int>(
@@ -150,7 +144,7 @@ DerivationOptions::DerivationOptions(
     );
     // If no length specified, derive a password with 128-bits of entropy
     // (if it's good enough for an AES block, it's good enough for a password).
-    if (lengthInBits > 0 && lengthInWords > 0 && lengthInWords != lengthInBits * bitsPerWord) {
+    if (lengthInBits > 0 && lengthInWords > 0 && lengthInWords != (unsigned int)ceil(lengthInBits * bitsPerWord)) {
       throw InvalidDerivationOptionValueException( 
         "lengthInBits and lengthInWords conflict"
       );
@@ -159,16 +153,16 @@ DerivationOptions::DerivationOptions(
         lengthInBits = 128;
       } else {
         // If the length is specified in words, derive the lengthInBits
-        lengthInBits = lengthInWords * bitsPerWord;
+        lengthInBits = (unsigned int)floor( ((double)lengthInWords) * bitsPerWord);
       }
     }
     if (lengthInWords == 0 && lengthInBits > 0) {
       // If the length is specified in bits, derive the number of words
       // we'll need by taking the ceiling of the length in bits / bits per word
-      lengthInWords = (lengthInBits + bitsPerWord -1) / bitsPerWord;
+      lengthInWords = (unsigned int)ceil( ((double)lengthInBits) / bitsPerWord );
     }
     // The length in bytes should be the ceiling of the bits needed for all the words.
-    lengthInBytes = (lengthInWords * bitsPerWord + 7) / 8;
+    lengthInBytes = (unsigned int)ceil(lengthInWords * bitsPerWord);
     if (lengthInBytes < 32) {
       // For simplicity, always derive at least 32 bytes;
       lengthInBytes = 32;
