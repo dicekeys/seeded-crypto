@@ -162,7 +162,7 @@ DerivationOptions::DerivationOptions(
       lengthInWords = (unsigned int)ceil( ((double)lengthInBits) / bitsPerWord );
     }
     // The length in bytes should be the ceiling of the bits needed for all the words.
-    lengthInBytes = (unsigned int)ceil(lengthInWords * bitsPerWord);
+    lengthInBytes = (unsigned int)ceil(lengthInWords * bitsPerWord / 8.0);
     if (lengthInBytes < 32) {
       // For simplicity, always derive at least 32 bytes;
       lengthInBytes = 32;
