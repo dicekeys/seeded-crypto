@@ -109,60 +109,27 @@ const std::vector<std::string> Password::asWordVector() const {
 
   // FUTURE -- this code needs to be fixed if we're ever using word lists that are not powers of 2.
   // Likely use a BIGINT library for those cases (and, to maintain backwards compat, only those cases)
-  const unsigned int bitsPerWord =
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ? 9 :
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ? 10 : 9;
+  // const unsigned int bitsPerWord =
+  //   derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ? 9 :
+  //   derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ? 10 : 9;
 
   unsigned int wordsNeeded = derivationOptions->lengthInWords;
   unsigned int bytesConsumed = 0;
   unsigned char currentByte = 0;
   unsigned int bitsLeftInByte = 0;
-  unsigned int bitsNeededForIndexIntoWordList = bitsPerWord;
+//  unsigned int bitsNeededForIndexIntoWordList = bitsPerWord;
   unsigned int indexIntoWordList = 0;
 
-  while (wordsNeeded > 0) {
-
-    if (bitsLeftInByte == 0) {
-      // We're out of bits to read from in the current byte
-      // Fetch the next byte
-
-      if (bytesConsumed >= secretBytes.length) {
-        // We're out of bytes to fetch
-        break;
-      }
-      // The byte we were copying over into words is empty. Grab another.
-      currentByte = secretBytes.data[bytesConsumed++];
-      bitsLeftInByte = 8;
+  for (size_t byteIndexOfSecret = 0; byteIndexOfSecret < secretBytes.length; byteIndexOfSecret += BytesPerWordOfPassword) {
+    uint64_t hashBytesAsBigEndianNumber = 0;
+    // read 64 bit unsigned in big endian format
+    for (size_t byteIndexOfULong = 0; byteIndexOfULong < BytesPerWordOfPassword; byteIndexOfULong++) {
+      hashBytesAsBigEndianNumber |=
+        ((uint64_t) secretBytes.data[byteIndexOfSecret + byteIndexOfULong])
+        << (BytesPerWordOfPassword * (BytesPerWordOfPassword - (1 +  byteIndexOfULong)));
     }
-    const auto numBitsToCopy = std::min(bitsLeftInByte, bitsNeededForIndexIntoWordList);
-    // If we're only copying part of the byte, copy high-order bits and
-    // shift the remaining bits to the right.  (Shift any bits that
-    const unsigned int bitsToCopy = (currentByte >> (bitsLeftInByte - numBitsToCopy));
-    bitsLeftInByte -= numBitsToCopy;
-    currentByte = currentByte & (0xff >> (8 - bitsLeftInByte));
-    // shift any value already in the word index left of the bits to copy in
-    // so that the numBitsToCopy bits on the right will be 0
-    indexIntoWordList = (indexIntoWordList << numBitsToCopy);
-    // Add the copied bits into the low-order bits of the word index.
-    indexIntoWordList += bitsToCopy;
-    // We now need that many fewer bits to complete the word index
-    bitsNeededForIndexIntoWordList -= numBitsToCopy;
-    // See if we've completed a word
-    if (bitsNeededForIndexIntoWordList == 0) {
-      // We've completed a word.  Push it onto the completed list of words
-      wordsGenerated.push_back(wordList[indexIntoWordList]);
-      wordsNeeded--;
-      // Start a new word index, which is empty, needs bitsPerWordsBits
-      indexIntoWordList = 0;
-      bitsNeededForIndexIntoWordList = bitsPerWord;
-    }
+    wordsGenerated.push_back(wordList[hashBytesAsBigEndianNumber % wordList.size()]);
   }
-  if (bitsNeededForIndexIntoWordList < bitsPerWord && wordsNeeded > 0) {
-    // We were in the middle of generating a word when we ran out of bits.
-    // We still had enough bits to add a word, so we'll use it.
-    wordsGenerated.push_back(wordList[indexIntoWordList]);
-  }
-
   return wordsGenerated;
 }
 

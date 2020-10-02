@@ -12,7 +12,7 @@ TEST(DerivationOptions, GeneratesDefaults) {
 		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
-	"hashFunction": "SHA256",
+	"hashFunction": "BLAKE2b",
 	"type": "UnsealingKey"
 })KGO"
 	);
@@ -72,7 +72,7 @@ TEST(DerivationOptions, InitsWithClientPrefixes) {
 		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
-	"hashFunction": "SHA256",
+	"hashFunction": "BLAKE2b",
 	"type": "UnsealingKey"
 })KGO"
 );

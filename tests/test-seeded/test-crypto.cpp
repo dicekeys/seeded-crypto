@@ -33,13 +33,13 @@ TEST(Secret, FidoUseCase) {
 	const std::string seedAsHex = toHexStr(seed.secretBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
-		"fe3bfee2ff3c284e68b9c93af89b42725bb9d758c6883aa216e5c181d328d99adf4d2bf86f88e9d11b31db815a4d7ef602fb14bb59761d7045640682601d2ee7db9846028739d7f2b807e263635f497d2e7e60318415b19e314830184ef1a56a"
+		"6147ed347b3308c3a47bb5f3f05131fab59cbe08d7c26c7af7f2b54eb9a0d8da485907907a1abfe833575e8598364f4a8ba99c88022513fa464f364e6f0662119358c15dfcbef102656d0ec993beb2bf661138e2808384b48c689b8aebee32cd"
 	);
 }
 
 const std::string fastSeedJsonDerivationOptions = R"KDO({
 	"type": "Secret",
-	"hashFunction": "SHA256",
+	"hashFunction": "BLAKE2b",
 	"lengthInBytes": 96
 })KDO";
 TEST(Secret, ConvertsToJsonAndBack) {
@@ -97,7 +97,7 @@ TEST(Password, TenWordsViaLengthInBits) {
 	const std::string pw = password.password();
 	const auto lengthInWords = password.asWordVector().size();
 	ASSERT_EQ(lengthInWords, 10);
-	ASSERT_STREQ(pw.c_str(), "10-Ionic-Cadet-Width-Clerk-Virus-Trade-Level-Satin-Cross-Groom");
+	ASSERT_STREQ(pw.c_str(), "10-Ionic-Buzz-Shine-Theme-Paced-Bulge-Cache-Water-Shown-Baggy");
 }
 
 TEST(Password, ElevenWordsViaLengthInWords) {
@@ -109,7 +109,7 @@ TEST(Password, ElevenWordsViaLengthInWords) {
 	const std::string pw = password.password();
 	const auto lengthInWords = password.asWordVector().size();
 	ASSERT_EQ(lengthInWords, 11);
-	ASSERT_STREQ(pw.c_str(), "11-Siren-Attic-Sedan-Frail-Dance-Tarot-April-Alias-Ember-Patio-Fifth");
+	ASSERT_STREQ(pw.c_str(), "11-Clean-Snare-Donor-Petty-Grimy-Payee-Limbs-Stole-Roman-Aloha-Dense");
 }
 
 
@@ -121,7 +121,7 @@ TEST(Password, ThirteenWordsViaDefaultWithAltWordList) {
 	const std::string pw = password.password();
 	const auto lengthInWords = password.asWordVector().size();
 	ASSERT_EQ(lengthInWords, 13);
-	ASSERT_STREQ(pw.c_str(), "13-Ivory-Paddle-Cedar-Upbeat-Think-Fabric-Halves-Outbid-Unmade-Scurvy-Corner-Hula-Garter");
+	ASSERT_STREQ(pw.c_str(), "13-Curtsy-Jersey-Juror-Anchor-Catsup-Parole-Kettle-Floral-Agency-Donor-Dealer-Plural-Accent");
 }
 
 
@@ -131,7 +131,7 @@ TEST(Password, FifteenWordsViaDefaults) {
 	const std::string pw = password.password();
 	const auto lengthInWords = password.asWordVector().size();
 	ASSERT_EQ(lengthInWords, 15);
-	ASSERT_STREQ(pw.c_str(), "15-Slick-Tabby-Squad-Chest-Evoke-Judge-Petri-Snide-Affix-Savor-Plaza-Dove-Crust-Poise-Thigh");
+	ASSERT_STREQ(pw.c_str(), "15-Unwed-Agent-Genre-Stump-Could-Limit-Shrug-Shout-Udder-Bring-Koala-Essay-Plaza-Chaos-Clerk");
 }
 
 //TEST(UnsealingInstructions, ThowsOnInvalidJson) {

@@ -8,7 +8,6 @@
  */
 
 #include "sodium-buffer.hpp"
-#include "hash-functions.hpp"
 #include "derivation-options.hpp"
 #include "packaged-sealed-message.hpp"
 

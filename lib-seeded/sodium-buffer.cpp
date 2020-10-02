@@ -91,52 +91,6 @@ SodiumBuffer SodiumBuffer::fromHexString(const std::string& hexStr) {
     }
 }
 
-// const SodiumBuffer SodiumBuffer::pushField(const SodiumBuffer &bufferToPrepend) const {
-//   size_t newBufferLength = 4 + bufferToPrepend.length + length;
-//   if (newBufferLength > 0xffffffff || newBufferLength <= (length + 4)) {
-//       // This new buffer is so big it would overflow a 4-byte word length.
-//       // Throw an exception and limit sizes to 4GB rather than risk overflow vulns
-//       throw std::invalid_argument("Attempt to create buffer that exceeds limits");
-//   }
-//   SodiumBuffer bufferWithNewFieldPrepended = SodiumBuffer(newBufferLength);
-//   unsigned char* writePtr = bufferWithNewFieldPrepended.data;
-//   // Write four-big endian bytes encoding the length of the prepended field,
-//   // advancing the writePtr
-//   *(writePtr++) = (bufferToPrepend.length >> 24) & 0xff;
-//   *(writePtr++) = (bufferToPrepend.length >> 16) & 0xff;
-//   *(writePtr++) = (bufferToPrepend.length >> 8) & 0xff;
-//   *(writePtr++) = (bufferToPrepend.length) & 0xff;
-//   // Write the prepended field and advance the writePtr.
-//   memcpy(writePtr, bufferToPrepend.data, bufferToPrepend.length);
-//   writePtr += bufferToPrepend.length;
-//   // Write the data from this buffer at the end of the new buffer
-//   memcpy(bufferWithNewFieldPrepended.data + 4 + bufferToPrepend.length, data, length);
-//   return bufferWithNewFieldPrepended;
-// }
-
-// SodiumBufferSerializationIterator SodiumBuffer::getSerializationIterator() const {
-//     return SodiumBufferSerializationIterator(this);
-// }
-
-// SodiumBufferSerializationIterator::SodiumBufferSerializationIterator(
-//     const SodiumBuffer* _buffer
-// ) : buffer(_buffer), bytesConsumed(0) {}
-
-// const SodiumBuffer SodiumBufferSerializationIterator::popRemainder() {
-//     const unsigned char* remainingDataPtr = buffer->data + bytesConsumed;
-//     const size_t bytesRemaining = buffer->length - bytesConsumed;
-//     bytesConsumed = buffer->length;
-//     return SodiumBuffer(bytesRemaining, remainingDataPtr);
-// }
-
-// const bool SodiumBufferSerializationIterator::noFieldsRemain() const {
-//     return (buffer->length - bytesConsumed) <= 4;
-// }
-
-// const bool SodiumBufferSerializationIterator::noDataRemain() const {
-//   return (buffer->length - bytesConsumed) <= 0;
-// }
-
 const SodiumBuffer SodiumBuffer::combineFixedLengthList(
     const std::vector<const SodiumBuffer*>& sodiumBufferPtrs
 ) {
