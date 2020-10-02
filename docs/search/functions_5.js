@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['hash_106',['hash',['../class_hash_function.html#aec437df3699552dd4551aabe02bd447e',1,'HashFunction::hash(const void *message, unsigned long long message_length, unsigned long long hash_length_in_bytes) const =0'],['../class_hash_function.html#aa9b8acdc93f6bb319db2085d1f21452d',1,'HashFunction::hash(SodiumBuffer message, unsigned long long hash_length_in_bytes) const']]]
+  ['invalidderivationoptionsjsonexception_102',['InvalidDerivationOptionsJsonException',['../class_invalid_derivation_options_json_exception.html#a955ad493a2aa5b6e305c181adfa38e4b',1,'InvalidDerivationOptionsJsonException']]],
+  ['invalidderivationoptionvalueexception_103',['InvalidDerivationOptionValueException',['../class_invalid_derivation_option_value_exception.html#af3aebc4f3504fb03657a6f927fcd6ba2',1,'InvalidDerivationOptionValueException']]]
 ];

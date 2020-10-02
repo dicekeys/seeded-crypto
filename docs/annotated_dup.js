@@ -2,7 +2,6 @@ var annotated_dup =
 [
     [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html", "class_cryptographic_verification_failure_exception" ],
     [ "DerivationOptions", "class_derivation_options.html", "class_derivation_options" ],
-    [ "HashFunction", "class_hash_function.html", "class_hash_function" ],
     [ "InvalidDerivationOptionsJsonException", "class_invalid_derivation_options_json_exception.html", "class_invalid_derivation_options_json_exception" ],
     [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html", "class_invalid_derivation_option_value_exception" ],
     [ "JsonParsingException", "class_json_parsing_exception.html", "class_json_parsing_exception" ],
