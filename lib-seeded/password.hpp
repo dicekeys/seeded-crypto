@@ -18,10 +18,15 @@
  */
 class Password {
 public:
+  // /**
+  //  * @brief The binary representation of the password before it was translated into words.
+  //  */
+  // const SodiumBuffer secretBytes;
   /**
-   * @brief The binary representation of the derived secret.
+   * @brief The binary representation of the password.
    */
-  const SodiumBuffer secretBytes;
+  const std::string password;
+
     /**
    * @brief A string in @ref derivation_options_format string
    * which specifies how the constructor will derive the
@@ -42,27 +47,33 @@ public:
    * Construct a secret from its two fields: the secretBytes
    * and the derivationOptionsJson.
    * 
-   * @param secretBytes The derived secret.
+  //  * @param secretBytes The derived secret.
+   * @param password The derived password
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
    */
   Password(
-    const SodiumBuffer& secretBytes,
+    // const SodiumBuffer& secretBytes,
+    const std::string& password,
     const std::string& derivationOptionsJson = {}
   );
 
-  /**
-   * @brief Derive a password from a seed secret and a set of
-   * derivation options in @ref derivation_options_format.
-   * 
-   * @param seedString The secret seed string from which this password should be
-   * derived. Once the password is derived, you won't need the secretSeedBytes
-   * again unless you need to re-derive this password.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
-   */
-  Password(
-    const std::string& seedString,
-    const std::string& derivationOptionsJson
-  );
+  // /**
+  //  * @brief Derive a password from a seed secret and a set of
+  //  * derivation options in @ref derivation_options_format.
+  //  * 
+  //  * @param seedString The secret seed string from which this password should be
+  //  * derived. Once the password is derived, you won't need the secretSeedBytes
+  //  * again unless you need to re-derive this password.
+  //  * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+  //  * @param wordListAsSingleString The word list to use to generate the password, with words
+  //  * separated by any number of non-alphabetic characters.  This allows word lists to be
+  //  * tab-delimited, comma-delimited, line-delimited, or any combination thereof. 
+  //  */
+  // Password(
+  //   const std::string& seedString,
+  //   const std::string& derivationOptionsJson,
+  //   const std::string& wordListAsSingleString = ""
+  // );
 
   /**
    * @brief Derive a secret from a seed secret and a set of
@@ -72,11 +83,21 @@ public:
    * derived. Once the secret is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this secret.
    * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * @param wordListAsSingleString The word list to use to generate the password, with words
+   * separated by any number of non-alphabetic characters.  This allows word lists to be
+   * tab-delimited, comma-delimited, line-delimited, or any combination thereof. 
    */
+  static Password deriveFromSeedAndWordList(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson,
+    const std::string& wordListAsSingleString
+  );
   static Password deriveFromSeed(
     const std::string& seedString,
     const std::string& derivationOptionsJson
-  );
+  ) {
+    return Password::deriveFromSeedAndWordList(seedString, derivationOptionsJson, "");
+  };
 
   /**
    * @brief Serialize this object to a JSON-formatted string
@@ -92,19 +113,19 @@ public:
     const char indent_char = ' '
   ) const;
 
-  /**
-   * @brief Derive the word array that can be used to build the final password
-   * 
-   * @return const std::vector<std::string> 
-   */
-  const std::vector<std::string> asWordVector() const;
+  // /**
+  //  * @brief Derive the word array that can be used to build the final password
+  //  * 
+  //  * @return const std::vector<std::string> 
+  //  */
+  // const std::vector<std::string> asWordVector(const std::string wordList = "") const;
 
-  /**
-   * @brief Derive the password.
-   *
-   * @return const std::vector<std::string>
-   */
-  const std::string password() const;
+  // /**
+  //  * @brief Derive the password.
+  //  *
+  //  * @return const std::vector<std::string>
+  //  */
+  // const std::string password(const std::string wordList = "") const;
 
   /**
    * @brief Serialize to byte array as a list of:

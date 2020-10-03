@@ -6,7 +6,11 @@
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
 #include "./externally-generated/derivation-parameters.hpp"
-#include "hash-functions.hpp"
+#include "derivation-options.hpp"
+
+const size_t BytesPerWordOfPassword = 8;
+
+
 
 /**
  * @brief This class parses a derivationOptionsJson string
@@ -42,19 +46,19 @@ public:
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-  	unsigned int lengthInBytes;
+  	unsigned int lengthInBytes = 0;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-		unsigned int lengthInBits;
+		unsigned int lengthInBits = 0;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-		unsigned int lengthInWords;
+		unsigned int lengthInWords = 0;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
-		DerivationOptionsJson::WordList wordList;
+		DerivationOptionsJson::WordList wordList = DerivationOptionsJson::WordList::_INVALID_WORD_LIST_;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
@@ -68,14 +72,6 @@ public:
 	 * @brief The name of the hash function specified in the @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
 	DerivationOptionsJson::HashFunction hashFunction;
-
-	/**
-	 * @brief A pointer to a hash function that *implements* the specified
-	 * derivation hash function.
-	 */
-	HashFunction *hashFunctionImplementation;
-
-	~DerivationOptions();
 
 	/**
 	 * Create a DerivationOptions class from the JSON representation

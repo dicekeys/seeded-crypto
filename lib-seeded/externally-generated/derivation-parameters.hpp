@@ -75,16 +75,12 @@ namespace DerivationOptionsJson {
 	enum HashFunction {
 		_INVALID_HASHFUNCTION_ = 0,
 		BLAKE2b,
-		SHA256,
 		Argon2id,
-		Scrypt
 	};
 	NLOHMANN_JSON_SERIALIZE_ENUM( HashFunction, {
 		{HashFunction::_INVALID_HASHFUNCTION_, nullptr},
 		{HashFunction::BLAKE2b, "BLAKE2b"},
-		{HashFunction::SHA256, "SHA256"},
 		{HashFunction::Argon2id, "Argon2id"},
-		{HashFunction::Scrypt, "Scrypt"}
 	})
 	
 

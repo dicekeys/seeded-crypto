@@ -106,11 +106,30 @@ $(document).ready(function(){initNavTree('introduction.html',''); initResizable(
 <div class="line">    &quot;Unsealed messages should be shared only with those who like wordplay.&quot;</div>
 <div class="line">);</div>
 <div class="line">const auto sealed_message = sk.seal(plaintext, unsealing_instructions);</div>
-</div><!-- fragment --><p>All keys and mesage packages in this library can be easily serialized into either JSON format or a binary format, and deserialized, freeing those using the library from having to implement their own serialization methods.</p>
+</div><!-- fragment --><p>All keys and packaged messages in this library can be easily serialized into either JSON format or a binary format, and deserialized, freeing those using the library from having to implement their own serialization methods.</p>
 <div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keyword">auto</span> public_key = <a class="code" href="class_sealing_key.html">SealingKey</a>.<a class="code" href="class_sealing_key.html#a67d9408d93e61f0b26ed2194d3231954">fromJson</a>(SealingKeyAsJson);</div>
 <div class="line"><span class="keyword">const</span> <a class="code" href="class_sodium_buffer.html">SodiumBuffer</a> public_key_as_binary = public_key.toSerializedBinaryForm();</div>
 <div class="line"><span class="keyword">const</span> <a class="code" href="class_sealing_key.html">SealingKey</a> copy_of_public_key = <a class="code" href="class_sealing_key.html">SealingKey</a>.<a class="code" href="class_sealing_key.html#a11faf194c22483e5933cccf0ae0f75fd">fromSerializedBinaryForm</a>(public_key_as_binary);</div>
-</div><!-- fragment --> </div></div><!-- contents -->
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md0"></a>
+Seeding with DiceKeys</h1>
+<p>DiceKeys are converted into strings by generating a three-character ASCII/UTF8 triple for each die:</p>
+<ul>
+<li>An uppercase letter: '<code>A</code>'-'<code>Z</code>' excluding '<code>Q</code>'</li>
+<li>An digit: '<code>1</code>'-'<code>6</code>' (not to be confused for )</li>
+<li><p class="startli">A lowercase orientation letter:</p><ul>
+<li>'<code>t</code>' if the top of the die as read faces the *t*op of box (it is upright)</li>
+<li>'<code>r</code>' if the top of the die as read faces the *r*ight side of box, or 90 degrees clockwise from upright</li>
+<li>'<code>b</code>' if the top of the die as read faces the *b*ottom of box, or 180 degrees clockwise from upright</li>
+<li>'<code>l</code>' if the top of the die as read faces the *l*eft side of box, or 270 degrees clockwise from upright.</li>
+</ul>
+<p class="startli">This convention matches the naming conventions of CSS boxes (e.g. <code>margin-[top|left|bottom|right]</code>), rectangles in the browser Document Object Model (DOM), and forms the pronounceable acronym <code>trbl</code> which lends itself to the memory mnemonic of "[right here in river city.](https://en.wikipedia.org/wiki/Ya_Got_Trouble)"</p>
+</li>
+</ul>
+<p>The three-character triples are concatenated English reading order, starting at the top left and proceeding across the row, and then down each row until reaching the bottom right. A DiceKey with 25 dice will yield a 75-character string.</p>
+<p>The DiceKey itself may be read in one of four possible orientations, and changing the orientation at which a DiceKey is read should not change the secrets it generates. Thus, the seed string should represent a <em>canonical</em> orientation of the key.</p>
+<p>While DiceKeys hardware with a hinged lid may seemingly have a predefined canonical top that might be detectable to a machine vision algorithm, not all DiceKeys hardware will have a canonical top. For example, a DiceKey made from stickers (STICKIES) are squares and have no defined top.</p>
+<p>Thus, the canonical top left of a DiceKey is the one that produces a string that representation with the earliest sort order. One cannot simply assume that a corner die alone will be sufficient to indicate sort order (e.g., assuming that a corner with <code>A1</code> must be the top left), because a DiceKey could have more than one <code>A</code>. (DiceKeys are currently packaged with 25 unique dice, but users should be allowed to two sets together when generating two DiceKeys and still expect the software to function reliably.) Rather, to determine the correct seed string algorithmically, generate all four possible string representations of the DiceKey and take the earliest in sort order. </p>
+</div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
 <div class="ttc" id="aclass_sodium_buffer_html"><div class="ttname"><a href="class_sodium_buffer.html">SodiumBuffer</a></div><div class="ttdoc">A byte array containing a length and a pointer to memory (the data field), which ensures data is eras...</div><div class="ttdef"><b>Definition:</b> sodium-buffer.hpp:27</div></div>

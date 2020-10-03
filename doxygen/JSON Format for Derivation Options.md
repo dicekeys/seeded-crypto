@@ -17,7 +17,7 @@ or an empty string.
 
 This specification defines default values for _all_ fields, these defaults are used when a field is absent, and so a derivation options JSON string that is itself an empty string ("") or empty object ("{}") will use defaults for all field values.
 For example, If you are deriving a SymmetricKey and pass the empty string,
-the `"type"` will be inferred to be `Symmetric`, the `"hashFunction"` to be `SHA256`, and the `"algorithm"` will be the default
+the `"type"` will be inferred to be `Symmetric`, the `"hashFunction"` to be `BLAKE2b`, and the `"algorithm"` will be the default
 algorithm for symmetric key cryptography: `XSalsa20Poly1305`.
 
 The Seeded Cryptography Library uses a hash function to derive keys and secrets, and the input to that hash function includes both the seed string _and_ the JSON string you provide with the derivation options.  In cryptographic terms, this means the JSON string with your derivation options is used to _salt_ the hash function.
@@ -113,7 +113,7 @@ the value assigned must match the lengthInBytes of that algorithm
 (32 bytes for the algorithms currently supported).
 
 If this library is extended to support `algorithm` values with multiple key-length
-options, this field will be used to specify which length varient of the algorithm to
+options, this field will be used to specify which length variant of the algorithm to
 use.
 
 #### lengthInBits
@@ -149,13 +149,15 @@ all of which are at least an edit distance of four from every other word on the 
 
 #### hashFunction
 
-The `hashFunction` field specifies the hash function to used to derive key seeds and secrets. The default is `"SHA256"`.
+The `hashFunction` field specifies the hash function to used to derive key seeds and secrets. The default is `"BLAKE2b"`.
 
 ```TypeScript
-"hashFunction"?: "BLAKE2b" | "SHA256" | "Argon2id" | "Scrypt"
+"hashFunction"?: "BLAKE2b" | "Argon2id"
 ```
 
-`Argon2id` and `Scrypt` are hash functions designed to require not just computation, but also memory, in order to thwart hardware brute force attacks.[^1] (The `Argon2id` parameter maps to algorithm `crypto_pwhash_ALG_ARGON2ID13` in libsodium with the salt set to a block of zero bytes, and `Scrypt` maps to algorithm `crypto_pwhash_scryptsalsa208sha256` in libsodium, also with zero bytes for the salt.) When using these two hash functions, you can also specify the memory limit and the number of passes to make through memory.
+`Argon2id` is a hash function designed to require not just computation, but also memory, in order to thwart hardware brute force attacks.[^1].  To derive secrets, the password parameter is set to the seed and the salt parameter is set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the derivation options JSON string. No null terminators or other separators are used.  The implementation uses the `argon2id_hash_raw` function internal to libsodium. with  When using `Argon2id`, you can also specify the memory limit and the number of passes to make through memory.
+
+`BLAKE2b` applies the BLAKE2b hash function as the building block for HKDF function ([RFC5869](https://tools.ietf.org/html/rfc5869)) to allow for arbitrary-length outputs.  We set the HKDF input keying material (`IKM` parameter) to the seed string and the `info` parameter set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the derivation options JSON string.  We using BLAKE2b with a 32-byte output block as the underlying HMAC. The implementation uses the `crypto_generichash_blake2b` series of functions in libsodium) function with a 32 byte block and 32 0s for the `salt` used when deriving the `PRK` (see Step 1 in Section 2.2 of the [HKDF spec](https://tools.ietf.org/html/rfc5869)).
 
 [^1] X
 
@@ -164,8 +166,8 @@ The `hashFunction` field specifies the hash function to used to derive key seeds
 "hashFunctionMemoryPasses": number // default 2
 ```
 
-The `hashFunctionMemoryLimitInBytes` field is the amount of memory that `Argon2id` or `Scrypt` will be required to iterate (pass) through
-in order to compute the correct output,
+The `hashFunctionMemoryLimitInBytes` field is the amount of memory that `Argon2id` will be required to iterate (pass) through
+in order to compute the correct output (it will be rounded down to the nearest kilobyte),
 and `hashFunctionMemoryPasses` is the number of passes it will need
 to make through that memory to do so.
 
@@ -187,43 +189,27 @@ The `hashFunctionMemoryPasses` must be at least 1, no greater than 2^32-1 (4,294
 amount of memory equal to the product of these two parameters,
 the computational cost on the order of the product of
 `hashFunctionMemoryPasses` times `hashFunctionMemoryLimitInBytes`.
-(The `hashFunctionMemoryPasses` field maps to the poorly-documented `opslimit` in `libsodium`. An examination of the `libsodium` source shows that opslimit is assigned to a parameter named `t_cost`, which in turn is assigned to `instance.passes` on line 56 of [argon2.c](https://github.com/jedisct1/libsodium/blob/7214dff083638604cd48e5c9ffc5704460192794/src/libsodium/crypto_pwhash/argon2/argon2.c).)
+(The `hashFunctionMemoryPasses` field maps to the poorly-documented `opslimit` in `libsodium`. An examination of the source shows that opslimit is assigned to a parameter named `t_cost`, which in turn is assigned to `instance.passes` on line 56 of [argon2.c](https://github.com/jedisct1/libsodium/blob/7214dff083638604cd48e5c9ffc5704460192794/src/libsodium/crypto_pwhash/argon2/argon2.c).)
 
 
-`BLAKE2b` and `SHA256` are single-iteration functions and so, when using them, the
+Since `BLAKE2b` is a single-iteration function, the
 `hashFunctionMemoryLimitInBytes` and `hashFunctionMemoryPasses` fields must
-not be set.
+not be set when it is used.
 
 ##### Hash defaults and recommendations
 
-The default hash function is `SHA256` as this library was designed for DiceKeys,
+The default hash function is `BLAKE2b` as this library was designed for DiceKeys,
 which are random and drawn from such a large number of possible values (~2^196)
-to make `Scrypt` and `Argon2id` unnecessary.
+to make `Argon2id` unnecessary.
 This default ensures that keys can be re-derived cheaply
 on just about any hardware platform.
 
 Applications that need a more expensive key derivation to protect against
-brute-forcing of the derivation algorithm will want to use
-`Scrypt` if _and only if_ keys will _always_ be derived on hardware where
-no untrusted code will run during the derivation process.
-If keys may sometimes be derived on hardware shared with untrusted code,
-even if that code is sandboxed, we recommend using `Argon2id`.
+brute-forcing of the derivation algorithm will want to use `Argon2id`.
 
-We purposely chose _not_ to support multiple iterations of `BLAKE2b` or `SHA256`
+We purposely chose _not_ to support multiple iterations of `BLAKE2b`
 via the `hashFunctionMemoryPasses` field, as applications that want to increase the
-cost of key derivation to prevent brute forcing should use `Argon2id` or `Scrypt`.
-
-##### Preimage construction
-
-The input, or `preimage`, to the key derivation function is the concatenation of
-- the seed (UTF8 encoded if no encoding to a binary array is specified)),
-- a null-termination character ('\0') for the seed,
-- the type (`Symmetric`, `Public`, `Signing`, or `Secret`) of the key being derived,
-    UTF8 encoded and not null terminated, and
-- the derivation options JSON string, UTF8 encoded and not null terminated.
-
-Including the `type` of the key (or secret) being derived in the preimage may seem unnecessary, since there is a `type` field in the JSON format.  It is important to include the type of the key or secret actually being derived because the `type` field is optional in the JSON format. If we were not to include it, two keys of different types derived from the same JSON specification could have the same preimage.
-
+cost of key derivation to prevent brute forcing should use `Argon2id`.
 
 ### DiceKeys Hardware Fields
 
@@ -258,9 +244,9 @@ These fields specify who may generate keys and what they may do with them once g
 #### allow
 
 The most universal form of identifying apps and services is via components of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
-The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
+The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS request to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
 For intra-browser communication between web-apps, communication via postMessage provides authentication via origins.
-Thus, the default way to restrict the use of a derived key or secret is via these web stanards using the `allow` field.
+Thus, the default way to restrict the use of a derived key or secret is via these web standards using the `allow` field.
 
 
 ```TypeScript
@@ -274,10 +260,10 @@ Unless a custom port is in use, the host field is the same as the hostname (e.g.
 If the host field starts with "*.", then any subdomain will match, as will the domain that
 follows the "*." prefix.  So, "*.example.com" is satisfied by both "sub.example.com" and "example.com."
 
-If the optional paths field is specified, the for URL-based APIs (those where messages are passed via page loads, as opposed to postMessage requests),
-the path of the URL to which the response will be sent must match one of the paths.  Path specifications may end in "*", in which case
+For URL-based APIs (those where messages are passed via page loads, as opposed to postMessage requests),
+the path of the URL to which the response will be sent must match one of the paths in the `paths` field.  Path specifications may end in "*", in which case
 the path must start with the prefix before the "*".  For example, "https://example.com/iamgroot" satisfies path "/iam\*".
-All paths must start with a "/" per web specifications, but if you forget to include the "/" the validator will assume you intended to include it.
+All paths must start with a "/" per web specifications, but if you forget to include the "/" the validator will assume you intended to include it.  If you do not specify a `paths` field, the default of `["/--derived-secret-api--/*"]`.
 
 If the `allow` clause is not satisfied, the DiceKeys app must not send the response (unless it is allowed by `androidPackagePrefixesAllowed`, below).
 
@@ -290,7 +276,7 @@ Example:
     ]
 ```
 
-By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include `allow`, protecting against data being unsealed and read by unauthorized cilents.)
+By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include `allow`, protecting against data being unsealed and read by unauthorized clients.)
 
 Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.
 

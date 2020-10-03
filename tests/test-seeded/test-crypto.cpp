@@ -4,6 +4,12 @@
 #include "lib-seeded.hpp"
 #include "../lib-seeded/convert.hpp"
 
+// Not included in Password.hpp
+const std::vector<std::string> asWordVector(
+	const DerivationOptions& derivationOptions,
+	const SodiumBuffer& secretBytes,
+	const std::string& wordListAsSingleString = ""
+);
 
 const std::string orderedTestKey = "A1tB2rC3bD4lE5tF6bG1tH1tI1tJ1tK1tL1tM1tN1tO1tP1tR1tS1tT1tU1tV1tW1tX1tY1tZ1t";
 std::string defaultTestPublicDerivationOptionsJson = R"KGO({
@@ -33,13 +39,13 @@ TEST(Secret, FidoUseCase) {
 	const std::string seedAsHex = toHexStr(seed.secretBytes.toVector());
 	ASSERT_EQ(
 		seedAsHex,
-		"fe3bfee2ff3c284e68b9c93af89b42725bb9d758c6883aa216e5c181d328d99adf4d2bf86f88e9d11b31db815a4d7ef602fb14bb59761d7045640682601d2ee7db9846028739d7f2b807e263635f497d2e7e60318415b19e314830184ef1a56a"
+		"6147ed347b3308c3a47bb5f3f05131fab59cbe08d7c26c7af7f2b54eb9a0d8da485907907a1abfe833575e8598364f4a8ba99c88022513fa464f364e6f0662119358c15dfcbef102656d0ec993beb2bf661138e2808384b48c689b8aebee32cd"
 	);
 }
 
 const std::string fastSeedJsonDerivationOptions = R"KDO({
 	"type": "Secret",
-	"hashFunction": "SHA256",
+	"hashFunction": "BLAKE2b",
 	"lengthInBytes": 96
 })KDO";
 TEST(Secret, ConvertsToJsonAndBack) {
@@ -73,86 +79,71 @@ TEST(Secret, fromJsonWithoutDerivationOptions) {
 
 
 TEST(Password, GeneratesExtraBytes) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"lengthInBits": 300
 })KDO");
 
-	const std::string pw = password.password();
+	const std::string pw = password.password;
 	const auto serialized = password.toSerializedBinaryForm();
 	const auto replica = Password::fromSerializedBinaryForm(serialized);
-	std::string rpw = replica.password();
+	std::string rpw = replica.password;
 	ASSERT_STREQ(rpw.c_str(), pw.c_str());
-	const auto lengthInWords = password.asWordVector().size();
-	const size_t expectedLengthInWords = 308 / 9;
-	ASSERT_EQ(lengthInWords, expectedLengthInWords);
 	ASSERT_STREQ("34-", pw.substr(0, 3).c_str());
 }
 
 TEST(Password, TenWordsViaLengthInBits) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"type": "Password",
 	"lengthInBits": 90
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 10);
-	ASSERT_STREQ(pw.c_str(), "10-Ionic-Cadet-Width-Clerk-Virus-Trade-Level-Satin-Cross-Groom");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "10-Ionic-buzz-shine-theme-paced-bulge-cache-water-shown-baggy");
 }
 
 TEST(Password, ElevenWordsViaLengthInWords) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"type": "Password",
 	"lengthInWords": 11
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 11);
-	ASSERT_STREQ(pw.c_str(), "11-Siren-Attic-Sedan-Frail-Dance-Tarot-April-Alias-Ember-Patio-Fifth");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "11-Clean-snare-donor-petty-grimy-payee-limbs-stole-roman-aloha-dense");
 }
 
 
 TEST(Password, ThirteenWordsViaDefaultWithAltWordList) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"wordList": "EN_1024_words_6_chars_max_ed_4_20200917"
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 13);
-	ASSERT_STREQ(pw.c_str(), "13-Ivory-Paddle-Cedar-Upbeat-Think-Fabric-Halves-Outbid-Unmade-Scurvy-Corner-Hula-Garter");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "13-Curtsy-jersey-juror-anchor-catsup-parole-kettle-floral-agency-donor-dealer-plural-accent");
 }
 
 
 TEST(Password, FifteenWordsViaDefaults) {
-	Password password(orderedTestKey, R"KDO({})KDO");
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({})KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 15);
-	ASSERT_STREQ(pw.c_str(), "15-Slick-Tabby-Squad-Chest-Evoke-Judge-Petri-Snide-Affix-Savor-Plaza-Dove-Crust-Poise-Thigh");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "15-Unwed-agent-genre-stump-could-limit-shrug-shout-udder-bring-koala-essay-plaza-chaos-clerk");
 }
 
-//TEST(UnsealingInstructions, ThowsOnInvalidJson) {
-//	ASSERT_ANY_THROW(
-//		UnsealingInstructions("badjson")
-//	);
-//}
 
-// TEST(UnsealingInstructions, Handles0LengthJsonObject) {
-// 	ASSERT_STREQ(
-// 		UnsealingInstructions("").userMustAcknowledgeThisMessage.c_str(),
-// 		""
-// 	);
-// }
+TEST(Password, CustomListOfSevenWords) {
+	Password password = Password::deriveFromSeedAndWordList(orderedTestKey, R"KDO({"lengthInWords": 10})KDO", R"WL(
+yo
+llama,
+delimits
+this
+prime
+sized\
+list
+)WL");
 
-// TEST(UnsealingInstructions, HandlesEmptyJsonObject) {
-// 	ASSERT_STREQ(
-// 		UnsealingInstructions("{}").userMustAcknowledgeThisMessage.c_str(),
-// 		""
-// 	);
-// }
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "10-This-yo-yo-this-delimits-sized-list-list-this-llama");
+}
 
 TEST(SealingKey, GetsSealingKey) {
 	const UnsealingKey testUnsealingKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);

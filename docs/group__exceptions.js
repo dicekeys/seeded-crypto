@@ -1,16 +1,15 @@
 var group__exceptions =
 [
-    [ "Universal Fields used by the Seeded Cryptography Library", "derivation_options_format.html#autotoc_md1", [
-      [ "How this specification is organized", "derivation_options_format.html#autotoc_md0", null ],
-      [ "type", "derivation_options_format.html#autotoc_md2", null ],
-      [ "algorithm", "derivation_options_format.html#autotoc_md3", null ],
-      [ "lengthInBytes", "derivation_options_format.html#autotoc_md4", null ],
-      [ "lengthInBits", "derivation_options_format.html#autotoc_md5", null ],
-      [ "lengthInWords", "derivation_options_format.html#autotoc_md6", null ],
-      [ "wordList", "derivation_options_format.html#autotoc_md7", null ],
-      [ "hashFunction", "derivation_options_format.html#autotoc_md8", [
-        [ "Hash defaults and recommendations", "derivation_options_format.html#autotoc_md9", null ],
-        [ "Preimage construction", "derivation_options_format.html#autotoc_md10", null ]
+    [ "Universal Fields used by the Seeded Cryptography Library", "derivation_options_format.html#autotoc_md2", [
+      [ "How this specification is organized", "derivation_options_format.html#autotoc_md1", null ],
+      [ "type", "derivation_options_format.html#autotoc_md3", null ],
+      [ "algorithm", "derivation_options_format.html#autotoc_md4", null ],
+      [ "lengthInBytes", "derivation_options_format.html#autotoc_md5", null ],
+      [ "lengthInBits", "derivation_options_format.html#autotoc_md6", null ],
+      [ "lengthInWords", "derivation_options_format.html#autotoc_md7", null ],
+      [ "wordList", "derivation_options_format.html#autotoc_md8", null ],
+      [ "hashFunction", "derivation_options_format.html#autotoc_md9", [
+        [ "Hash defaults and recommendations", "derivation_options_format.html#autotoc_md10", null ]
       ] ]
     ] ],
     [ "DiceKeys Hardware Fields", "derivation_options_format.html#autotoc_md11", [

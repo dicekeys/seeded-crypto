@@ -1,19 +1,16 @@
 // #include <cassert>
 #include <exception>
 #include "sodium.h"
-#pragma warning( disable : 26812 )
+#include "hkdf.hpp"
 
+#pragma warning( disable : 26812 )
 
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
+#include "word-lists.hpp"
 
-DerivationOptions::~DerivationOptions() {
-  if (hashFunctionImplementation) {
-    delete hashFunctionImplementation;
-  }
-  // if (keyUseRestrictions) {
-  //   delete keyUseRestrictions;
-  // }
+extern "C" {
+#include "../extern/libsodium/src/libsodium/crypto_pwhash/argon2/argon2.h"
 }
 
 // Wrap json parser in a function that throws exceptions as
@@ -28,6 +25,7 @@ nlohmann::json parseJsonWithKeyDerviationOptionsExceptions(std::string json) {
   }
 }
 
+
 // Use the nlohmann::json library to read the JSON-encoded
 // key generation options.
 // We make heavy use of the library's enum conversion, as documented at:
@@ -39,6 +37,7 @@ DerivationOptions::DerivationOptions(
   const nlohmann::json& derivationOptionsObject = parseJsonWithKeyDerviationOptionsExceptions(
     derivationOptionsJson.size() == 0 ? "{}" : derivationOptionsJson
   );
+  this->wordList = DerivationOptionsJson::WordList::_INVALID_WORD_LIST_;
 
   //
   // type
@@ -130,16 +129,9 @@ DerivationOptions::DerivationOptions(
     wordList = derivationOptionsObject.value<DerivationOptionsJson::WordList>(
       DerivationOptionsJson::FieldNames::wordList, DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917
     );
-    unsigned int bitsPerWord;
     // Determine the bitsPerWord from the password;
-    switch(wordList) {
-      case DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917:
-        bitsPerWord = 9; break;
-      case DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917:
-        bitsPerWord = 10; break;
-      default:
-        bitsPerWord = 9;
-    }
+    double bitsPerWord = log2(getWordList(wordList).size());
+
     // For password derivations, a length may be specified in bits of entropy
     // or in words.
     lengthInBits = derivationOptionsObject.value<unsigned int>(
@@ -150,7 +142,7 @@ DerivationOptions::DerivationOptions(
     );
     // If no length specified, derive a password with 128-bits of entropy
     // (if it's good enough for an AES block, it's good enough for a password).
-    if (lengthInBits > 0 && lengthInWords > 0 && lengthInWords != lengthInBits * bitsPerWord) {
+    if (lengthInBits > 0 && lengthInWords > 0 && lengthInWords != (unsigned int)ceil(lengthInBits * bitsPerWord)) {
       throw InvalidDerivationOptionValueException( 
         "lengthInBits and lengthInWords conflict"
       );
@@ -159,20 +151,16 @@ DerivationOptions::DerivationOptions(
         lengthInBits = 128;
       } else {
         // If the length is specified in words, derive the lengthInBits
-        lengthInBits = lengthInWords * bitsPerWord;
+        lengthInBits = (unsigned int)floor( ((double)lengthInWords) * bitsPerWord);
       }
     }
     if (lengthInWords == 0 && lengthInBits > 0) {
       // If the length is specified in bits, derive the number of words
       // we'll need by taking the ceiling of the length in bits / bits per word
-      lengthInWords = (lengthInBits + bitsPerWord -1) / bitsPerWord;
+      lengthInWords = (unsigned int)ceil( ((double)lengthInBits) / bitsPerWord );
     }
     // The length in bytes should be the ceiling of the bits needed for all the words.
-    lengthInBytes = (lengthInWords * bitsPerWord + 7) / 8;
-    if (lengthInBytes < 32) {
-      // For simplicity, always derive at least 32 bytes;
-      lengthInBytes = 32;
-    }
+    lengthInBytes = lengthInWords * BytesPerWordOfPassword;
   }
 
 
@@ -210,32 +198,24 @@ DerivationOptions::DerivationOptions(
 
   hashFunction = derivationOptionsObject.value<DerivationOptionsJson::HashFunction>(
       DerivationOptionsJson::FieldNames::hashFunction,
-      DerivationOptionsJson::HashFunction::SHA256
+      DerivationOptionsJson::HashFunction::BLAKE2b
   );
+  if (hashFunction != DerivationOptionsJson::HashFunction::BLAKE2b && hashFunction != DerivationOptionsJson::HashFunction::Argon2id) {
+    throw std::invalid_argument("Invalid hashFunction");
+  }
   derivationOptionsExplicit[DerivationOptionsJson::FieldNames::hashFunction] = hashFunction;
   hashFunctionMemoryPasses = derivationOptionsObject.value<size_t>(
     DerivationOptionsJson::FieldNames::hashFunctionMemoryPasses,
-    (hashFunction == DerivationOptionsJson::HashFunction::Argon2id || hashFunction == DerivationOptionsJson::HashFunction::Scrypt) ? 2 : 1
+    (hashFunction == DerivationOptionsJson::HashFunction::Argon2id) ? 2 : 1
   );
   hashFunctionMemoryLimitInBytes = derivationOptionsObject.value<size_t>(
     DerivationOptionsJson::FieldNames::hashFunctionMemoryLimitInBytes, 67108864U
   );
-  if (hashFunction == DerivationOptionsJson::HashFunction::Argon2id || hashFunction == DerivationOptionsJson::HashFunction::Scrypt) {
+  if (hashFunction == DerivationOptionsJson::HashFunction::Argon2id) {
     derivationOptionsExplicit[DerivationOptionsJson::FieldNames::hashFunctionMemoryLimitInBytes] = hashFunctionMemoryLimitInBytes;
     derivationOptionsExplicit[DerivationOptionsJson::FieldNames::hashFunctionMemoryPasses] = hashFunctionMemoryPasses;
   }
 
-    if (hashFunction == DerivationOptionsJson::HashFunction::SHA256) {
-      hashFunctionImplementation = new HashFunctionSHA256();
-    } else if (hashFunction == DerivationOptionsJson::HashFunction::BLAKE2b) {
-      hashFunctionImplementation = new HashFunctionBlake2b();
-    } else if (hashFunction == DerivationOptionsJson::HashFunction::Argon2id) {
-      hashFunctionImplementation = new HashFunctionArgon2id(hashFunctionMemoryPasses, hashFunctionMemoryLimitInBytes);
-    } else if (hashFunction == DerivationOptionsJson::HashFunction::Scrypt) {
-      hashFunctionImplementation = new HashFunctionScrypt(hashFunctionMemoryPasses, hashFunctionMemoryLimitInBytes);
-    } else {
-      throw std::invalid_argument("Invalid hashFunction");
-    }
 }
 
 
@@ -265,11 +245,7 @@ const SodiumBuffer DerivationOptions::derivePrimarySecret(
   // Create a hash preimage that is the seed string, followed by a null
   // terminator, followed by the derivationOptionsJson string.
   //   <seedString> + '\0' <derivationOptionsJson>
-  SodiumBuffer preimage(
-    // length of the seed string
-    seedString.length() +
-    // 1 character for a null char between the two strings
-    1 +
+  SodiumBuffer keyTypeAndDerivationOptions(
     // length of key type
     typeString.length() +
     // length of the json string specifying the derivation options
@@ -277,39 +253,56 @@ const SodiumBuffer DerivationOptions::derivePrimarySecret(
   );
 
   // Use this moving pointer to write the primage
-  unsigned char* primageWritePtr = preimage.data;
-  // Copy the seed string into the preimage
-  memcpy(
-    primageWritePtr,
-    seedString.c_str(),
-    seedString.length()
-  );
-  primageWritePtr += seedString.length();
-  // copy the null terminator between strings into the preimage
-  *(primageWritePtr++) = '0';
+  unsigned char* writePtr = keyTypeAndDerivationOptions.data;
   // copy the key type
   memcpy(
-    primageWritePtr,
+    writePtr,
     typeString.c_str(),
     typeString.length()
   );
-  primageWritePtr += typeString.length();
+  writePtr += typeString.length();
   // copy the key derivation options into the preimage
   memcpy(
-    primageWritePtr,
+    writePtr,
     derivationOptionsJson.c_str(),
     derivationOptionsJson.length()
   );
 
-  // Hash the preimage to create the seed
-  SodiumBuffer derivedKey =
-    hashFunctionImplementation->hash(
-        preimage.data,
-        preimage.length,
-        lengthInBytes
-    );
 
-  return derivedKey;
+
+  if (this->hashFunction == DerivationOptionsJson::HashFunction::Argon2id) {
+    if (this->lengthInBytes > crypto_pwhash_argon2id_BYTES_MAX ) {
+      throw std::invalid_argument("Invalid hash length");
+    }
+    SodiumBuffer hashOutput(std::max(crypto_pwhash_argon2id_BYTES_MIN, this->lengthInBytes));
+    const int hashSuccessOutcome = argon2id_hash_raw(
+      // opsLimit
+      (uint32_t) this->hashFunctionMemoryPasses,
+      // memLimit
+      (uint32_t) (this->hashFunctionMemoryLimitInBytes / 1024U),
+      // parallelism (same as default for libSodium: 1
+      (uint32_t) 1U,
+      // The password pointer/length are where we submit the seed and its length
+      seedString.c_str(), seedString.length(),
+      // We salt with the keyTypeAndDerivationOptions
+      keyTypeAndDerivationOptions.data, keyTypeAndDerivationOptions.length,
+      // The output goes into result
+      hashOutput.data, hashOutput.length
+    );
+    if (hashSuccessOutcome != ARGON2_OK) {
+      throw std::bad_alloc();
+    }
+    if (hashOutput.length > this->lengthInBytes) {
+      SodiumBuffer trimmedHashOutput(this->lengthInBytes);
+      memcpy(trimmedHashOutput.data, hashOutput.data, trimmedHashOutput.length);
+      return trimmedHashOutput;
+    } else {
+      return hashOutput;
+    }
+  } else {
+    // Blake2b
+    return hkdfBlake2b((unsigned char*) seedString.c_str(), seedString.length(), keyTypeAndDerivationOptions, this->lengthInBytes);
+  }
 }
 
 const SodiumBuffer DerivationOptions::derivePrimarySecret(

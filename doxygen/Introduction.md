@@ -32,8 +32,8 @@ const UnsealingKey private_key = UnsealingKey::deriveFromSeed(
 );
 ```
 
-Like [LibSodium](https://libsodium.gitbook.io/doc/), the cryptogrpahic library
-on which the Seeded Cryptography Library is built, this library is opnionated.
+Like [LibSodium](https://libsodium.gitbook.io/doc/), the cryptographic library
+on which the Seeded Cryptography Library is built, this library is opinionated.
 It offers a small number of safe options to direct users to good choices, rather
 than offering a wide variety with some potentially-dangerous choices.
 For example, instead of _encrypt_ and
@@ -60,7 +60,7 @@ const std::string unsealing_instructions(
 const auto sealed_message = sk.seal(plaintext, unsealing_instructions);
 ```
 
-All keys and mesage packages in this library can be easily serialized into
+All keys and packaged messages in this library can be easily serialized into
 either JSON format or a binary format, and deserialized,
 freeing those using the library from having to implement their own
 serialization methods.
@@ -71,3 +71,27 @@ const SodiumBuffer public_key_as_binary = public_key.toSerializedBinaryForm();
 const SealingKey copy_of_public_key = SealingKey.fromSerializedBinaryForm(public_key_as_binary);
 ```
 
+## Seeding with DiceKeys
+
+DiceKeys are converted into strings by generating a three-character ASCII/UTF8 triple for each die:
+
+  - An uppercase letter: '`A`'-'`Z`' excluding '`Q`'
+  - An digit: '`1`'-'`6`' (not to be confused for )
+  - A lowercase orientation letter:
+      - '`t`' if the top of the die as read faces the *t*op of box (it is upright)
+      - '`r`' if the top of the die as read faces the *r*ight side of box, or 90 degrees clockwise from upright
+      - '`b`' if the top of the die as read faces the *b*ottom of box, or 180 degrees clockwise from upright
+      - '`l`' if the top of the die as read faces the *l*eft side of box, or 270 degrees clockwise from upright.
+
+    This convention matches the naming conventions of CSS boxes (e.g. `margin-[top|left|bottom|right]`), rectangles in the browser Document Object Model (DOM), and forms the pronounceable acronym `trbl` which lends itself to the memory mnemonic of "[right here in river city.](https://en.wikipedia.org/wiki/Ya_Got_Trouble)"
+
+The three-character triples are concatenated English reading order, starting at the top left and proceeding across the row, and then down each row until reaching the bottom right.  A DiceKey with 25 dice will yield a 75-character string.
+
+The DiceKey itself may be read in one of four possible orientations, and changing the orientation at which a DiceKey is read should not change the secrets it generates.
+Thus, the seed string should represent a _canonical_ orientation of the key.
+
+While DiceKeys hardware with a hinged lid may seemingly have a predefined canonical top that might be detectable to a machine vision algorithm, not all DiceKeys hardware will have a canonical top.  For example, a DiceKey made from stickers (STICKIES) are squares and have no defined top.
+
+Thus, the canonical top left of a DiceKey is the one that produces a string that representation with the earliest sort order.
+One cannot simply assume that a corner die alone will be sufficient to indicate sort order (e.g., assuming that a corner with `A1` must be the top left), because a DiceKey could have more than one `A`.  (DiceKeys are currently packaged with 25 unique dice, but users should be allowed to two sets together when generating two DiceKeys and still expect the software to function reliably.)
+Rather, to determine the correct seed string algorithmically, generate all four possible string representations of the DiceKey and take the earliest in sort order.

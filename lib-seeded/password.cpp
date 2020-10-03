@@ -1,46 +1,137 @@
 #include "password.hpp"
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
-#include "./externally-generated/derivation-parameters.hpp"
-#include "externally-generated/word-lists/EN_512_words_5_chars_max_ed_4_20200917.hpp"
-#include "externally-generated/word-lists/EN_1024_words_6_chars_max_ed_4_20200917.hpp"
+#include "word-lists.hpp"
 #include <algorithm>    // std::min
 #include <sstream> 
 
-Password::Password(
-  const SodiumBuffer& _secretBytes,
-  const std::string& _derivationOptionsJson
-) : secretBytes(_secretBytes), derivationOptionsJson(_derivationOptionsJson) {}
+const std::vector<std::string> parseOrGetWordList(
+  const DerivationOptions& derivationOptions,
+  const std::string& wordListAsSingleString
+) {
+  if (wordListAsSingleString.length() <= 2) {
+    return getWordList(derivationOptions.wordList);
+  }
 
-Password::Password(
+  // Parse the word list
+  std::vector<std::string> wordList;
+  size_t wordStart = 0;
+  while (wordStart < wordListAsSingleString.length()) {
+    // Find the next word start by locating the next letter
+    while (wordStart < wordListAsSingleString.length() && !isalpha(wordListAsSingleString[wordStart])) {
+       wordStart++;
+    }
+    if (wordStart < wordListAsSingleString.length()) {
+      size_t wordLength = 1;
+      while (wordStart + wordLength < wordListAsSingleString.length() && isalpha(wordListAsSingleString[wordStart + wordLength])) {
+        wordLength++;
+      }
+      wordList.push_back(wordListAsSingleString.substr(wordStart, wordLength));
+      wordStart += wordLength;
+    }
+  }
+  return wordList;
+}
+
+
+const std::vector<std::string> asWordVector(
+  const DerivationOptions& derivationOptions,
+  const SodiumBuffer& secretBytes,
+  const std::string& wordListAsSingleString = ""
+) {
+  const std::vector<std::string> wordList = parseOrGetWordList(derivationOptions, wordListAsSingleString);
+  std::vector<std::string> wordsGenerated;
+
+  unsigned int wordsNeeded = derivationOptions.lengthInWords;
+  unsigned int bytesConsumed = 0;
+  unsigned char currentByte = 0;
+  unsigned int bitsLeftInByte = 0;
+//  unsigned int bitsNeededForIndexIntoWordList = bitsPerWord;
+  unsigned int indexIntoWordList = 0;
+
+  for (size_t byteIndexOfSecret = 0; byteIndexOfSecret < secretBytes.length; byteIndexOfSecret += BytesPerWordOfPassword) {
+    uint64_t hashBytesAsBigEndianNumber = 0;
+    // read 64 bit unsigned in big endian format
+    for (size_t byteIndexOfULong = 0; byteIndexOfULong < BytesPerWordOfPassword; byteIndexOfULong++) {
+      hashBytesAsBigEndianNumber |=
+        ((uint64_t) secretBytes.data[byteIndexOfSecret + byteIndexOfULong])
+        << (BytesPerWordOfPassword * (BytesPerWordOfPassword - (1 +  byteIndexOfULong)));
+    }
+    wordsGenerated.push_back(wordList[hashBytesAsBigEndianNumber % wordList.size()]);
+  }
+  return wordsGenerated;
+}
+
+
+// add format
+const std::string derivePassword(
+  const DerivationOptions& derivationOptions,
+  const SodiumBuffer& secretBytes,
+  const std::string& wordListAsSingleString = ""
+) {
+  const char* const delim = "-";
+
+  const std::vector<std::string> words = asWordVector(derivationOptions, secretBytes, wordListAsSingleString);
+
+  std::ostringstream joined;
+  joined << words.size();
+  if (words.size() > 0)  {
+    // capitalize the first word
+    joined  << delim << std::string(1, toupper(words[0][0])) << words[0].substr(1);;
+  }
+  // Add the rest of the words.
+  for (size_t wordIndex = 1; wordIndex < words.size(); wordIndex++) {
+    joined << delim << words[wordIndex];
+  }
+  return joined.str();
+}
+
+const std::string derivePassword(
+  const std::string& derivationOptionsJson,
   const std::string& seedString,
-  const std::string& _derivationOptionsJson
-) : secretBytes(
-  DerivationOptions::derivePrimarySecret(
+  const std::string& wordListAsSingleString = ""
+) {
+ const DerivationOptions derivationOptions(derivationOptionsJson, DerivationOptionsJson::type::Password);
+ const SodiumBuffer secretBytes = derivationOptions.derivePrimarySecret(
     seedString,
-    _derivationOptionsJson,
     DerivationOptionsJson::type::Password
-  )), derivationOptionsJson(_derivationOptionsJson) {}
+  );
+  return derivePassword(derivationOptions, secretBytes, wordListAsSingleString);
+}
 
-Password Password::deriveFromSeed(
+
+Password::Password(
+  const std::string& _password,
+  const std::string& _derivationOptionsJson
+) : password(_password), derivationOptionsJson(_derivationOptionsJson) {}
+
+// Password::Password(
+//   const std::string& seedString,
+//   const std::string& _derivationOptionsJson,
+//   const std::string& wordListAsSingleString
+// ) : password(derivePassword(seedString, _derivationOptionsJson, wordListAsSingleString)),
+//   derivationOptionsJson(_derivationOptionsJson) {}
+
+Password Password::deriveFromSeedAndWordList(
   const std::string& seedString,
-  const std::string& derivationOptionsJson
+  const std::string& derivationOptionsJson,
+  const std::string& wordListAsSingleString
 ) {
   return Password(
-    DerivationOptions::derivePrimarySecret(
-      seedString,
+    derivePassword(
       derivationOptionsJson,
-      DerivationOptionsJson::type::Password
+      seedString,
+      wordListAsSingleString
     ),
     derivationOptionsJson
   );
 }
 
-Password::Password(const Password &other) : Password(other.secretBytes, other.derivationOptionsJson) {}
+Password::Password(const Password &other) : Password(other.password, other.derivationOptionsJson) {}
 
 // JSON field names
 namespace PasswordJsonFields {
-  static const std::string secretBytes = "secretBytes";
+  static const std::string password = "password";
   static const std::string derivationOptionsJson = "derivationOptionsJson";
 }
 
@@ -49,7 +140,7 @@ Password Password::fromJson(const std::string& secretAsJson) {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
     auto kdo = jsonObject.value<std::string>(PasswordJsonFields::derivationOptionsJson, "");
     return Password(
-      SodiumBuffer::fromHexString(jsonObject.at(PasswordJsonFields::secretBytes)),
+      jsonObject.value<std::string>(PasswordJsonFields::password, ""),
       jsonObject.value<std::string>(PasswordJsonFields::derivationOptionsJson, "")
     );
   } catch (nlohmann::json::exception e) {
@@ -63,7 +154,7 @@ Password::toJson(
 const char indent_char
 ) const {
   nlohmann::json asJson;
-  asJson[PasswordJsonFields::secretBytes] = secretBytes.toHexString();
+  asJson[PasswordJsonFields::password] = this->password;
   if (derivationOptionsJson.size() > 0) {
     asJson[PasswordJsonFields::derivationOptionsJson] = derivationOptionsJson;
   }
@@ -72,103 +163,17 @@ const char indent_char
 
 
 const SodiumBuffer Password::toSerializedBinaryForm() const {
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _password(this->password);
+  SodiumBuffer _derivationOptionsJson(this->derivationOptionsJson);
   return SodiumBuffer::combineFixedLengthList({
-    &secretBytes,
+    &_password,
     &_derivationOptionsJson
   });
 }
 
 Password Password::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(2);
-  return Password(fields[0], fields[1].toUtf8String());
+  return Password(fields[0].toUtf8String(), fields[1].toUtf8String());
 }
 
-// add format
-const std::string Password::password() const {
-  const char* const delim = "-";
-
-  const auto strings = asWordVector();
-  std::ostringstream joined;
-  joined << strings.size();
-  for (std::string word : strings) {
-    // Ascii uppercase the first character of the word
-    const char firstCharUppercase = word[0] + ('A' - 'a');
-    joined << "-" << firstCharUppercase << word.substr(1);
-  }
-  return joined.str();
-}
-
-const std::vector<std::string> Password::asWordVector() const {
-  std::vector<std::string> wordsGenerated;
-
-  const auto derivationOptions = new DerivationOptions(
-    derivationOptionsJson,
-    DerivationOptionsJson::type::Password
-  );
-
-  const auto wordList =
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ?
-    EN_512_words_5_chars_max_ed_4_20200917 :
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ?
-    EN_1024_words_6_chars_max_ed_4_20200917 :
-    // default
-    EN_512_words_5_chars_max_ed_4_20200917;
-
-  const unsigned int bitsPerWord =
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_512_words_5_chars_max_ed_4_20200917 ? 9 :
-    derivationOptions->wordList == DerivationOptionsJson::WordList::EN_1024_words_6_chars_max_ed_4_20200917 ? 10 : 9;
-
-  unsigned int wordsNeeded = derivationOptions->lengthInWords;
-  unsigned int bytesConsumed = 0;
-  unsigned char currentByte = 0;
-  unsigned int bitsLeftInByte = 0;
-  unsigned int bitsNeededForIndexIntoWordList = bitsPerWord;
-  unsigned int indexIntoWordList = 0;
-
-  while (wordsNeeded > 0) {
-
-    if (bitsLeftInByte == 0) {
-      // We're out of bits to read from in the current byte
-      // Fetch the next byte
-
-      if (bytesConsumed >= secretBytes.length) {
-        // We're out of bytes to fetch
-        break;
-      }
-      // The byte we were copying over into words is empty. Grab another.
-      currentByte = secretBytes.data[bytesConsumed++];
-      bitsLeftInByte = 8;
-    }
-    const auto numBitsToCopy = std::min(bitsLeftInByte, bitsNeededForIndexIntoWordList);
-    // If we're only copying part of the byte, copy high-order bits and
-    // shift the remaining bits to the right.  (Shift any bits that
-    const unsigned int bitsToCopy = (currentByte >> (bitsLeftInByte - numBitsToCopy));
-    bitsLeftInByte -= numBitsToCopy;
-    currentByte = currentByte & (0xff >> (8 - bitsLeftInByte));
-    // shift any value already in the word index left of the bits to copy in
-    // so that the numBitsToCopy bits on the right will be 0
-    indexIntoWordList = (indexIntoWordList << numBitsToCopy);
-    // Add the copied bits into the low-order bits of the word index.
-    indexIntoWordList += bitsToCopy;
-    // We now need that many fewer bits to complete the word index
-    bitsNeededForIndexIntoWordList -= numBitsToCopy;
-    // See if we've completed a word
-    if (bitsNeededForIndexIntoWordList == 0) {
-      // We've completed a word.  Push it onto the completed list of words
-      wordsGenerated.push_back(wordList[indexIntoWordList]);
-      wordsNeeded--;
-      // Start a new word index, which is empty, needs bitsPerWordsBits
-      indexIntoWordList = 0;
-      bitsNeededForIndexIntoWordList = bitsPerWord;
-    }
-  }
-  if (bitsNeededForIndexIntoWordList < bitsPerWord && wordsNeeded > 0) {
-    // We were in the middle of generating a word when we ran out of bits.
-    // We still had enough bits to add a word, so we'll use it.
-    wordsGenerated.push_back(wordList[indexIntoWordList]);
-  }
-
-  return wordsGenerated;
-}
 
