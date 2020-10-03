@@ -159,8 +159,6 @@ The `hashFunction` field specifies the hash function to used to derive key seeds
 
 `BLAKE2b` applies the BLAKE2b hash function as the building block for HKDF function ([RFC5869](https://tools.ietf.org/html/rfc5869)) to allow for arbitrary-length outputs.  We set the HKDF input keying material (`IKM` parameter) to the seed string and the `info` parameter set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the derivation options JSON string.  We using BLAKE2b with a 32-byte output block as the underlying HMAC. The implementation uses the `crypto_generichash_blake2b` series of functions in libsodium) function with a 32 byte block and 32 0s for the `salt` used when deriving the `PRK` (see Step 1 in Section 2.2 of the [HKDF spec](https://tools.ietf.org/html/rfc5869)).
 
-[^1] X
-
 ```TypeScript
 "hashFunctionMemoryLimitInBytes": number // default 67108864
 "hashFunctionMemoryPasses": number // default 2
