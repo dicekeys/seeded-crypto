@@ -145,26 +145,6 @@ list
 	ASSERT_STREQ(pw.c_str(), "10-This-yo-yo-this-delimits-sized-list-list-this-llama");
 }
 
-//TEST(UnsealingInstructions, ThowsOnInvalidJson) {
-//	ASSERT_ANY_THROW(
-//		UnsealingInstructions("badjson")
-//	);
-//}
-
-// TEST(UnsealingInstructions, Handles0LengthJsonObject) {
-// 	ASSERT_STREQ(
-// 		UnsealingInstructions("").userMustAcknowledgeThisMessage.c_str(),
-// 		""
-// 	);
-// }
-
-// TEST(UnsealingInstructions, HandlesEmptyJsonObject) {
-// 	ASSERT_STREQ(
-// 		UnsealingInstructions("{}").userMustAcknowledgeThisMessage.c_str(),
-// 		""
-// 	);
-// }
-
 TEST(SealingKey, GetsSealingKey) {
 	const UnsealingKey testUnsealingKey(orderedTestKey, defaultTestPublicDerivationOptionsJson);
 	const SealingKey testSealingKey = testUnsealingKey.getSealingKey();

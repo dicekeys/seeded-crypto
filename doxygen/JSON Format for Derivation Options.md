@@ -113,7 +113,7 @@ the value assigned must match the lengthInBytes of that algorithm
 (32 bytes for the algorithms currently supported).
 
 If this library is extended to support `algorithm` values with multiple key-length
-options, this field will be used to specify which length varient of the algorithm to
+options, this field will be used to specify which length variant of the algorithm to
 use.
 
 #### lengthInBits
@@ -244,9 +244,9 @@ These fields specify who may generate keys and what they may do with them once g
 #### allow
 
 The most universal form of identifying apps and services is via components of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
-The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS requiest to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
+The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS request to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
 For intra-browser communication between web-apps, communication via postMessage provides authentication via origins.
-Thus, the default way to restrict the use of a derived key or secret is via these web stanards using the `allow` field.
+Thus, the default way to restrict the use of a derived key or secret is via these web standards using the `allow` field.
 
 
 ```TypeScript
@@ -276,7 +276,7 @@ Example:
     ]
 ```
 
-By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include `allow`, protecting against data being unsealed and read by unauthorized cilents.)
+By default, this field is unset and any client may use the key (though the seal operation supports UnsealingInstructions that include `allow`, protecting against data being unsealed and read by unauthorized clients.)
 
 Alas, issuing a request via an HTTPS url only allows the client to authenticate the server. Operating systems like iOS do not provide support for the DiceKeys app receiving a request to authenticate the client. Rather, the app can only ensure that the response is sent to one of the authorized URLs. Attackers, and other clients that are not authorized, can issue requests and have keys, unsealed messages, or other data sent to the prefixes you authorize. The apps and services you offer at those prefixes must be written to throw out responses to requests that they did not issue, and do so without leaking any data to attackers.
 

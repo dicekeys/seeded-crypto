@@ -23,7 +23,9 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "DiceKeys Seeded Cryptography Library", "index.html", [
-    [ "Introduction", "introduction.html", null ],
+    [ "Introduction", "introduction.html", [
+      [ "Seeding with DiceKeys", "introduction.html#autotoc_md0", null ]
+    ] ],
     [ "JSON Format for Derivation Options", "derivation_options_format.html", null ],
     [ "JSON Format for Unsealing Instructions", "unsealing_instructions_format.html", null ],
     [ "Modules", "modules.html", "modules" ],
