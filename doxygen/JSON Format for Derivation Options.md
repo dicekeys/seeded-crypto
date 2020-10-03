@@ -187,7 +187,7 @@ This field maps to the [`memlimit` parameter in libsodium](https://libsodium.git
 
 The `hashFunctionMemoryPasses` must be at least 1, no greater than 2^32-1 (4,294,967,295), and is set to 2 memory passes by default. Since this parameter determines the number of passes the hash function will make through the memory region specified by `hashFunctionMemoryLimitInBytes`, and results in hashing an
 amount of memory equal to the product of these two parameters,
-the computational cost on the order of the product of
+the computational cost is on the order of the product of
 `hashFunctionMemoryPasses` times `hashFunctionMemoryLimitInBytes`.
 (The `hashFunctionMemoryPasses` field maps to the poorly-documented `opslimit` in `libsodium`. An examination of the source shows that opslimit is assigned to a parameter named `t_cost`, which in turn is assigned to `instance.passes` on line 56 of [argon2.c](https://github.com/jedisct1/libsodium/blob/7214dff083638604cd48e5c9ffc5704460192794/src/libsodium/crypto_pwhash/argon2/argon2.c).)
 
@@ -223,7 +223,7 @@ When using a DiceKey as a seed, the default seed string will be a 75-character s
  2 The digit on the die
  3 The orientation relative to the top of the square in canonical form
 
-If  `excludeOrientationOfFaces` is set to `true` set to true, the orientation character (the third member of each triple) will be
+If `excludeOrientationOfFaces` is set to `true`, the orientation character (the third member of each triple) will be
 set to "?" before the canonical form is determined
 (the choice of the top left corner that results in the human readable
 form earliest in the sort order) and "?" will be the third character
@@ -244,7 +244,7 @@ These fields specify who may generate keys and what they may do with them once g
 #### allow
 
 The most universal form of identifying apps and services is via components of [URL](https://en.wikipedia.org/wiki/URL)s: origins and paths.
-The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS request to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is unable to authenticate the recipient.
+The web, iOS, and Android all provide a means for one app to contact another website or on-device application by issuing an HTTPS request to a resource identified via an HTTPS URL, which will fail unless the operating system or browser is able to authenticate the recipient.
 For intra-browser communication between web-apps, communication via postMessage provides authentication via origins.
 Thus, the default way to restrict the use of a derived key or secret is via these web standards using the `allow` field.
 
@@ -327,7 +327,7 @@ and terminate client package IDs with dots, to prevent extension attacks.  In ot
 if you set the prefix `com.example`, the API will test if `com.example.` is a prefix
 of the string composed by concatenating a period onto your client application's package name.
 So, if an attacker registers the package name `com.exampleattacker`, they will not be
-able to match the `com.eaxmple` prefix.
+able to match the `com.example` prefix.
 
 ```TypeScript
 {
@@ -359,7 +359,7 @@ Since the default is false, it is primarily used as follows:
     "clientMayRetrieveKey": true
 ```
 
-Clients can this field to generate keys that they can get a copy of,
+Clients can use this field to generate keys that they can get a copy of,
 use for any purpose they want without having to interact with the DiceKeys API or app,
 yet which they can ask the DiceKeys app to recover for them should the key be lost.
 For example, an end-to-end encrypted app could generate a key pair it uses for

@@ -1,6 +1,6 @@
 # JSON Format for Unsealing Instructions {#unsealing_instructions_format}
 
-The SealingKey.seal and SymmetricKey.seal operations support a an optional _unsealingInstructions_ string parameter.
+The SealingKey.seal and SymmetricKey.seal operations support an optional _unsealingInstructions_ string parameter.
 If the parameter is provided when a message is sealed, the same value must be present when the _unseal_
 operation is called.  The field is stored in plaintext (unencrypted) in the _unsealingInstructions_
 field of the PackagedSealedMessage returned by the _seal_ operation. (If the field is not provided, it is treated
@@ -18,7 +18,7 @@ fields below.
 The unsealing instructions support require authentication requirements via the
 `allow`, `requireAuthenticationHandshake`, and `androidPackagePrefixesAllowed` fields
 from the derivation options format.
-
+<!-- 
 #### requireUsersConsent
 
 You can instruct the DiceKeys app to display a consent question to the user
@@ -50,4 +50,4 @@ For example
         }
     }
 }
-```
+``` -->
