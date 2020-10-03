@@ -9,21 +9,20 @@ var group__exceptions =
       [ "lengthInWords", "derivation_options_format.html#autotoc_md6", null ],
       [ "wordList", "derivation_options_format.html#autotoc_md7", null ],
       [ "hashFunction", "derivation_options_format.html#autotoc_md8", [
-        [ "Hash defaults and recommendations", "derivation_options_format.html#autotoc_md9", null ],
-        [ "Preimage construction", "derivation_options_format.html#autotoc_md10", null ]
+        [ "Hash defaults and recommendations", "derivation_options_format.html#autotoc_md9", null ]
       ] ]
     ] ],
-    [ "DiceKeys Hardware Fields", "derivation_options_format.html#autotoc_md11", [
-      [ "excludeOrientationOfFaces", "derivation_options_format.html#autotoc_md12", null ]
+    [ "DiceKeys Hardware Fields", "derivation_options_format.html#autotoc_md10", [
+      [ "excludeOrientationOfFaces", "derivation_options_format.html#autotoc_md11", null ]
     ] ],
-    [ "Authentication and Authorization Requirements", "derivation_options_format.html#autotoc_md13", [
-      [ "allow", "derivation_options_format.html#autotoc_md14", null ],
-      [ "requireAuthenticationHandshake", "derivation_options_format.html#autotoc_md15", null ],
-      [ "androidPackagePrefixesAllowed", "derivation_options_format.html#autotoc_md16", null ],
-      [ "clientMayRetrieveKey", "derivation_options_format.html#autotoc_md17", null ]
+    [ "Authentication and Authorization Requirements", "derivation_options_format.html#autotoc_md12", [
+      [ "allow", "derivation_options_format.html#autotoc_md13", null ],
+      [ "requireAuthenticationHandshake", "derivation_options_format.html#autotoc_md14", null ],
+      [ "androidPackagePrefixesAllowed", "derivation_options_format.html#autotoc_md15", null ],
+      [ "clientMayRetrieveKey", "derivation_options_format.html#autotoc_md16", null ]
     ] ],
-    [ "Authentication and authorization requirements", "unsealing_instructions_format.html#autotoc_md18", [
-      [ "requireUsersConsent", "unsealing_instructions_format.html#autotoc_md19", null ]
+    [ "Authentication and authorization requirements", "unsealing_instructions_format.html#autotoc_md17", [
+      [ "requireUsersConsent", "unsealing_instructions_format.html#autotoc_md18", null ]
     ] ],
     [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html", [
       [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html#a194cc8bd3b13fa6b26775c02cf5cb4f8", null ]

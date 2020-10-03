@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['combinefixedlengthlist_85',['combineFixedLengthList',['../class_sodium_buffer.html#a9655a1bd5cf21bfd0080732c8903380f',1,'SodiumBuffer']]],
-  ['cryptographicverificationfailureexception_86',['CryptographicVerificationFailureException',['../class_cryptographic_verification_failure_exception.html#a194cc8bd3b13fa6b26775c02cf5cb4f8',1,'CryptographicVerificationFailureException']]]
+  ['derivationoptions_85',['DerivationOptions',['../class_derivation_options.html#a0c97df5d25ca151ddb33200d5bd296e1',1,'DerivationOptions']]],
+  ['derivationoptionsjsonwithalloptionalparametersspecified_86',['derivationOptionsJsonWithAllOptionalParametersSpecified',['../class_derivation_options.html#a59a4a45df67679e8c8b9369a5c204cf2',1,'DerivationOptions']]],
+  ['derivefromseed_87',['deriveFromSeed',['../class_password.html#a4f2d88a8a0180c3ff25c0f9ef7b633f7',1,'Password::deriveFromSeed()'],['../class_secret.html#a8669703501b338e7205cc4f577e48b7c',1,'Secret::deriveFromSeed()'],['../class_signing_key.html#a6c00357c946200c0b1c1e110dca6b44b',1,'SigningKey::deriveFromSeed()'],['../class_symmetric_key.html#a97ff3631981b62ef6e7679012b896948',1,'SymmetricKey::deriveFromSeed()'],['../class_unsealing_key.html#a35fe5dd9b4b82b855886553624d11966',1,'UnsealingKey::deriveFromSeed()']]],
+  ['deriveprimarysecret_88',['derivePrimarySecret',['../class_derivation_options.html#a6581007d58f5ab2ded70fce406fb082f',1,'DerivationOptions::derivePrimarySecret(const std::string &amp;seedString, const std::string &amp;derivationOptionsJson, const DerivationOptionsJson::type typeRequired=DerivationOptionsJson::type::_INVALID_TYPE_, const size_t lengthInBytesRequired=0)'],['../class_derivation_options.html#a52d0eb127a6f988defacc87861e3ce2a',1,'DerivationOptions::derivePrimarySecret(const std::string &amp;seedString, const DerivationOptionsJson::type defaultType=DerivationOptionsJson::type::_INVALID_TYPE_) const']]]
 ];
