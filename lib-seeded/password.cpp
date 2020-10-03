@@ -112,7 +112,7 @@ Password::Password(
 // ) : password(derivePassword(seedString, _derivationOptionsJson, wordListAsSingleString)),
 //   derivationOptionsJson(_derivationOptionsJson) {}
 
-Password Password::deriveFromSeed(
+Password Password::deriveFromSeedAndWordList(
   const std::string& seedString,
   const std::string& derivationOptionsJson,
   const std::string& wordListAsSingleString

@@ -131,7 +131,7 @@ TEST(Password, FifteenWordsViaDefaults) {
 
 
 TEST(Password, CustomListOfSevenWords) {
-	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({"lengthInWords": 10})KDO", R"WL(
+	Password password = Password::deriveFromSeedAndWordList(orderedTestKey, R"KDO({"lengthInWords": 10})KDO", R"WL(
 yo
 llama,
 delimits

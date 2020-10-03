@@ -87,11 +87,17 @@ public:
    * separated by any number of non-alphabetic characters.  This allows word lists to be
    * tab-delimited, comma-delimited, line-delimited, or any combination thereof. 
    */
-  static Password deriveFromSeed(
+  static Password deriveFromSeedAndWordList(
     const std::string& seedString,
     const std::string& derivationOptionsJson,
-    const std::string& wordListAsSingleString = ""
+    const std::string& wordListAsSingleString
   );
+  static Password deriveFromSeed(
+    const std::string& seedString,
+    const std::string& derivationOptionsJson
+  ) {
+    return Password::deriveFromSeedAndWordList(seedString, derivationOptionsJson, "");
+  };
 
   /**
    * @brief Serialize this object to a JSON-formatted string
