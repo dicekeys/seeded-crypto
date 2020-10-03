@@ -21,9 +21,7 @@ var group__exceptions =
       [ "androidPackagePrefixesAllowed", "derivation_options_format.html#autotoc_md16", null ],
       [ "clientMayRetrieveKey", "derivation_options_format.html#autotoc_md17", null ]
     ] ],
-    [ "Authentication and authorization requirements", "unsealing_instructions_format.html#autotoc_md18", [
-      [ "requireUsersConsent", "unsealing_instructions_format.html#autotoc_md19", null ]
-    ] ],
+    [ "Authentication and authorization requirements", "unsealing_instructions_format.html#autotoc_md18", null ],
     [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html", [
       [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html#a194cc8bd3b13fa6b26775c02cf5cb4f8", null ]
     ] ],
