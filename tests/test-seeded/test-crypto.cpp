@@ -4,6 +4,12 @@
 #include "lib-seeded.hpp"
 #include "../lib-seeded/convert.hpp"
 
+// Not included in Password.hpp
+const std::vector<std::string> asWordVector(
+	const DerivationOptions& derivationOptions,
+	const SodiumBuffer& secretBytes,
+	const std::string& wordListAsSingleString = ""
+);
 
 const std::string orderedTestKey = "A1tB2rC3bD4lE5tF6bG1tH1tI1tJ1tK1tL1tM1tN1tO1tP1tR1tS1tT1tU1tV1tW1tX1tY1tZ1t";
 std::string defaultTestPublicDerivationOptionsJson = R"KGO({
@@ -73,65 +79,70 @@ TEST(Secret, fromJsonWithoutDerivationOptions) {
 
 
 TEST(Password, GeneratesExtraBytes) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"lengthInBits": 300
 })KDO");
 
-	const std::string pw = password.password();
+	const std::string pw = password.password;
 	const auto serialized = password.toSerializedBinaryForm();
 	const auto replica = Password::fromSerializedBinaryForm(serialized);
-	std::string rpw = replica.password();
+	std::string rpw = replica.password;
 	ASSERT_STREQ(rpw.c_str(), pw.c_str());
-	const auto lengthInWords = password.asWordVector().size();
-	const size_t expectedLengthInWords = 308 / 9;
-	ASSERT_EQ(lengthInWords, expectedLengthInWords);
 	ASSERT_STREQ("34-", pw.substr(0, 3).c_str());
 }
 
 TEST(Password, TenWordsViaLengthInBits) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"type": "Password",
 	"lengthInBits": 90
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 10);
-	ASSERT_STREQ(pw.c_str(), "10-Ionic-Buzz-Shine-Theme-Paced-Bulge-Cache-Water-Shown-Baggy");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "10-Ionic-buzz-shine-theme-paced-bulge-cache-water-shown-baggy");
 }
 
 TEST(Password, ElevenWordsViaLengthInWords) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"type": "Password",
 	"lengthInWords": 11
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 11);
-	ASSERT_STREQ(pw.c_str(), "11-Clean-Snare-Donor-Petty-Grimy-Payee-Limbs-Stole-Roman-Aloha-Dense");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "11-Clean-snare-donor-petty-grimy-payee-limbs-stole-roman-aloha-dense");
 }
 
 
 TEST(Password, ThirteenWordsViaDefaultWithAltWordList) {
-	Password password(orderedTestKey, R"KDO({
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
 	"wordList": "EN_1024_words_6_chars_max_ed_4_20200917"
 })KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 13);
-	ASSERT_STREQ(pw.c_str(), "13-Curtsy-Jersey-Juror-Anchor-Catsup-Parole-Kettle-Floral-Agency-Donor-Dealer-Plural-Accent");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "13-Curtsy-jersey-juror-anchor-catsup-parole-kettle-floral-agency-donor-dealer-plural-accent");
 }
 
 
 TEST(Password, FifteenWordsViaDefaults) {
-	Password password(orderedTestKey, R"KDO({})KDO");
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({})KDO");
 
-	const std::string pw = password.password();
-	const auto lengthInWords = password.asWordVector().size();
-	ASSERT_EQ(lengthInWords, 15);
-	ASSERT_STREQ(pw.c_str(), "15-Unwed-Agent-Genre-Stump-Could-Limit-Shrug-Shout-Udder-Bring-Koala-Essay-Plaza-Chaos-Clerk");
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "15-Unwed-agent-genre-stump-could-limit-shrug-shout-udder-bring-koala-essay-plaza-chaos-clerk");
+}
+
+
+TEST(Password, CustomListOfSevenWords) {
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({"lengthInWords": 10})KDO", R"WL(
+yo
+llama,
+delimits
+this
+prime
+sized\
+list
+)WL");
+
+	const std::string pw = password.password;
+	ASSERT_STREQ(pw.c_str(), "10-This-yo-yo-this-delimits-sized-list-list-this-llama");
 }
 
 //TEST(UnsealingInstructions, ThowsOnInvalidJson) {
