@@ -43,7 +43,6 @@ namespace SecretJsonFields {
 Secret Secret::fromJson(const std::string& secretAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
-    auto kdo = jsonObject.value<std::string>(SecretJsonFields::derivationOptionsJson, "");
     return Secret(
       SodiumBuffer::fromHexString(jsonObject.at(SecretJsonFields::secretBytes)),
       jsonObject.value<std::string>(SecretJsonFields::derivationOptionsJson, "")

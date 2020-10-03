@@ -138,7 +138,6 @@ namespace PasswordJsonFields {
 Password Password::fromJson(const std::string& secretAsJson) {
   try {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
-    auto kdo = jsonObject.value<std::string>(PasswordJsonFields::derivationOptionsJson, "");
     return Password(
       jsonObject.value<std::string>(PasswordJsonFields::password, ""),
       jsonObject.value<std::string>(PasswordJsonFields::derivationOptionsJson, "")
