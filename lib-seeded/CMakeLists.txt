@@ -7,7 +7,7 @@ file(GLOB SRCS
 
 # This if statement is a hack until Stuart figures out
 # how to get builds with shared libs working on windows
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows" OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows" OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten" OR CMAKE_SYSTEM_NAME STREQUAL "Android")
     add_library(lib-seeded
         STATIC
         ${SRCS}

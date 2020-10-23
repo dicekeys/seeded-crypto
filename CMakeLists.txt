@@ -1,7 +1,7 @@
 #######################################################################
 # IMPORTANT SHORTCOMINGS OF THIS CMAKE CONFIG FOR VISUAL STUDIO USERS
 #
-# Visual Studio unfortunatly defaults to overriding the working directory
+# Visual Studio unfortunately defaults to overriding the working directory
 # for Google Test set by CMAKE.
 # To fix this
 #    go to Visual Studio's debug menu or tool menu,
