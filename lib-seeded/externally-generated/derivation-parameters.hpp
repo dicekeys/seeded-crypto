@@ -62,12 +62,14 @@ namespace DerivationOptionsJson {
 	enum WordList {
 		_INVALID_WORD_LIST_ = 0,
 		EN_512_words_5_chars_max_ed_4_20200917,
-		EN_1024_words_6_chars_max_ed_4_20200917
+		EN_1024_words_6_chars_max_ed_4_20200917,
+		EN_2048_BIP_39
 	};
 	NLOHMANN_JSON_SERIALIZE_ENUM( WordList, {
 		{WordList::_INVALID_WORD_LIST_, nullptr},
 		{WordList::EN_512_words_5_chars_max_ed_4_20200917, "EN_512_words_5_chars_max_ed_4_20200917"},
 		{WordList::EN_1024_words_6_chars_max_ed_4_20200917, "EN_1024_words_6_chars_max_ed_4_20200917"}
+		{WordList::EN_2048_BIP_39, "EN_2048_BIP_39"}
 	})
 	
 
