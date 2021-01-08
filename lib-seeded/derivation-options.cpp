@@ -1,5 +1,6 @@
 // #include <cassert>
 #include <exception>
+#include <string>
 #include "sodium.h"
 #include "hkdf.hpp"
 
@@ -139,6 +140,9 @@ DerivationOptions::DerivationOptions(
     );
     lengthInWords = derivationOptionsObject.value<unsigned int>(
       DerivationOptionsJson::FieldNames::lengthInWords, 0
+    );
+    lengthInChars = derivationOptionsObject.value<size_t>(
+      DerivationOptionsJson::FieldNames::lengthInChars, std::string::npos
     );
     // If no length specified, derive a password with 128-bits of entropy
     // (if it's good enough for an AES block, it's good enough for a password).

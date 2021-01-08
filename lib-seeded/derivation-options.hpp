@@ -54,6 +54,10 @@ public:
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
 	 */
+		size_t lengthInChars = -1;
+		/**
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 */
 		unsigned int lengthInWords = 0;
 	/**
 	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"

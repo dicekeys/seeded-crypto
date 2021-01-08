@@ -19,6 +19,7 @@ namespace DerivationOptionsJson {
 		const std::string hashFunctionMemoryLimitInBytes = "hashFunctionMemoryLimitInBytes";
 		const std::string hashFunctionMemoryPasses = "hashFunctionMemoryPasses";
 		const std::string lengthInBits = "lengthInBits";
+		const std::string lengthInChars = "lengthInChars";
 		const std::string lengthInBytes = "lengthInBytes";
 		const std::string lengthInWords = "lengthInWords";
 		const std::string type = "type";

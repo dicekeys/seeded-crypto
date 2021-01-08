@@ -77,6 +77,33 @@ TEST(Secret, fromJsonWithoutDerivationOptions) {
 	ASSERT_EQ(seed.derivationOptionsJson.length(), 0);
 }
 
+TEST(Password, LengthInChars) {
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
+	"lengthInBits": 300,
+	"lengthInChars": 64
+})KDO");
+
+	const std::string pw = password.password;
+	const auto serialized = password.toSerializedBinaryForm();
+	const auto replica = Password::fromSerializedBinaryForm(serialized);
+	std::string rpw = replica.password;
+	ASSERT_STREQ("34-", pw.substr(0, 3).c_str());
+	ASSERT_EQ(64, pw.size());
+}
+
+TEST(Password, LengthInChars2) {
+	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({
+	"lengthInChars": 64
+})KDO");
+
+	const std::string pw = password.password;
+	const auto serialized = password.toSerializedBinaryForm();
+	const auto replica = Password::fromSerializedBinaryForm(serialized);
+	std::string rpw = replica.password;
+	ASSERT_STREQ("15-", pw.substr(0, 3).c_str());
+	ASSERT_EQ(64, pw.size());
+}
+
 
 TEST(Password, GeneratesExtraBytes) {
 	Password password = Password::deriveFromSeed(orderedTestKey, R"KDO({

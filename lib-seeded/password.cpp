@@ -83,7 +83,7 @@ const std::string derivePassword(
   for (size_t wordIndex = 1; wordIndex < words.size(); wordIndex++) {
     joined << delim << words[wordIndex];
   }
-  return joined.str();
+  return joined.str().substr(0, derivationOptions.lengthInChars);
 }
 
 const std::string derivePassword(

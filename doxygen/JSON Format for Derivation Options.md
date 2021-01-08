@@ -128,6 +128,13 @@ password.  For example, if using a 512 word list (9 bits) and setting this value
 If neither this field nor `lengthInWords` is set, the default lengthInBits for a password
 will be 128.
 
+#### lengthInChars
+```TypeScript
+"lengthInChars"?: number
+```
+
+Use this field when `"type": "Password` to set the maximum number of characters to generate.
+
 #### lengthInWords
 ```TypeScript
 "lengthInWords"?: number
