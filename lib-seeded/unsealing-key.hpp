@@ -149,7 +149,7 @@ public:
    * instantiated. (If it's the wrong key, the unseal will fail.)
    * 
    * @param packagedSealedMessage The message to be unsealed
-   * @return const SodiumBuffer The plaintesxt message that had been sealed
+   * @return const SodiumBuffer The plaintext message that had been sealed
    */
   const SodiumBuffer unseal(
     const PackagedSealedMessage& packagedSealedMessage
