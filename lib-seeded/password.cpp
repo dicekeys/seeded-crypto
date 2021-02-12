@@ -132,7 +132,7 @@ Password::Password(const Password &other) : Password(other.password, other.deriv
 // JSON field names
 namespace PasswordJsonFields {
   static const std::string password = "password";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string derivationOptionsJson = "recipeJson";
 }
 
 Password Password::fromJson(const std::string& secretAsJson) {

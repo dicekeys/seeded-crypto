@@ -6,7 +6,7 @@
 
 namespace SignatureVerificationKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  const std::string derivationOptionsJson = "recipeJson";
 }
 
 SignatureVerificationKey::SignatureVerificationKey(

@@ -44,7 +44,7 @@ SigningKey::SigningKey(
 namespace SigningKeyJsonField {
   const std::string signatureVerificationKeyBytes = "signatureVerificationKeyBytes";
   const std::string signingKeyBytes = "signingKeyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  const std::string derivationOptionsJson = "recipeJson";
 }
 
 SigningKey SigningKey::fromJson(

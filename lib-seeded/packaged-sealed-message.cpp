@@ -6,7 +6,7 @@
 // JSON field names
 namespace PackagedSealedMessageJsonFields {
   static const std::string ciphertext = "ciphertext";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string derivationOptionsJson = "recipeJson";
   static const std::string unsealingInstructions = "unsealingInstructions";
 }
 

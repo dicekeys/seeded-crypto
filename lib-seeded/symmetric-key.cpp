@@ -205,7 +205,7 @@ const SodiumBuffer SymmetricKey::unseal(
 
 namespace SymmetricKeyJsonField {
   const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  const std::string derivationOptionsJson = "recipeJson";
 }
 
 SymmetricKey SymmetricKey::fromJson(

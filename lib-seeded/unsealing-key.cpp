@@ -106,7 +106,7 @@ const SealingKey UnsealingKey::getSealingKey() const {
 namespace UnsealingKeyJsonField {
   const std::string sealingKeyBytes = "sealingKeyBytes";
   const std::string unsealingKeyBytes = "unsealingKeyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  const std::string derivationOptionsJson = "recipeJson";
 }
 
 UnsealingKey UnsealingKey::fromJson(

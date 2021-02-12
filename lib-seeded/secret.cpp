@@ -37,7 +37,7 @@ Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.derivation
 // JSON field names
 namespace SecretJsonFields {
   static const std::string secretBytes = "secretBytes";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string derivationOptionsJson = "recipeJson";
 }
 
 Secret Secret::fromJson(const std::string& secretAsJson) {
