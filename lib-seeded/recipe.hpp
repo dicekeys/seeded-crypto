@@ -6,95 +6,95 @@
 #include "github-com-nlohmann-json/json.hpp"
 // Must come after json.hpp
 #include "./externally-generated/derivation-parameters.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 
 const size_t BytesPerWordOfPassword = 8;
 
 
 
 /**
- * @brief This class parses a derivationOptionsJson string
+ * @brief This class parses a recipe string
  * on construction and then exposes the
- * @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+ * @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
  * as fields of this class.
  * 
  * @ingroup BuildingBlocks
  */
-class DerivationOptions {
+class Recipe {
 /**
  * This class represents key generation options,
  * provided in JSON format, as an immutable class.
  */
 
 private:
-	nlohmann::json derivationOptionsExplicit;
+	nlohmann::json recipeExplicit;
 public:
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
-	DerivationOptionsJson::Algorithm algorithm;
+	RecipeJson::Algorithm algorithm;
 	/**
 	 * @brief The original JSON string used to construct this object
 	 */
-	const std::string derivationOptionsJson;
+	const std::string recipe;
 
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
-	DerivationOptionsJson::type type;
+	RecipeJson::type type;
 
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
   	unsigned int lengthInBytes = 0;
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
 		unsigned int lengthInBits = 0;
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
 		size_t lengthInChars = -1;
 		/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
 		unsigned int lengthInWords = 0;
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
-		DerivationOptionsJson::WordList wordList = DerivationOptionsJson::WordList::_INVALID_WORD_LIST_;
+		RecipeJson::WordList wordList = RecipeJson::WordList::_INVALID_WORD_LIST_;
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
 	size_t hashFunctionMemoryLimitInBytes;
 	/**
-	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief Mirroring the JSON field in @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
 	size_t hashFunctionMemoryPasses;
 
 	/**
-	 * @brief The name of the hash function specified in the @ref derivation_options_universal_fields "Derivation Options JSON Universal Fields"
+	 * @brief The name of the hash function specified in the @ref derivation_options_universal_fields "Recipe JSON Universal Fields"
 	 */
-	DerivationOptionsJson::HashFunction hashFunction;
+	RecipeJson::HashFunction hashFunction;
 
 	/**
-	 * Create a DerivationOptions class from the JSON representation
+	 * Create a Recipe class from the JSON representation
 	 * of the key generation options.
 	 * 
-	 * @param derivationOptionsJson The JSON formatted derivation options object to parse
-	 * as specified by @ref derivation_options_format
+	 * @param recipe The JSON formatted recipe object to parse
+	 * as specified by @ref recipe_format
 	 * @param typeRequired The required type, which will be the default if the JSON doesn't
 	 * contain a type field and which will cause an exception to be thrown if the
 	 * JSON has a conflicting type.  If not set
-	 * (default: DerivationOptionsJson::type::_INVALID_TYPE_)
+	 * (default: RecipeJson::type::_INVALID_TYPE_)
 	 * there is no required type and any type is allowed.
-	 * @throws InvalidDerivationOptionsJsonException
+	 * @throws InvalidRecipeJsonException
 	 * @throws InvalidDerivationOptionValueException
 	 **/
-	DerivationOptions(
-		const std::string& derivationOptionsJson,
-		const DerivationOptionsJson::type typeRequired =
-			DerivationOptionsJson::type::_INVALID_TYPE_
+	Recipe(
+		const std::string& recipe,
+		const RecipeJson::type typeRequired =
+			RecipeJson::type::_INVALID_TYPE_
 	);
 
 	/**
@@ -103,7 +103,7 @@ public:
 	 * @param indent JSON indent depth
 	 * @param indent_char The char used for JSON indenting
 	 */
-	const std::string derivationOptionsJsonWithAllOptionalParametersSpecified(
+	const std::string recipeWithAllOptionalParametersSpecified(
 		int indent = -1,
 	  const char indent_char = ' '
 	) const;
@@ -114,10 +114,10 @@ public:
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
-	 * It applies the hash function specified in the derivationOptionsJson
+	 * It applies the hash function specified in the recipe
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <typeRequired> + <derivationOptionsJson>
+	 *   <seedString> + '\0' + <typeRequired> + <recipe>
 	 * ```
 	 * where typeRequired is converted to a string in
 	 * ["Secret", "SymmetricKey", "UnsealingKey", "SigningKey"],
@@ -135,23 +135,23 @@ public:
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
-	 * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
-	 * @param typeRequired If the derivationOptionsJson has a type field, and that field
+	 * @param recipe The recipe in @ref recipe_format.
+	 * @param typeRequired If the recipe has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidDerivationOptionValueException.
-	 * @param lengthInBytesRequired If the derivationOptionsJson does not specify a lengthInBytes,
+	 * @param lengthInBytesRequired If the recipe does not specify a lengthInBytes,
 	 * generate a secret of this length. Throw an InvalidDerivationOptionValueException is
 	 * the lengthInBytes it specifies does not match this value.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
 	 * @throw InvalidDerivationOptionValueException
-	 * @throw InvalidDerivationOptionsJsonException
+	 * @throw InvalidRecipeJsonException
 	 */
 	static const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,
-		const std::string& derivationOptionsJson,
-		const DerivationOptionsJson::type typeRequired = DerivationOptionsJson::type::_INVALID_TYPE_,
+		const std::string& recipe,
+		const RecipeJson::type typeRequired = RecipeJson::type::_INVALID_TYPE_,
 		const size_t lengthInBytesRequired = 0
 	);
 
@@ -161,10 +161,10 @@ public:
 	 * for the SignatureVerificationKey and SigningKey pair,
 	 * and for the general-purpose Secret class.
 	 * 
-	 * It applies the hash function specified in the derivationOptionsJson
+	 * It applies the hash function specified in the recipe
 	 * to a preimage of the following form:
 	 * ```
-	 *   <seedString> + '\0' + <type> + <derivationOptionsJson>
+	 *   <seedString> + '\0' + <type> + <recipe>
 	 * ```
 	 * where type is converted to a string in
 	 * ["Secret", "SymmetricKey", "UnsealingKey", "SigningKey"],
@@ -184,7 +184,7 @@ public:
 	 *     the key bytes for the SigningKey and SignatureVerificationKey..
 	 * 
 	 * @param seedString A seed value that is the primary salt for the hash function
-	 * @param defaultType If the derivationOptionsJson has a type field, and that field
+	 * @param defaultType If the recipe has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
 	 * InvalidDerivationOptionValueException.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
@@ -194,8 +194,8 @@ public:
 	 */
 	const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,
-		const DerivationOptionsJson::type defaultType =
-			DerivationOptionsJson::type::_INVALID_TYPE_
+		const RecipeJson::type defaultType =
+			RecipeJson::type::_INVALID_TYPE_
 	) const;
 
 };

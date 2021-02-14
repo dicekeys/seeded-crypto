@@ -1,5 +1,5 @@
 #include "signing-key.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 #include "sodium-buffer.hpp"
 #include "convert.hpp"
 #include "exceptions.hpp"
@@ -7,9 +7,9 @@
 
 SigningKey::SigningKey(
   const SodiumBuffer& _signingKeyBytes,
-  const std::string& _derivationOptionsJson
+  const std::string& _recipe
 ) :
-  derivationOptionsJson(_derivationOptionsJson),
+  recipe(_recipe),
   signingKeyBytes(_signingKeyBytes),
   signatureVerificationKeyBytes(0)
 {
@@ -26,9 +26,9 @@ SigningKey::SigningKey(
 SigningKey::SigningKey(
   const SodiumBuffer &_signingKey,
   const std::vector<unsigned char> &_signatureVerificationKey,
-  const std::string& _derivationOptionsJson
+  const std::string& _recipe
 ) :
-  derivationOptionsJson(_derivationOptionsJson),
+  recipe(_recipe),
   signingKeyBytes(_signingKey),
   signatureVerificationKeyBytes(_signatureVerificationKey) {
 }
@@ -36,7 +36,7 @@ SigningKey::SigningKey(
 SigningKey::SigningKey(
   const SigningKey& other
 ) :
-  derivationOptionsJson(other.derivationOptionsJson),
+  recipe(other.recipe),
   signingKeyBytes(other.signingKeyBytes),
   signatureVerificationKeyBytes(other.signatureVerificationKeyBytes)
   {}
@@ -45,7 +45,7 @@ SigningKey::SigningKey(
 namespace SigningKeyJsonField {
   static const std::string signatureVerificationKeyBytes = "signatureVerificationKeyBytes";
   static const std::string signingKeyBytes = "signingKeyBytes";
-  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
+  static const std::string recipe = CommonNames::recipe;
 }
 
 SigningKey SigningKey::fromJson(
@@ -56,7 +56,7 @@ SigningKey SigningKey::fromJson(
     return SigningKey(
       SodiumBuffer::fromHexString(jsonObject.at(SigningKeyJsonField::signingKeyBytes)),
       hexStrToByteVector(jsonObject.value(SigningKeyJsonField::signatureVerificationKeyBytes, "")),
-      jsonObject.value(SigningKeyJsonField::derivationOptionsJson, "")
+      jsonObject.value(SigningKeyJsonField::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -66,26 +66,26 @@ SigningKey SigningKey::fromJson(
 
 SigningKey::SigningKey(
   const std::string& _seedString,
-  const std::string& _derivationOptionsJson
-) : SigningKey(deriveFromSeed(_seedString, _derivationOptionsJson)) {}
+  const std::string& _recipe
+) : SigningKey(deriveFromSeed(_seedString, _recipe)) {}
 
 
 SigningKey SigningKey::deriveFromSeed(
   const std::string& _seedString,
-  const std::string& _derivationOptionsJson
+  const std::string& _recipe
 ) {
   // Turn the seed string into a seed of the appropriate length
-  SodiumBuffer seed = DerivationOptions::derivePrimarySecret(
+  SodiumBuffer seed = Recipe::derivePrimarySecret(
     _seedString,
-    _derivationOptionsJson,
-    DerivationOptionsJson::type::SigningKey,
+    _recipe,
+    RecipeJson::type::SigningKey,
     crypto_sign_SEEDBYTES
   );
   // Dervive a key pair from the seed
   SodiumBuffer signingKeyBytes(crypto_sign_SECRETKEYBYTES);
   std::vector<unsigned char> signatureVerificationKeyBytes(crypto_sign_PUBLICKEYBYTES);
   crypto_sign_seed_keypair(signatureVerificationKeyBytes.data(), signingKeyBytes.data, seed.data);
-  return SigningKey(signingKeyBytes, signatureVerificationKeyBytes, _derivationOptionsJson);
+  return SigningKey(signingKeyBytes, signatureVerificationKeyBytes, _recipe);
 }
 
 
@@ -99,7 +99,7 @@ const std::vector<unsigned char> SigningKey::getSignatureVerificationKeyBytes() 
 }
 
 const SignatureVerificationKey SigningKey::getSignatureVerificationKey() {
-  return SignatureVerificationKey(getSignatureVerificationKeyBytes(), derivationOptionsJson);
+  return SignatureVerificationKey(getSignatureVerificationKeyBytes(), recipe);
 }
 
 
@@ -131,7 +131,7 @@ const std::string SigningKey::toJson(
     asJson[SigningKeyJsonField::signatureVerificationKeyBytes] =
       toHexStr(signatureVerificationKeyBytes);
   }
-  asJson[SigningKeyJsonField::derivationOptionsJson] = derivationOptionsJson;
+  asJson[SigningKeyJsonField::recipe] = recipe;
   return asJson.dump(indent, indent_char);
 };
 
@@ -139,12 +139,12 @@ const SodiumBuffer SigningKey::toSerializedBinaryForm(
   bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater
 ) const {
   SodiumBuffer _signatureVerificationKeyBytes(signatureVerificationKeyBytes);
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _recipe(recipe);
   return SodiumBuffer::combineFixedLengthList({
     &signingKeyBytes,
     minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater ?
     NULL : &_signatureVerificationKeyBytes,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 

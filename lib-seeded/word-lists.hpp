@@ -7,4 +7,4 @@
 // Must come after json.hpp
 #include "externally-generated/derivation-parameters.hpp"
 
-const std::vector<std::string>& getWordList(DerivationOptionsJson::WordList wordListName);
+const std::vector<std::string>& getWordList(RecipeJson::WordList wordListName);

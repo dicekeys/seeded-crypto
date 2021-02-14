@@ -6,13 +6,13 @@
 /**
  * @brief A secret derived from a seed string 
  * and set of derivation specified options in
- * @ref derivation_options_format.
+ * @ref recipe_format.
  * 
  * Because the secret is derived using a one-way function,
  * its value does not reveal the secret seed used to derive it.
  * Rather, clients can use this secret knowing that, if lost,
  * it can be re-derived from the same seed and
- * derivationOptionsJson that were first used to derive it.
+ * recipe that were first used to derive it.
  * 
  * @ingroup DerivedFromSeeds
  */
@@ -23,11 +23,11 @@ public:
    */
   const SodiumBuffer secretBytes;
     /**
-   * @brief A string in @ref derivation_options_format string
+   * @brief A string in @ref recipe_format string
    * which specifies how the constructor will derive the
    * secretBytes from the original secret seed.
    */
-  const std::string derivationOptionsJson;
+  const std::string recipe;
 
   /**
    * @brief Construct this object as a copy of another object
@@ -40,42 +40,42 @@ public:
 
   /**
    * Construct a secret from its two fields: the secretBytes
-   * and the derivationOptionsJson.
+   * and the recipe.
    * 
    * @param secretBytes The derived secret.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * @param recipe The recipe in @ref recipe_format.
    */
   Secret(
     const SodiumBuffer& secretBytes,
-    const std::string& derivationOptionsJson = {}
+    const std::string& recipe = {}
   );
 
   /**
    * @brief Derive a secret from a seed secret and a set of
-   * derivation options in @ref derivation_options_format.
+   * recipe in @ref recipe_format.
    * 
    * @param seedString The secret seed string from which this secret should be
    * derived. Once the secret is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this secret.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * @param recipe The recipe in @ref recipe_format.
    */
   Secret(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
    * @brief Derive a secret from a seed secret and a set of
-   * derivation options in @ref derivation_options_format.
+   * recipe in @ref recipe_format.
    * 
    * @param seedString The secret seed string from which this secret should be
    * derived. Once the secret is derived, you won't need the secretSeedBytes
    * again unless you need to re-derive this secret.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * @param recipe The recipe in @ref recipe_format.
    */
   static Secret deriveFromSeed(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
 
@@ -95,7 +95,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (secretBytes, derivationOptionsJson)
+   *   (secretBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -104,7 +104,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (secretBytes, derivationOptionsJson)
+   *   (secretBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

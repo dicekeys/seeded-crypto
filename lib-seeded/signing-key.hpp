@@ -14,7 +14,7 @@
  * 
  * The key pair of the SigningKey and SignatureVerificationKey is generated
  * from a seed and a set of derivation specified options in
- *  @ref derivation_options_format.
+ *  @ref recipe_format.
  * 
  * @ingroup DerivedFromSeeds
  */
@@ -44,9 +44,9 @@ public:
    */
   const SodiumBuffer signingKeyBytes;
   /**
-   * @brief A @ref derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref recipe_format string used to specify how this key is derived.
    */
-  const std::string derivationOptionsJson;
+  const std::string recipe;
 
   /**
    * @brief Construct a copy of another SigningKey
@@ -61,7 +61,7 @@ public:
    */
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
@@ -71,35 +71,35 @@ public:
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
     const std::vector<unsigned char> &signatureVerificationKeyBytes,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
     /**
    * @brief Construct a new SigningKey by deriving a signing key pair from a seed
-   * string and a set of derivation options in @ref derivation_options_format.
+   * string and a set of recipe in @ref recipe_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the derivationOptionsJson.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * by passing it along with the recipe.
+   * @param recipe The recipe in @ref recipe_format.
    */
   SigningKey(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
     /**
    * @brief Construct a new SigningKey by deriving a signing key pair from a seed
-   * string and a set of derivation options in @ref derivation_options_format.
+   * string and a set of recipe in @ref recipe_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the derivationOptionsJson.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * by passing it along with the recipe.
+   * @param recipe The recipe in @ref recipe_format.
    */
   static SigningKey deriveFromSeed(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
@@ -183,7 +183,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (keyBytes, signatureVerificationKeyBytes, derivationOptionsJson)
+   *   (keyBytes, signatureVerificationKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -200,7 +200,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (keyBytes, signatureVerificationKeyBytes, derivationOptionsJson)
+   *   (keyBytes, signatureVerificationKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

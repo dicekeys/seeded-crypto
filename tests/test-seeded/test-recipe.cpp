@@ -2,14 +2,14 @@
 #include "lib-seeded.hpp"
 
 
-TEST(DerivationOptions, GeneratesDefaults) {
-	DerivationOptions kgo = DerivationOptions(R"KGO({
+TEST(Recipe, GeneratesDefaults) {
+	Recipe kgo = Recipe(R"KGO({
 	"type": "UnsealingKey"	
 })KGO",
-	DerivationOptionsJson::type::UnsealingKey
+	RecipeJson::type::UnsealingKey
 );
 	ASSERT_EQ(
-		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.recipeWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "BLAKE2b",
@@ -19,18 +19,18 @@ TEST(DerivationOptions, GeneratesDefaults) {
 }
 
 
-TEST(DerivationOptions, derivesPrimarySecrets) {
-	const SodiumBuffer seed = DerivationOptions::derivePrimarySecret(
+TEST(Recipe, derivesPrimarySecrets) {
+	const SodiumBuffer seed = Recipe::derivePrimarySecret(
 		"Avocado",
 		R"KGO({"lengthInBytes": 64})KGO",
-		DerivationOptionsJson::type::Secret
+		RecipeJson::type::Secret
 	);
 	ASSERT_EQ(seed.length, 64);
 }
 
 
-TEST(DerivationOptions, FidoUseCase) {
-	DerivationOptions kgo = DerivationOptions(R"KGO({
+TEST(Recipe, FidoUseCase) {
+	Recipe kgo = Recipe(R"KGO({
 	"type": "Secret",
 	"lengthInBytes": 96,
 	"hashFunction": "Argon2id",
@@ -38,10 +38,10 @@ TEST(DerivationOptions, FidoUseCase) {
 		"androidPackagePrefixesAllowed": ["com.dicekeys.fido"]
 	}
 })KGO",
-	DerivationOptionsJson::type::Secret
+	RecipeJson::type::Secret
 );
 	ASSERT_EQ(
-		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.recipeWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"hashFunction": "Argon2id",
 	"hashFunctionMemoryLimitInBytes": 67108864,
@@ -61,15 +61,15 @@ TEST(DerivationOptions, FidoUseCase) {
 	}
 */
 
-TEST(DerivationOptions, InitsWithClientPrefixes) {
-	DerivationOptions kgo = DerivationOptions(R"KGO({
+TEST(Recipe, InitsWithClientPrefixes) {
+	Recipe kgo = Recipe(R"KGO({
 	"type": "UnsealingKey",
 	"restrictToClientApplicationsIdPrefixes": ["com.dicekeys.client", "com.dicekeys.another"]
 })KGO",
-	DerivationOptionsJson::type::UnsealingKey
+	RecipeJson::type::UnsealingKey
 );
 	ASSERT_EQ(
-		kgo.derivationOptionsJsonWithAllOptionalParametersSpecified(1, '\t'),
+		kgo.recipeWithAllOptionalParametersSpecified(1, '\t'),
 		R"KGO({
 	"algorithm": "X25519",
 	"hashFunction": "BLAKE2b",

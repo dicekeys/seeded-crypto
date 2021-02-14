@@ -11,7 +11,7 @@
  * UnsealingKey which can _unseal_ them.
  * The key pair of this sealingKeyBytes and the matching UnsealingKey are generated
  * from a seed and a set of derivation specified options in JSON format
- * @ref derivation_options_format.
+ * @ref recipe_format.
  * 
  * To derive a public key from a seed, first derive the corresponding
  * UnsealingKey and then call UnsealingKey::getSealingKey.
@@ -47,16 +47,16 @@ public:
    */
   const std::vector<unsigned char> sealingKeyBytes;
   /**
-   * @brief A @ref derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref recipe_format string used to specify how this key is derived.
    */
-  const std::string derivationOptionsJson;
+  const std::string recipe;
 
   /**
    * @brief Construct a new Public Key object by passing its members.
    */
   SealingKey(
     const std::vector<unsigned char>& sealingKeyBytes,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
@@ -154,7 +154,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its derivationOptionsJson and unsealingInstructions
+   * along with its recipe and unsealingInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -171,7 +171,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its derivationOptionsJson and unsealingInstructions
+   * along with its recipe and unsealingInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -190,7 +190,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its derivationOptionsJson and unsealingInstructions
+   * along with its recipe and unsealingInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -208,7 +208,7 @@ public:
 
   /**
    * @brief Seal a plaintext message and then package the results
-   * along with its derivationOptionsJson and unsealingInstructions
+   * along with its recipe and unsealingInstructions
    * into a SealedPackagedMessage.
    * 
    * @param message The plaintext message to seal
@@ -233,18 +233,18 @@ public:
   const std::vector<unsigned char> getSealingKeyBytes() const;
 
   /**
-   * @brief Get the JSON-formatted derivation options string used to generate
+   * @brief Get the JSON-formatted recipe string used to generate
    * the public-private key pair.
    * 
-   * @return const std::string in  @ref derivation_options_format
+   * @return const std::string in  @ref recipe_format
    */
-  const std::string getDerivationOptionsJson() const {
-    return derivationOptionsJson; 
+  const std::string getRecipeJson() const {
+    return recipe; 
   }
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (sealingKeyBytes, derivationOptionsJson)
+   *   (sealingKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -253,7 +253,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (sealingKeyBytes, derivationOptionsJson)
+   *   (sealingKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

@@ -1,44 +1,44 @@
 #include "secret.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 #include "exceptions.hpp"
 #include "common-names.hpp"
 
 Secret::Secret(
   const SodiumBuffer& _secretBytes,
-  const std::string& _derivationOptionsJson
-) : secretBytes(_secretBytes), derivationOptionsJson(_derivationOptionsJson) {}
+  const std::string& _recipe
+) : secretBytes(_secretBytes), recipe(_recipe) {}
 
 Secret::Secret(
   const std::string& seedString,
-  const std::string& _derivationOptionsJson
+  const std::string& _recipe
 ) : secretBytes(
-  DerivationOptions::derivePrimarySecret(
+  Recipe::derivePrimarySecret(
     seedString,
-    _derivationOptionsJson,
-    DerivationOptionsJson::type::Secret
-  )), derivationOptionsJson(_derivationOptionsJson) {}
+    _recipe,
+    RecipeJson::type::Secret
+  )), recipe(_recipe) {}
 
 Secret Secret::deriveFromSeed(
   const std::string& seedString,
-  const std::string& derivationOptionsJson
+  const std::string& recipe
 ) {
   return Secret(
-    DerivationOptions::derivePrimarySecret(
+    Recipe::derivePrimarySecret(
       seedString,
-      derivationOptionsJson,
-      DerivationOptionsJson::type::Secret
+      recipe,
+      RecipeJson::type::Secret
     ),
-    derivationOptionsJson
+    recipe
   );
 }
 
 
-Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.derivationOptionsJson) {}
+Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.recipe) {}
 
 // JSON field names
 namespace SecretJsonFields {
   static const std::string secretBytes = "secretBytes";
-  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
+  static const std::string recipe = CommonNames::recipe;
 }
 
 Secret Secret::fromJson(const std::string& secretAsJson) {
@@ -46,7 +46,7 @@ Secret Secret::fromJson(const std::string& secretAsJson) {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
     return Secret(
       SodiumBuffer::fromHexString(jsonObject.at(SecretJsonFields::secretBytes)),
-      jsonObject.value<std::string>(SecretJsonFields::derivationOptionsJson, "")
+      jsonObject.value<std::string>(SecretJsonFields::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -60,18 +60,18 @@ const char indent_char
 ) const {
   nlohmann::json asJson;
   asJson[SecretJsonFields::secretBytes] = secretBytes.toHexString();
-  if (derivationOptionsJson.size() > 0) {
-    asJson[SecretJsonFields::derivationOptionsJson] = derivationOptionsJson;
+  if (recipe.size() > 0) {
+    asJson[SecretJsonFields::recipe] = recipe;
   }
   return asJson.dump(indent, indent_char);
 }
 
 
 const SodiumBuffer Secret::toSerializedBinaryForm() const {
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _recipe(recipe);
   return SodiumBuffer::combineFixedLengthList({
     &secretBytes,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 
