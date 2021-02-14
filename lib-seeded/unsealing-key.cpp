@@ -4,6 +4,7 @@
 #include "derivation-options.hpp"
 #include "convert.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 UnsealingKey::UnsealingKey(
     const SodiumBuffer _unsealingKeyBytes,
@@ -104,9 +105,9 @@ const SealingKey UnsealingKey::getSealingKey() const {
 //  JSON
 ////
 namespace UnsealingKeyJsonField {
-  const std::string sealingKeyBytes = "sealingKeyBytes";
-  const std::string unsealingKeyBytes = "unsealingKeyBytes";
-  const std::string derivationOptionsJson = "recipeJson";
+  static const std::string sealingKeyBytes = "sealingKeyBytes";
+  static const std::string unsealingKeyBytes = "unsealingKeyBytes";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 UnsealingKey UnsealingKey::fromJson(

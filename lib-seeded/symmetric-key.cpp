@@ -3,6 +3,7 @@
 #include "packaged-sealed-message.hpp"
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 void _crypto_secretbox_nonce_salted(
   unsigned char *nonce,
@@ -204,8 +205,8 @@ const SodiumBuffer SymmetricKey::unseal(
 
 
 namespace SymmetricKeyJsonField {
-  const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "recipeJson";
+  static const std::string keyBytes = "keyBytes";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 SymmetricKey SymmetricKey::fromJson(

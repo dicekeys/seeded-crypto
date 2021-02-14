@@ -4,10 +4,11 @@
 #include "convert.hpp"
 #include "lib-seeded.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 namespace SealingKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "recipeJson";
+  const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 SealingKey::SealingKey(

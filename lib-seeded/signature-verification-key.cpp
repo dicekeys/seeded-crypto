@@ -3,10 +3,11 @@
 #include "exceptions.hpp"
 #include "convert.hpp"
 #include <stdexcept>
+#include "common-names.hpp"
 
 namespace SignatureVerificationKeyJsonFieldName {
-  const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "recipeJson";
+  static const std::string keyBytes = "keyBytes";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 SignatureVerificationKey::SignatureVerificationKey(

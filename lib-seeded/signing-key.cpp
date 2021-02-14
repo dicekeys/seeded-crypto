@@ -3,6 +3,7 @@
 #include "sodium-buffer.hpp"
 #include "convert.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 SigningKey::SigningKey(
   const SodiumBuffer& _signingKeyBytes,
@@ -42,9 +43,9 @@ SigningKey::SigningKey(
 
 
 namespace SigningKeyJsonField {
-  const std::string signatureVerificationKeyBytes = "signatureVerificationKeyBytes";
-  const std::string signingKeyBytes = "signingKeyBytes";
-  const std::string derivationOptionsJson = "recipeJson";
+  static const std::string signatureVerificationKeyBytes = "signatureVerificationKeyBytes";
+  static const std::string signingKeyBytes = "signingKeyBytes";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 SigningKey SigningKey::fromJson(

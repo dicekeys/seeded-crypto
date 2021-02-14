@@ -2,11 +2,12 @@
 #include "github-com-nlohmann-json/json.hpp"
 #include "exceptions.hpp"
 #include "convert.hpp"
+#include "common-names.hpp"
 
 // JSON field names
 namespace PackagedSealedMessageJsonFields {
   static const std::string ciphertext = "ciphertext";
-  static const std::string derivationOptionsJson = "recipeJson";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
   static const std::string unsealingInstructions = "unsealingInstructions";
 }
 

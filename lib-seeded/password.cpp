@@ -4,6 +4,7 @@
 #include "word-lists.hpp"
 #include <algorithm>    // std::min
 #include <sstream> 
+#include "common-names.hpp"
 
 const std::vector<std::string> parseOrGetWordList(
   const DerivationOptions& derivationOptions,
@@ -132,7 +133,7 @@ Password::Password(const Password &other) : Password(other.password, other.deriv
 // JSON field names
 namespace PasswordJsonFields {
   static const std::string password = "password";
-  static const std::string derivationOptionsJson = "recipeJson";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 Password Password::fromJson(const std::string& secretAsJson) {
