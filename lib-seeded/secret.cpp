@@ -1,6 +1,7 @@
 #include "secret.hpp"
 #include "derivation-options.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 Secret::Secret(
   const SodiumBuffer& _secretBytes,
@@ -37,7 +38,7 @@ Secret::Secret(const Secret &other) : Secret(other.secretBytes, other.derivation
 // JSON field names
 namespace SecretJsonFields {
   static const std::string secretBytes = "secretBytes";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
 }
 
 Secret Secret::fromJson(const std::string& secretAsJson) {
