@@ -16,10 +16,10 @@ UnsealingKey::UnsealingKey(
     recipe(_recipe)
     {
     if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw InvalidDerivationOptionValueException("Invalid public key size");
+      throw InvalidRecipeValueException("Invalid public key size");
     }
     if (unsealingKeyBytes.length != crypto_box_SECRETKEYBYTES) {
-      throw InvalidDerivationOptionValueException("Invalid private key size for public/private key pair");
+      throw InvalidRecipeValueException("Invalid private key size for public/private key pair");
     }
   }
 

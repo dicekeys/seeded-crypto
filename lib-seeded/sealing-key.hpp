@@ -10,7 +10,7 @@
  * @brief A sealingKeyBytes is used to _seal_ messages, in combination with a
  * UnsealingKey which can _unseal_ them.
  * The key pair of this sealingKeyBytes and the matching UnsealingKey are generated
- * from a seed and a set of derivation specified options in JSON format
+ * from a seed and a set of options in JSON format
  * @ref recipe_format.
  * 
  * To derive a public key from a seed, first derive the corresponding

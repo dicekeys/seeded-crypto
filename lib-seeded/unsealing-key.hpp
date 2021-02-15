@@ -7,7 +7,7 @@
  * @brief an UnsealingKey is used to _unseal_ messages sealed with its
  * corresponding SealingKey.
  * The UnsealingKey and SealingKey are generated
- * from a seed and a set of derivation specified options in
+ * from a seed and a set of options in
  * @ref recipe_format.
  * 
  * The UnsealingKey includes a copy of the SealingKey, which can be

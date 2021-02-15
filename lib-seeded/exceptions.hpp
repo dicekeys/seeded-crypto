@@ -73,7 +73,7 @@ class InvalidRecipeJsonException: public std::invalid_argument
  * @brief Thrown when a JSON value in the recipe is
  * in an invalid format or contains an invalid value.
  */
-class InvalidDerivationOptionValueException: public std::invalid_argument
+class InvalidRecipeValueException: public std::invalid_argument
 {
 	public:
 	/**
@@ -81,7 +81,7 @@ class InvalidDerivationOptionValueException: public std::invalid_argument
 	 * 
 	 * @param m The exception message
 	 */
-	InvalidDerivationOptionValueException(const char* m = NULL) :
+	InvalidRecipeValueException(const char* m = NULL) :
 		std::invalid_argument(m ? m : "Invalid key recipe") {};
 };
 

@@ -5,7 +5,7 @@
 
 /**
  * @brief A secret derived from a seed string 
- * and set of derivation specified options in
+ * and set of options in
  * @ref recipe_format.
  * 
  * Because the secret is derived using a one-way function,

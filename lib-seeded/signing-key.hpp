@@ -13,7 +13,7 @@
  * getSignatureVerificationKey.
  * 
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of derivation specified options in
+ * from a seed and a set of options in
  *  @ref recipe_format.
  * 
  * @ingroup DerivedFromSeeds

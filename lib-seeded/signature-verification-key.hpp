@@ -14,7 +14,7 @@
  * pair the SignatureVerificationKey can confirm that the message was
  * indeed signed using the SigningKey.
  * The key pair of the SigningKey and SignatureVerificationKey is generated
- * from a seed and a set of derivation specified options in
+ * from a seed and a set of options in
  *  @ref recipe_format.
  * 
  * To derive a SignatureVerificationKey from a seed, first derive the

@@ -84,7 +84,7 @@ Instead of a generic Public and Private asymmetric key, we support separate key 
 If this field is not provided, the type is inferred from the type of object being constructed.
 
 If you attempt to construct an object of one `type` when the `"type"` field specifies
-a different `type`, the constructor will throw an @ref InvalidDerivationOptionValueException.
+a different `type`, the constructor will throw an @ref InvalidRecipeValueException.
 
 #### algorithm
 

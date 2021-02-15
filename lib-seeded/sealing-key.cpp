@@ -16,7 +16,7 @@ SealingKey::SealingKey(
     const std::string& _recipe
   ) : sealingKeyBytes(_sealingKeyBytes), recipe(_recipe) {
     if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw InvalidDerivationOptionValueException("Invalid key size exception");
+      throw InvalidRecipeValueException("Invalid key size exception");
     }
   }
 

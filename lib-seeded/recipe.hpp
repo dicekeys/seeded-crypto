@@ -89,7 +89,7 @@ public:
 	 * (default: RecipeJson::type::_INVALID_TYPE_)
 	 * there is no required type and any type is allowed.
 	 * @throws InvalidRecipeJsonException
-	 * @throws InvalidDerivationOptionValueException
+	 * @throws InvalidRecipeValueException
 	 **/
 	Recipe(
 		const std::string& recipe,
@@ -138,14 +138,14 @@ public:
 	 * @param recipe The recipe in @ref recipe_format.
 	 * @param typeRequired If the recipe has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
-	 * InvalidDerivationOptionValueException.
+	 * InvalidRecipeValueException.
 	 * @param lengthInBytesRequired If the recipe does not specify a lengthInBytes,
-	 * generate a secret of this length. Throw an InvalidDerivationOptionValueException is
+	 * generate a secret of this length. Throw an InvalidRecipeValueException is
 	 * the lengthInBytes it specifies does not match this value.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
-	 * @throw InvalidDerivationOptionValueException
+	 * @throw InvalidRecipeValueException
 	 * @throw InvalidRecipeJsonException
 	 */
 	static const SodiumBuffer derivePrimarySecret(
@@ -186,11 +186,11 @@ public:
 	 * @param seedString A seed value that is the primary salt for the hash function
 	 * @param defaultType If the recipe has a type field, and that field
 	 * specifies a value other than this typeRequired value, this function will throw an
-	 * InvalidDerivationOptionValueException.
+	 * InvalidRecipeValueException.
 	 * @return const SodiumBuffer The derived secret, set to always be a const so that it is never
 	 * modified directly.
 	 * 
-	 * @throw InvalidDerivationOptionValueException
+	 * @throw InvalidRecipeValueException
 	 */
 	const SodiumBuffer derivePrimarySecret(
 		const std::string& seedString,

@@ -52,7 +52,7 @@ Recipe::Recipe(
       type != typeRequired) {
     // We required type == typeRequired since typeRequired wasn't invalid,
     // but the JSON specified a different key type
-    throw InvalidDerivationOptionValueException("Unexpected type in Recipe");
+    throw InvalidRecipeValueException("Unexpected type in Recipe");
   }
 
   if (type != RecipeJson::type::_INVALID_TYPE_) {
@@ -82,7 +82,7 @@ Recipe::Recipe(
   if (type == RecipeJson::type::SymmetricKey &&
       algorithm != RecipeJson::Algorithm::XSalsa20Poly1305
   ) {
-    throw InvalidDerivationOptionValueException(
+    throw InvalidRecipeValueException(
       "Invalid algorithm type for symmetric key cryptography"
     );
   }
@@ -90,14 +90,14 @@ Recipe::Recipe(
   if (type == RecipeJson::type::UnsealingKey &&
     algorithm != RecipeJson::Algorithm::X25519
     ) {
-    throw InvalidDerivationOptionValueException(
+    throw InvalidRecipeValueException(
       "Invalid algorithm type for public key cryptography"
     );
   }
   if (type == RecipeJson::type::SigningKey &&
     algorithm != RecipeJson::Algorithm::Ed25519
     ) {
-    throw InvalidDerivationOptionValueException(
+    throw InvalidRecipeValueException(
       "Invalid algorithm type for signing key"
     );
   }
@@ -147,7 +147,7 @@ Recipe::Recipe(
     // If no length specified, derive a password with 128-bits of entropy
     // (if it's good enough for an AES block, it's good enough for a password).
     if (lengthInBits > 0 && lengthInWords > 0 && lengthInWords != (unsigned int)ceil(lengthInBits * bitsPerWord)) {
-      throw InvalidDerivationOptionValueException( 
+      throw InvalidRecipeValueException( 
         "lengthInBits and lengthInWords conflict"
       );
     } else if (lengthInBits == 0) {
@@ -172,7 +172,7 @@ Recipe::Recipe(
     algorithm == RecipeJson::Algorithm::X25519
     && lengthInBytes != crypto_box_SEEDBYTES
   ) {
-    throw InvalidDerivationOptionValueException( (
+    throw InvalidRecipeValueException( (
         "X25519 public key cryptography must use lengthInBytes of " +
         std::to_string(crypto_box_SEEDBYTES)
       ).c_str() );
@@ -181,7 +181,7 @@ Recipe::Recipe(
     algorithm == RecipeJson::Algorithm::Ed25519
     && lengthInBytes != crypto_sign_SEEDBYTES
     ) {
-    throw InvalidDerivationOptionValueException((
+    throw InvalidRecipeValueException((
       "Ed25519 signing must use lengthInBytes of " +
       std::to_string(crypto_sign_SEEDBYTES)
       ).c_str());
@@ -190,7 +190,7 @@ Recipe::Recipe(
     algorithm == RecipeJson::Algorithm::XSalsa20Poly1305 &&
     lengthInBytes != crypto_stream_xsalsa20_KEYBYTES
   ) {
-    throw InvalidDerivationOptionValueException( (
+    throw InvalidRecipeValueException( (
         "XSalsa20Poly1305 symmetric cryptography must use lengthInBytes of " +
         std::to_string(crypto_stream_xsalsa20_KEYBYTES)
       ).c_str() );
@@ -320,7 +320,7 @@ const SodiumBuffer Recipe::derivePrimarySecret(
     // Verify key-length requirements (if specified)
     if (lengthInBytesRequired > 0 &&
         recipeObj.lengthInBytes != lengthInBytesRequired) {
-      throw InvalidDerivationOptionValueException( (
+      throw InvalidRecipeValueException( (
         "lengthInBytes for this type should be " + std::to_string(lengthInBytesRequired) +
         " but lengthInBytes field was set to " + std::to_string(recipeObj.lengthInBytes)
         ).c_str()
