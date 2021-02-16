@@ -1,8 +1,8 @@
-# JSON Format for Derivation Options {#derivation_options_format}
+# JSON Format for Recipes {#recipe_format}
 
-This JSON-format is used to specify how secrets (Secret), keys (SymmetricKey) and key pairs (UnsealingKey & SealingKey, SigningKey & SignatureVerificationKey) should be derived from a seed string.
+This JSON-format format specifies the recipes for deriving secrets (Secret), keys (SymmetricKey) and key pairs (UnsealingKey & SealingKey, SigningKey & SignatureVerificationKey) from a seed string.
 
-For example, the following is a valid Derivation Options JSON string used to generate a SymmetricKey, using the `Argon2id` to derive the key bytes from a seed string:
+For example, the following is a valid Recipe JSON string used to generate a SymmetricKey, using the `Argon2id` to derive the key bytes from a seed string:
 
 ```TypeScript
 {
@@ -11,17 +11,17 @@ For example, the following is a valid Derivation Options JSON string used to gen
 }
 ```
 
-The value of a derivation options JSON string must be either a valid JSON object specification,
+The value of a recipe JSON string must be either a valid JSON object specification,
 which is a set of fields enclosed in curly braces ("{}") per the JSON format,
 or an empty string.
 
-This specification defines default values for _all_ fields, these defaults are used when a field is absent, and so a derivation options JSON string that is itself an empty string ("") or empty object ("{}") will use defaults for all field values.
+This specification defines default values for _all_ fields, these defaults are used when a field is absent, and so a recipe JSON string that is itself an empty string ("") or empty object ("{}") will use defaults for all field values.
 For example, If you are deriving a SymmetricKey and pass the empty string,
 the `"type"` will be inferred to be `Symmetric`, the `"hashFunction"` to be `BLAKE2b`, and the `"algorithm"` will be the default
 algorithm for symmetric key cryptography: `XSalsa20Poly1305`.
 
-The Seeded Cryptography Library uses a hash function to derive keys and secrets, and the input to that hash function includes both the seed string _and_ the JSON string you provide with the derivation options.  In cryptographic terms, this means the JSON string with your derivation options is used to _salt_ the hash function.
-Thus, _any_ change to this Derivation Options JSON string, even if just ordering or white space, will cause a different key or secret to be derived.
+The Seeded Cryptography Library uses a hash function to derive keys and secrets, and the input to that hash function includes both the seed string _and_ the JSON string you provide with the recipe.  In cryptographic terms, this means the JSON string with your recipe is used to _salt_ the hash function.
+Thus, _any_ change to this Recipe JSON string, even if just ordering or white space, will cause a different key or secret to be derived.
 
 Any fields in your JSON object that are not in this specification have no effect other than to change the input to the hash function and thus the derived key or secret.
 This allows other libraries to extend the spec without making changes to how this
@@ -84,7 +84,7 @@ Instead of a generic Public and Private asymmetric key, we support separate key 
 If this field is not provided, the type is inferred from the type of object being constructed.
 
 If you attempt to construct an object of one `type` when the `"type"` field specifies
-a different `type`, the constructor will throw an @ref InvalidDerivationOptionValueException.
+a different `type`, the constructor will throw an @ref InvalidRecipeValueException.
 
 #### algorithm
 
@@ -162,9 +162,9 @@ The `hashFunction` field specifies the hash function to used to derive key seeds
 "hashFunction"?: "BLAKE2b" | "Argon2id"
 ```
 
-`Argon2id` is a hash function designed to require not just computation, but also memory, in order to thwart hardware brute force attacks.[^1].  To derive secrets, the password parameter is set to the seed and the salt parameter is set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the derivation options JSON string. No null terminators or other separators are used.  The implementation uses the `argon2id_hash_raw` function internal to libsodium. with  When using `Argon2id`, you can also specify the memory limit and the number of passes to make through memory.
+`Argon2id` is a hash function designed to require not just computation, but also memory, in order to thwart hardware brute force attacks.[^1].  To derive secrets, the password parameter is set to the seed and the salt parameter is set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the recipe JSON string. No null terminators or other separators are used.  The implementation uses the `argon2id_hash_raw` function internal to libsodium. with  When using `Argon2id`, you can also specify the memory limit and the number of passes to make through memory.
 
-`BLAKE2b` applies the BLAKE2b hash function as the building block for HKDF function ([RFC5869](https://tools.ietf.org/html/rfc5869)) to allow for arbitrary-length outputs.  We set the HKDF input keying material (`IKM` parameter) to the seed string and the `info` parameter set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the derivation options JSON string.  We using BLAKE2b with a 32-byte output block as the underlying HMAC. The implementation uses the `crypto_generichash_blake2b` series of functions in libsodium) function with a 32 byte block and 32 0s for the `salt` used when deriving the `PRK` (see Step 1 in Section 2.2 of the [HKDF spec](https://tools.ietf.org/html/rfc5869)).
+`BLAKE2b` applies the BLAKE2b hash function as the building block for HKDF function ([RFC5869](https://tools.ietf.org/html/rfc5869)) to allow for arbitrary-length outputs.  We set the HKDF input keying material (`IKM` parameter) to the seed string and the `info` parameter set to the concatenation of the type string ("Password", "Secret", "SymmetricKey", "UnsealingKey" or "SigningKey") followed by the recipe JSON string.  We using BLAKE2b with a 32-byte output block as the underlying HMAC. The implementation uses the `crypto_generichash_blake2b` series of functions in libsodium) function with a 32 byte block and 32 0s for the `salt` used when deriving the `PRK` (see Step 1 in Section 2.2 of the [HKDF spec](https://tools.ietf.org/html/rfc5869)).
 
 ```TypeScript
 "hashFunctionMemoryLimitInBytes": number // default 67108864
@@ -293,7 +293,7 @@ To harden your app against unauthorized client requests, you can set the `requir
   "requireAuthenticationHandshake"?: boolean
 ```
 
-Since the default is false, the only reason to include this field in your derivation options is to set it to true.
+Since the default is false, the only reason to include this field in your recipe is to set it to true.
 
 ```TypeScript
   "requireAuthenticationHandshake": true

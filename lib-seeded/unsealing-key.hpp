@@ -7,8 +7,8 @@
  * @brief an UnsealingKey is used to _unseal_ messages sealed with its
  * corresponding SealingKey.
  * The UnsealingKey and SealingKey are generated
- * from a seed and a set of derivation specified options in
- * @ref derivation_options_format.
+ * from a seed and a set of options in
+ * @ref recipe_format.
  * 
  * The UnsealingKey includes a copy of the SealingKey, which can be
  * reconstituted as a SealingKey object via the getSealingKey method.
@@ -24,9 +24,9 @@ public:
    */
   const std::vector<unsigned char> sealingKeyBytes;
   /**
-   * @brief A @ref derivation_options_format string used to specify how this key is derived.
+   * @brief A @ref recipe_format string used to specify how this key is derived.
    */
-  const std::string derivationOptionsJson;
+  const std::string recipe;
 
   /**
    * @brief Construct a new UnsealingKey by passing its members.
@@ -34,50 +34,50 @@ public:
   UnsealingKey(
     const SodiumBuffer unsealingKeyBytes,
     const std::vector<unsigned char> sealingKeyBytes,
-    const std::string derivationOptionsJson
+    const std::string recipe
   );
 
   /**
    * @brief Construct a new UnsealingKey by deriving a public/private
-   * key pair from a seedBuffer and a set of derivation options
-   * in @ref derivation_options_format.
+   * key pair from a seedBuffer and a set of recipe
+   * in @ref recipe_format.
    * 
    * @param seedBuffer The seed as sequence of bytes
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * @param recipe The recipe in @ref recipe_format.
    */
   UnsealingKey(
     const SodiumBuffer& seedBuffer,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
    * @brief Construct a new UnsealingKey by deriving a public/private
-   * key pair from a seed string and a set of derivation options
-   * in @ref derivation_options_format.
+   * key pair from a seed string and a set of recipe
+   * in @ref recipe_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the derivationOptionsJson.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * by passing it along with the recipe.
+   * @param recipe The recipe in @ref recipe_format.
    */
   UnsealingKey(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
   /**
    * @brief Construct a new UnsealingKey by deriving a public/private
-   * key pair from a seed string and a set of derivation options
-   * in @ref derivation_options_format.
+   * key pair from a seed string and a set of recipe
+   * in @ref recipe_format.
    * 
    * @param seedString The private seed which is used to generate the key pair.
    * Anyone who knows (or can guess) this seed can re-generate the key pair
-   * by passing it along with the derivationOptionsJson.
-   * @param derivationOptionsJson The derivation options in @ref derivation_options_format.
+   * by passing it along with the recipe.
+   * @param recipe The recipe in @ref recipe_format.
    */
   static UnsealingKey deriveFromSeed(
     const std::string& seedString,
-    const std::string& derivationOptionsJson
+    const std::string& recipe
   );
 
 
@@ -145,7 +145,7 @@ public:
 
   /**
    * @brief Unseal a message from packaged format, ignoring the
-   * derivationOptionsJson since this UnsealingKey has been
+   * recipe since this UnsealingKey has been
    * instantiated. (If it's the wrong key, the unseal will fail.)
    * 
    * @param packagedSealedMessage The message to be unsealed
@@ -167,7 +167,7 @@ public:
     const PackagedSealedMessage &packagedSealedMessage,
       const std::string& seedString
   ) {
-    return UnsealingKey(seedString, packagedSealedMessage.derivationOptionsJson)
+    return UnsealingKey(seedString, packagedSealedMessage.recipe)
       .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
   }
 
@@ -187,7 +187,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)
+   *   (unsealingKeyBytes, sealingKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -196,7 +196,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (unsealingKeyBytes, sealingKeyBytes, derivationOptionsJson)
+   *   (unsealingKeyBytes, sealingKeyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

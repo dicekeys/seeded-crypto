@@ -7,13 +7,13 @@
 
 namespace SignatureVerificationKeyJsonFieldName {
   static const std::string keyBytes = "keyBytes";
-  static const std::string derivationOptionsJson = CommonNames::derivationOptionsJson;
+  static const std::string recipe = CommonNames::recipe;
 }
 
 SignatureVerificationKey::SignatureVerificationKey(
     const std::vector<unsigned char> &_verificationKeyBytes,
-    const std::string& _derivationOptionsJson
-  ) : signatureVerificationKeyBytes(_verificationKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
+    const std::string& _recipe
+  ) : signatureVerificationKeyBytes(_verificationKeyBytes), recipe(_recipe) {
     if (signatureVerificationKeyBytes.size() != crypto_sign_PUBLICKEYBYTES) {
       throw std::invalid_argument("Invalid key size exception");
     }
@@ -26,7 +26,7 @@ SignatureVerificationKey SignatureVerificationKey::fromJson(const std::string& s
       hexStrToByteVector(jsonObject.value<std::string>(
         SignatureVerificationKeyJsonFieldName::keyBytes, "")),
       jsonObject.value<std::string>(
-        SignatureVerificationKeyJsonFieldName::derivationOptionsJson, "")
+        SignatureVerificationKeyJsonFieldName::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -44,8 +44,8 @@ const std::string SignatureVerificationKey::toJson(
   nlohmann::json asJson;
   asJson[SignatureVerificationKeyJsonFieldName::keyBytes] =
     toHexStr(getKeyBytes());
-  asJson[SignatureVerificationKeyJsonFieldName::derivationOptionsJson] =
-    derivationOptionsJson;
+  asJson[SignatureVerificationKeyJsonFieldName::recipe] =
+    recipe;
   return asJson.dump(indent, indent_char);
 }
 
@@ -123,10 +123,10 @@ bool SignatureVerificationKey::verify(
 
 const SodiumBuffer SignatureVerificationKey::toSerializedBinaryForm() const {
   SodiumBuffer _signatureVerificationKeyBytes(signatureVerificationKeyBytes);
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _recipe(recipe);
   return SodiumBuffer::combineFixedLengthList({
     &_signatureVerificationKeyBytes,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 

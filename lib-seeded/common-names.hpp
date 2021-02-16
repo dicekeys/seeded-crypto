@@ -1,5 +1,5 @@
 #include <string>
 
 namespace CommonNames {
-  static const std::string derivationOptionsJson = "recipe";
+  static const std::string recipe = "recipe";
 }
