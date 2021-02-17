@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['hashfunction_25',['hashFunction',['../class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe',1,'DerivationOptions']]],
-  ['hashfunctionmemorylimitinbytes_26',['hashFunctionMemoryLimitInBytes',['../class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d',1,'DerivationOptions']]],
-  ['hashfunctionmemorypasses_27',['hashFunctionMemoryPasses',['../class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3',1,'DerivationOptions']]]
+  ['hashfunction_22',['hashFunction',['../class_recipe.html#ab551cefbd7bd99727a2fc1921e5af3d4',1,'Recipe']]],
+  ['hashfunctionmemorylimitinbytes_23',['hashFunctionMemoryLimitInBytes',['../class_recipe.html#ab416aa00f88441725cdc4cc81b9ca6e6',1,'Recipe']]],
+  ['hashfunctionmemorypasses_24',['hashFunctionMemoryPasses',['../class_recipe.html#aa7ab09d348ed0f759b6af0a082a9353f',1,'Recipe']]]
 ];
