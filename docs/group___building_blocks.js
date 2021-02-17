@@ -1,28 +1,29 @@
 var group___building_blocks =
 [
-    [ "DerivationOptions", "class_derivation_options.html", [
-      [ "DerivationOptions", "class_derivation_options.html#a0c97df5d25ca151ddb33200d5bd296e1", null ],
-      [ "derivationOptionsJsonWithAllOptionalParametersSpecified", "class_derivation_options.html#a59a4a45df67679e8c8b9369a5c204cf2", null ],
-      [ "derivePrimarySecret", "class_derivation_options.html#a52d0eb127a6f988defacc87861e3ce2a", null ],
-      [ "algorithm", "class_derivation_options.html#aa504763e8e98aca5107863a71b403254", null ],
-      [ "derivationOptionsJson", "class_derivation_options.html#a404d2140971b120a19d306a9fe56f2c9", null ],
-      [ "hashFunction", "class_derivation_options.html#a590894f03c6df3fa6e1e0c56b8dbabfe", null ],
-      [ "hashFunctionMemoryLimitInBytes", "class_derivation_options.html#ad4b6cbabb3752764a26da85f13734b7d", null ],
-      [ "hashFunctionMemoryPasses", "class_derivation_options.html#a40af19c3d54ad9bf3c92b5c3cc9a4ec3", null ],
-      [ "lengthInBits", "class_derivation_options.html#aa0eec8910003502e47fa17e44cf8e9be", null ],
-      [ "lengthInBytes", "class_derivation_options.html#a158e560d6e2c510e93eaf7565efc3a3c", null ],
-      [ "lengthInWords", "class_derivation_options.html#a708ee415a224b1f30c68bc1a80e962b1", null ],
-      [ "type", "class_derivation_options.html#af9e0efe396d2c8e7e45ff90024837166", null ],
-      [ "wordList", "class_derivation_options.html#a08ec15b3bf199a0330ba0a4dad30b815", null ]
-    ] ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", [
-      [ "PackagedSealedMessage", "class_packaged_sealed_message.html#ab8392411568b669029e3476db02f9453", null ],
+      [ "PackagedSealedMessage", "class_packaged_sealed_message.html#a284cc6cf07b8cab0854f1c10bac55b2a", null ],
       [ "PackagedSealedMessage", "class_packaged_sealed_message.html#a8bc45a427290ba93543416242a79c24a", null ],
       [ "toJson", "class_packaged_sealed_message.html#a66068f249673d48f624f9924852109bf", null ],
       [ "toSerializedBinaryForm", "class_packaged_sealed_message.html#a2a6aafe2d46317c16c7682cbf3fc306a", null ],
       [ "ciphertext", "class_packaged_sealed_message.html#adb7fc2d385b7da7aaea9908ef90d8532", null ],
-      [ "derivationOptionsJson", "class_packaged_sealed_message.html#a3ae100dd21c33c96ed4286b5c15572f8", null ],
+      [ "recipe", "class_packaged_sealed_message.html#a4695ee43a4b37ed9bd0f2618c4f930f2", null ],
       [ "unsealingInstructions", "class_packaged_sealed_message.html#abb34602db8ce26556ea9be890c79c1d1", null ]
+    ] ],
+    [ "Recipe", "class_recipe.html", [
+      [ "Recipe", "class_recipe.html#adad1165cf1d8777abc3562142dd57dd6", null ],
+      [ "derivePrimarySecret", "class_recipe.html#ab934722c5f892197f4647e29b0e3600c", null ],
+      [ "recipeWithAllOptionalParametersSpecified", "class_recipe.html#a403ce45cfca9d26318ca98c0d12ef67f", null ],
+      [ "algorithm", "class_recipe.html#af1e6bafed172798739ba42ef7f40ee66", null ],
+      [ "hashFunction", "class_recipe.html#ab551cefbd7bd99727a2fc1921e5af3d4", null ],
+      [ "hashFunctionMemoryLimitInBytes", "class_recipe.html#ab416aa00f88441725cdc4cc81b9ca6e6", null ],
+      [ "hashFunctionMemoryPasses", "class_recipe.html#aa7ab09d348ed0f759b6af0a082a9353f", null ],
+      [ "lengthInBits", "class_recipe.html#a2696bf9b711ce9ece230f52fe0599bf4", null ],
+      [ "lengthInBytes", "class_recipe.html#a43e0fee7cc037dff558b6597bd704f95", null ],
+      [ "lengthInChars", "class_recipe.html#ab3f818f586cf2235ca0983c433143d4c", null ],
+      [ "lengthInWords", "class_recipe.html#a0be1de244f8286f70958e07e1a83d2dd", null ],
+      [ "recipe", "class_recipe.html#a5bf8a2f056dcde7a9d798f138ed56b21", null ],
+      [ "type", "class_recipe.html#a480f53217a3366307411dc29e1a2d477", null ],
+      [ "wordList", "class_recipe.html#a390d08cb2198701a1754a8e5294ff75d", null ]
     ] ],
     [ "SodiumBuffer", "class_sodium_buffer.html", [
       [ "SodiumBuffer", "class_sodium_buffer.html#acf228f463a1ec5a7afe2f6ab3a200869", null ],

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7esodiumbuffer_68',['~SodiumBuffer',['../class_sodium_buffer.html#aa8522ff7f2949e4f917c35b5d5449564',1,'SodiumBuffer']]]
+  ['wordlist_69',['wordList',['../class_recipe.html#a390d08cb2198701a1754a8e5294ff75d',1,'Recipe']]]
 ];
