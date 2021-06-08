@@ -2,7 +2,7 @@
 #include "Packet.hpp"
 #include "PublicKeyPacket.hpp"
 #include "SecretKeyPacket.hpp"
-#include "sodium.h"
+#include <sodium.h>
 
 const ByteBuffer createSignaturePacket(
     const ByteBuffer &secretKey,
