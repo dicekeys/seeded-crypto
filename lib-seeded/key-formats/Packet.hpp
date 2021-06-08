@@ -3,7 +3,10 @@
 #include <vector>
 #include <string>
 #include "ByteBuffer.hpp"
+#include "SHA1.hpp"
+#include "sodium.h"
 
+const size_t  SHA1_HASH_LENGTH_IN_BYTES = 20; // 160 bits
 const uint8_t s2kUsage = 0x00;
 const uint8_t pTagSignaturePacket = 0x88;
 const uint8_t pTagPublicPacket = 0x98;
@@ -30,7 +33,7 @@ const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<uin
   }
 }
 
-const ByteBuffer wrapKeyWithLengthPrefixAndTrim(ByteBuffer &value) {
+const ByteBuffer wrapKeyWithLengthPrefixAndTrim(const ByteBuffer &value) {
   ByteBuffer wrappedKey;
   uint16_t num0BitsAtStart = numberOfConsecutive0BitsAtStartOfByteVector(value.byteVector);
   uint16_t numberOf0BytesToSkipOver = num0BitsAtStart / 8;
@@ -42,7 +45,7 @@ const ByteBuffer wrapKeyWithLengthPrefixAndTrim(ByteBuffer &value) {
 
 const ByteBuffer createPacket(uint8_t type, const ByteBuffer &packetBodyBuffer) {
   ByteBuffer packet;
-  packet.writeByte(pTag);
+  packet.writeByte(type);
   // RFC2440 Section 4.2.2
   // Should follow the spec as described in RFC4880-bis-10 - Section 5.2.3.1.
   // Hardcoded to one byte as 191 length is enough for our use case.
@@ -56,12 +59,12 @@ const ByteBuffer taggedPublicKey(const ByteBuffer &publicKey) {
   // 0x40 indicate compressed format
   // Kotlin:      val taggedPublicKey = byteArrayOf(0x40) + publicKey
   ByteBuffer taggedPublicKeyBuffer;
-  taggedPublicKeyBuffer.writeByte(x40);
+  taggedPublicKeyBuffer.writeByte(0x40);
   taggedPublicKeyBuffer.append(publicKey);
   return taggedPublicKeyBuffer;
 };
 
-const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint_32_t timestamp) {
+const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint32_t timestamp) {
   ByteBuffer packetBody;
   packetBody.writeByte(Version);
   packetBody.write32Bits(timestamp);
@@ -69,18 +72,19 @@ const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint_32_t times
   packetBody.writeByte(Ed25519CurveOid.size());
   packetBody.append(Ed25519CurveOid);
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKey)));
-  return createPacket(pTagPublicPacket, packetBody)
+  return createPacket(pTagPublicPacket, packetBody);
 };
 
-const uint_16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey) {
+const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey) {
+  uint16_t checksum = 0;
   for (size_t i = 0; i < wrappedSecretKey.byteVector.size(); i ++) {
-    const uint_8_t byte = wrappedSecretKey.byteVector[i];
+    const uint8_t byte = wrappedSecretKey.byteVector[i];
     checksum += byte;
   }
   return checksum;
 }
 
-const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, uint_32_t timestamp) {
+const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, uint32_t timestamp) {
   ByteBuffer packetBody;
   packetBody.writeByte(Version);
   packetBody.write32Bits(timestamp);
@@ -90,12 +94,12 @@ const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, ByteBuffer &pub
 
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKey)));
 
-  packetBody.writeByte(s2kUsage)
+  packetBody.writeByte(s2kUsage);
 
   const ByteBuffer wrappedSecretKey = wrapKeyWithLengthPrefixAndTrim(secretKey);
   packetBody.append(wrappedSecretKey);
   packetBody.write16Bits(calculateCheckSumOfWrappedSecretKey(wrappedSecretKey));
-  return createPacket(pTagSecretPacket, packetBody)
+  return createPacket(pTagSecretPacket, packetBody);
 }
 
 // A V4 fingerprint is the 160-bit SHA-1 hash of the octet 0x99,
@@ -104,11 +108,13 @@ const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, ByteBuffer &pub
 // low-order 64 bits of the fingerprint.
 const ByteBuffer publicKeyFingerprint(const ByteBuffer &publicKeyPacket) {
   ByteBuffer preimage;
-  preimage.writeByte(0x99)
-  preimage.write16Bits(publicKeyPacket.size)
-  preimage.append(publicKeyPacket)
-  // FIXME
-  return SHA1(preimage);
+  preimage.writeByte(0x99);
+  preimage.write16Bits(publicKeyPacket.size());
+  preimage.append(publicKeyPacket);
+  sha1 hash = sha1();
+  hash.add(preimage.byteVector.data(), preimage.byteVector.size());
+  hash.finalize();
+  return ByteBuffer(SHA1_HASH_LENGTH_IN_BYTES, (uint8_t*) hash.state);
 }
 
 const ByteBuffer createUserIdPacket(const std::string &userName, const std::string &email) {
@@ -120,42 +126,47 @@ const ByteBuffer createUserIdPacket(const std::string &userName, const std::stri
   return createPacket(pTagUserIdPacket, packetBody);
 };
 
-const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, ByteBuffer userIdPacket, uint_32_t timestamp) {
+const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, ByteBuffer userIdPacket, uint32_t timestamp) {
   ByteBuffer publicPacket = createPublicPacket(publicKey, timestamp);
   ByteBuffer secretPacket = createSecretPacket(secretKey, publicKey, timestamp);
 
   ByteBuffer packetBody;
-  packetBody.writeByte(Version)
-  packetBody.writeByte(0x13) //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
-  packetBody.writeByte(Ed25519Algorithm)
-  packetBody.writeByte(Sha256Algorithm)
+  packetBody.writeByte(Version);
+  packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
+  packetBody.writeByte(Ed25519Algorithm);
+  packetBody.writeByte(Sha256Algorithm);
 
-  packetBody.writeShort(hashedSubPackets.size) // hashed_area_len
-  packetBody.write(hashedSubPackets)
+  packetBody.write16Bits(hashedSubPackets.size); // hashed_area_len
+  packetBody.append(hashedSubPackets);
 
-  packetBody.writeShort(unhashedSubPackets.size) // unhashed_area_len
-  packetBody.write(unhashedSubPackets)
+  packetBody.write16Bits(unhashedSubPackets.size); // unhashed_area_len
+  packetBody.append(unhashedSubPackets);
 
-  val digest: MessageDigest = MessageDigest.getInstance("SHA-256")
+
   ByteBuffer preimage;
   preimage.append(publicPacket, 2); // skip 2 byte packet header of tag byte and length byte
   preimage.append(userIdPacket, 2); // skip 2 byte packet header of tag byte and length byte
-  primate.append(packetBody); // no need to skip since we haven't put the body in a packet yet
-  hash = SHA256(preimage);
+  preimage.append(packetBody); // no need to skip since we haven't put the body in a packet yet
+  unsigned char sha256HashArray[crypto_hash_sha256_BYTES];
+  crypto_hash_sha256(sha256HashArray, preimage.byteVector.data(), preimage.byteVector.size());
+  ByteBuffer sha256Hash(crypto_hash_sha256_BYTES, sha256HashArray);
 
   // write first two bytes of SHA256 hash
-  packetBody.writeByte(hash[0]);
-  packetBody.writeByte(hash[1]);
+  packetBody.writeByte(sha256Hash.byteVector[0]);
+  packetBody.writeByte(sha256Hash.byteVector[1]);
 
   // val signature = ByteArray(Ed25519PrivateKeyParameters.SIGNATURE_SIZE)
   // privateKeyEd255119.sign(Ed25519.Algorithm.Ed25519, null, hash, 0, hash.size, signature, 0)
-  const auto signature = ByteArray(Ed25519PrivateKeyParameters.SIGNATURE_SIZE)
-  privateKeyEd255119.sign(Ed25519.Algorithm.Ed25519, null, hash, 0, hash.size, signature, 0)
+  // const auto signature = ByteArray(Ed25519PrivateKeyParameters.SIGNATURE_SIZE)
+  // privateKeyEd255119.sign(Ed25519.Algorithm.Ed25519, null, hash, 0, hash.size, signature, 0)
+  unsigned char signatureArray[crypto_sign_BYTES];
+  crypto_sign_detached(signatureArray, NULL, sha256HashArray, crypto_hash_sha256_BYTES, secretKey.byteVector.data());
+  ByteBuffer signature(crypto_sign_BYTES, signatureArray);
 
   // split signature into 2 parts of 32 bytes
   // r & s
-  packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.take(32).toByteArray()).toByteArray())
-  packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.takeLast(32).toByteArray()).toByteArray())
+  packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0,32)));
+  packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32,32)));
   return createPacket(pTagSignaturePacket, packetBody);
 }
 
