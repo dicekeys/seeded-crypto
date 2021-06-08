@@ -33,6 +33,6 @@ class ByteBuffer {
     void append(size_t numBytes, const uint8_t* data);
     void append(const ByteBuffer &value, size_t skipBytes = 0);
 
-    ByteBuffer slice(size_t start, size_t count);
+    ByteBuffer slice(size_t start, size_t count) const;
 };
 

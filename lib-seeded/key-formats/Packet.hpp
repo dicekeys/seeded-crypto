@@ -106,7 +106,7 @@ const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, ByteBuffer &pub
 // followed by the two-octet packet length, followed by the entire
 // Public-Key packet starting with the version field.  The Key ID is the
 // low-order 64 bits of the fingerprint.
-const ByteBuffer publicKeyFingerprint(const ByteBuffer &publicKeyPacket) {
+const ByteBuffer getPublicKeyFingerprint(const ByteBuffer &publicKeyPacket) {
   ByteBuffer preimage;
   preimage.writeByte(0x99);
   preimage.write16Bits(publicKeyPacket.size());
@@ -115,6 +115,10 @@ const ByteBuffer publicKeyFingerprint(const ByteBuffer &publicKeyPacket) {
   hash.add(preimage.byteVector.data(), preimage.byteVector.size());
   hash.finalize();
   return ByteBuffer(SHA1_HASH_LENGTH_IN_BYTES, (uint8_t*) hash.state);
+}
+
+const ByteBuffer getPublicKeyId(const ByteBuffer &publicKeyFingerprint) {
+  return publicKeyFingerprint.slice(publicKeyFingerprint.size() - 8, 8);
 }
 
 const ByteBuffer createUserIdPacket(const std::string &userName, const std::string &email) {
@@ -126,6 +130,19 @@ const ByteBuffer createUserIdPacket(const std::string &userName, const std::stri
   return createPacket(pTagUserIdPacket, packetBody);
 };
 
+
+: ByteArray by lazy {
+val out = ByteStreams.newDataOutput()
+
+// Issuer (0x10)
+Subpacket(0x10, out).apply {
+write(secretPacket.publicPacket.keyId())
+write()
+}
+
+out.toByteArray()
+}
+
 const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, ByteBuffer userIdPacket, uint32_t timestamp) {
   ByteBuffer publicPacket = createPublicPacket(publicKey, timestamp);
   ByteBuffer secretPacket = createSecretPacket(secretKey, publicKey, timestamp);
@@ -136,13 +153,69 @@ const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &
   packetBody.writeByte(Ed25519Algorithm);
   packetBody.writeByte(Sha256Algorithm);
 
-  packetBody.write16Bits(hashedSubPackets.size); // hashed_area_len
-  packetBody.append(hashedSubPackets);
+  const ByteBuffer pubicKeyFingerprint = getPublicKeyFingerprint(publicPacket);
+  const ByteBuffer publicKeyId = getPublicKeyId(pubicKeyFingerprint);
 
-  packetBody.write16Bits(unhashedSubPackets.size); // unhashed_area_len
-  packetBody.append(unhashedSubPackets);
+  ByteBuffer hashedSubpackets;
+  // Issuer Fingerprint)
+  {
+    ByteBuffer body;
+    body.writeByte(Version);
+    body.append(pubicKeyFingerprint);
+    hashedSubpackets.append(createPacket(0x21 /* issuer */, body));
+  } {
+  // Signature Creation Time (0x2)
+    ByteBuffer body;
+    body.write32Bits(timestamp);
+    hashedSubpackets.append(createPacket(0x02, body));
+  } {
+  // Key Flags (0x1b)
+    ByteBuffer body;
+    body.writeByte(0x01); // Certify (0x1)
+    hashedSubpackets.append(createPacket(0x1b, body));
+  } {
+  // Preferred Symmetric Algorithms (0xb)
+    ByteBuffer body;
+    body.writeByte(0x09); // AES with 256-bit key (0x9)
+    body.writeByte(0x08); // AES with 192-bit key (0x8)
+    body.writeByte(0x07); // AES with 128-bit key (0x7)
+    body.writeByte(0x01); // TripleDES (DES-EDE, 168 bit key derived from 192) (0x2)
+    hashedSubpackets.append(createPacket(0x0b, body));
+  } {
+  // Preferred Hash Algorithms (0x15)
+    ByteBuffer body;
+    body.writeByte(0x0a); // SHA512 (0xa)
+    body.writeByte(0x09); // SHA384 (0x9)
+    body.writeByte(0x08); // SHA256 (0x8)
+    body.writeByte(0x0b); // SHA224 (0xb)
+    body.writeByte(0x02); // SHA1 (0x2)
+    hashedSubpackets.append(createPacket(0x15, body));
+  } {
+  // Preferred Compression Algorithms (0x16)
+    ByteBuffer body;
+    body.writeByte(0x02); // ZLIB (0x2)
+    body.writeByte(0x03); // BZip2 (0x3)
+    body.writeByte(0x01); // ZIP (0x1)
+    hashedSubpackets.append(createPacket(0x16, body));
+  } {
+  // Features (0x1e)
+    ByteBuffer body;
+    body.writeByte(0x01); // Modification detection (0x1)
+    hashedSubpackets.append(createPacket(0x1e, body));
+  } {
+  // Key Server Preferences (0x17)
+    ByteBuffer body;
+    body.writeByte(0x80); // No-modify (0x80)
+    hashedSubpackets.append(createPacket(0x17, body));
+  }
 
+  // Write the subpackets that will be part of the hash, prefixed
+  // by the length of all the subpackets combined.
+  packetBody.write16Bits(hashedSubpackets.size()); // hashed_area_len
+  packetBody.append(hashedSubpackets);
 
+  // Calculate the SHA256-bit hash of the packet before appending the
+  // unhashed subpackets (which, as the name implies, shouldn't be hashed).
   ByteBuffer preimage;
   preimage.append(publicPacket, 2); // skip 2 byte packet header of tag byte and length byte
   preimage.append(userIdPacket, 2); // skip 2 byte packet header of tag byte and length byte
@@ -151,41 +224,30 @@ const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &
   crypto_hash_sha256(sha256HashArray, preimage.byteVector.data(), preimage.byteVector.size());
   ByteBuffer sha256Hash(crypto_hash_sha256_BYTES, sha256HashArray);
 
-  // write first two bytes of SHA256 hash
+  // The unhashed subpackets should not be hashed/signed.
+  // (It's just a keyId which can be re-derived from the hashed content.)
+  ByteBuffer unhashedSubpackets;
+  {
+    // Issuer 0x10 (keyId which is last 8 bytes of SHA256 of public key packet body)
+    unhashedSubpackets.append(createPacket(0x10 /* issuer */, publicKeyId));
+  }
+  packetBody.write16Bits(unhashedSubpackets.size()); // unhashed_area_len
+  packetBody.append(unhashedSubpackets);
+
+  // write first two bytes of SHA256 hash of the signature before writing the signature
+  // itself
   packetBody.writeByte(sha256Hash.byteVector[0]);
   packetBody.writeByte(sha256Hash.byteVector[1]);
 
-  // val signature = ByteArray(Ed25519PrivateKeyParameters.SIGNATURE_SIZE)
-  // privateKeyEd255119.sign(Ed25519.Algorithm.Ed25519, null, hash, 0, hash.size, signature, 0)
-  // const auto signature = ByteArray(Ed25519PrivateKeyParameters.SIGNATURE_SIZE)
-  // privateKeyEd255119.sign(Ed25519.Algorithm.Ed25519, null, hash, 0, hash.size, signature, 0)
+  // Sign the hash
   unsigned char signatureArray[crypto_sign_BYTES];
   crypto_sign_detached(signatureArray, NULL, sha256HashArray, crypto_hash_sha256_BYTES, secretKey.byteVector.data());
   ByteBuffer signature(crypto_sign_BYTES, signatureArray);
 
-  // split signature into 2 parts of 32 bytes
-  // r & s
+  // Append the signature point, which is two 256-bit numbers (r and s),
+  // which should thus be wrapped using the wrapping encoding for numbers.
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0,32)));
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32,32)));
   return createPacket(pTagSignaturePacket, packetBody);
 }
-
-// class Packet {
-//   public:
-//     // RFC4880 - Section 4
-//     // Explanation: https://under-the-hood.sequoia-pgp.org/packet-structure/
-//     virtual uint8_t pTag(); // Also known as CTB (Cipher Type Byte)
-//     virtual BodyBuffer body();
-
-//     // virtual std::vector<uint8_t> hash(digest: MessageDigest);
-    
-//     const ByteBuffer toByteArray() {
-//       creatPacket(pTag(), body()).byteVector;
-//     }
-
-//     static const uint8_t Version = 0x04;
-//     static const uint8_t Sha256Algorithm = 0x08; // RFC4880-bis-10 - Section 9.5 - 08 - SHA2-256 [FIPS180]
-//     static const uint8_t Ed25519Algorithm = 0x16; // RFC4880-bis-10 - Section 9.1 - 22 (0x16) - EdDSA [RFC8032]
-//     static const std::vector<uint8_t> Ed25519CurveOid() { return std::vector<uint8_t>({0x2b, 0x06, 0x01, 0x04, 0x01, 0xda, 0x47, 0x0f, 0x01}); }; // RFC4880-bis-10 - Section 9.2.  ECC Curve OID
-// };
 
