@@ -60,6 +60,11 @@ void ByteBuffer::append(const ByteBuffer &value, size_t skipBytes) {
     append(value.byteVector, skipBytes);
 }
 
+void ByteBuffer::append(const std::string str) {
+    byteVector.insert( byteVector.end(), str.begin(), str.end() );
+}
+
+
 ByteBuffer ByteBuffer::slice(size_t start, size_t count) const {
     return ByteBuffer(count, byteVector.data() + start);
 }

@@ -32,6 +32,7 @@ class ByteBuffer {
     void append(const std::vector<uint8_t> &value, size_t skipBytes = 0);
     void append(size_t numBytes, const uint8_t* data);
     void append(const ByteBuffer &value, size_t skipBytes = 0);
+    void append(const std::string str);
 
     ByteBuffer slice(size_t start, size_t count) const;
 };
