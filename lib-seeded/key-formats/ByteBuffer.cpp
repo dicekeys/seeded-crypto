@@ -20,29 +20,29 @@ ByteBuffer::ByteBuffer(const std::vector<uint8_t> &_byteVector) {
 
 ByteBuffer::ByteBuffer(size_t length, const unsigned char * data) {
     byteVector.assign(data, data + length);
-};
+}
 
-ByteBuffer::ByteBuffer() {}
+ByteBuffer::ByteBuffer() = default;
 
-uint32_t ByteBuffer::size() const { return byteVector.size(); };
+uint32_t ByteBuffer::size() const { return byteVector.size(); }
 
 void ByteBuffer::writeByte(uint8_t byte) {
     byteVector.push_back(byte);
-};
+}
 
 void ByteBuffer::write16Bits(uint16_t value) {
-    uint8_t high = (value >> 8) & 0xff;
-    uint8_t low = value & 0xff;
+    uint8_t high = uint8_t(value >> 8u) & uint8_t(0xff);
+    uint8_t low = value & uint8_t(0xff);
     writeByte(high);
     writeByte(low);
-};
+}
 
 void ByteBuffer::write32Bits(uint32_t value) {
-    uint16_t high = (value >> 16) & 0xffff;
-    uint16_t low = value & 0xffff;
+    uint16_t high = uint16_t(value >> 16u) & uint16_t(0xffff);
+    uint16_t low = uint16_t(value) & uint16_t(0xffff);
     write16Bits(high);
     write16Bits(low);
-};
+}
 
 void ByteBuffer::append(const std::vector<uint8_t> &value, size_t skipBytes) {
     auto start = value.begin();
@@ -50,7 +50,7 @@ void ByteBuffer::append(const std::vector<uint8_t> &value, size_t skipBytes) {
         std::advance(start, skipBytes);
     }
     byteVector.insert( byteVector.end(), start, value.end() );
-};
+}
 
 void ByteBuffer::append(size_t numBytes, const uint8_t* data) {
     byteVector.insert( byteVector.end(), data, data + numBytes );
@@ -58,8 +58,8 @@ void ByteBuffer::append(size_t numBytes, const uint8_t* data) {
 
 void ByteBuffer::append(const ByteBuffer &value, size_t skipBytes) {
     append(value.byteVector, skipBytes);
-};
+}
 
 ByteBuffer ByteBuffer::slice(size_t start, size_t count) const {
-    ByteBuffer(count, byteVector.data() + start);
+    return ByteBuffer(count, byteVector.data() + start);
 }

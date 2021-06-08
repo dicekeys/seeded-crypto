@@ -31,6 +31,7 @@ const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<uin
       }
     }
   }
+  return numberOfConsecutive0Bits;
 }
 
 const ByteBuffer wrapKeyWithLengthPrefixAndTrim(const ByteBuffer &value) {
@@ -41,7 +42,7 @@ const ByteBuffer wrapKeyWithLengthPrefixAndTrim(const ByteBuffer &value) {
   wrappedKey.write16Bits(sizeInBits);
   wrappedKey.append(value, numberOf0BytesToSkipOver);
   return wrappedKey;
-};
+}
 
 const ByteBuffer createPacket(uint8_t type, const ByteBuffer &packetBodyBuffer) {
   ByteBuffer packet;
@@ -52,7 +53,7 @@ const ByteBuffer createPacket(uint8_t type, const ByteBuffer &packetBodyBuffer) 
   packet.writeByte(packetBodyBuffer.size());
   packet.append(packetBodyBuffer);
   return packet;
-};
+}
 
 const ByteBuffer taggedPublicKey(const ByteBuffer &publicKey) {
   // RFC4880-bis-10 - Section 13.3 - EdDSA Point Format
@@ -62,7 +63,7 @@ const ByteBuffer taggedPublicKey(const ByteBuffer &publicKey) {
   taggedPublicKeyBuffer.writeByte(0x40);
   taggedPublicKeyBuffer.append(publicKey);
   return taggedPublicKeyBuffer;
-};
+}
 
 const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint32_t timestamp) {
   ByteBuffer packetBody;
@@ -73,7 +74,7 @@ const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint32_t timest
   packetBody.append(Ed25519CurveOid);
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKey)));
   return createPacket(pTagPublicPacket, packetBody);
-};
+}
 
 const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey) {
   uint16_t checksum = 0;
@@ -128,19 +129,6 @@ const ByteBuffer createUserIdPacket(const std::string &userName, const std::stri
   std::vector<uint8_t> userNameAndEmailByteVector(userNameAndEmail.begin(), userNameAndEmail.end());
   packetBody.append(userNameAndEmailByteVector);
   return createPacket(pTagUserIdPacket, packetBody);
-};
-
-
-: ByteArray by lazy {
-val out = ByteStreams.newDataOutput()
-
-// Issuer (0x10)
-Subpacket(0x10, out).apply {
-write(secretPacket.publicPacket.keyId())
-write()
-}
-
-out.toByteArray()
 }
 
 const ByteBuffer createSignaturePacket(const ByteBuffer &secretKey, ByteBuffer &publicKey, ByteBuffer userIdPacket, uint32_t timestamp) {
