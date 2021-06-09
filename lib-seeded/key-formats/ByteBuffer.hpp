@@ -24,6 +24,9 @@ class ByteBuffer {
     ByteBuffer(size_t length, const unsigned char * data);
     ByteBuffer();
 
+    static ByteBuffer fromHex(const std::string &hex);
+    std::string toHex() const;
+
     uint32_t size() const;
 
     ByteBuffer slice(size_t start, size_t count) const;

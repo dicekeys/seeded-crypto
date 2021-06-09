@@ -10,7 +10,7 @@ public:
     }
 
     void appendDataWithLengthPrefix(const std::string &rawString) {
-        write32Bits(rawString.size());
+        write32Bits(uint32_t(rawString.size()));
         append(rawString);
     }
 
@@ -54,7 +54,7 @@ std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &pub
     return "ssh-ed25519 " + toHexStr(out.byteVector) + " DiceKeys";
 }
 
-std::string createPrivateKeyEd25519(
+ByteBuffer createPrivateKeyEd25519(
         const SigningKey &signingKey,
         const std::string comment,
         uint32_t checksum
@@ -78,4 +78,5 @@ std::string createPrivateKeyEd25519(
         privateKeyBuffer.appendPrivateKeyEd25519(signingKey, comment, checksum);
         out.appendDataWithLengthPrefix(privateKeyBuffer);
     }
+    return out;
 }

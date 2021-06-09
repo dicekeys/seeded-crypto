@@ -287,22 +287,16 @@ TEST(SigningKey, ConvertsToJsonAndBack) {
 TEST(SigningKey, ConvertsToSerializedFormAndBack) {
 	SigningKey testKey(orderedTestKey, defaultTestSigningRecipeJson);
 
-	auto comactSerializedBinaryForm = testKey.toSerializedBinaryForm();
-	auto compactCopy = SigningKey::fromSerializedBinaryForm(comactSerializedBinaryForm);
-	ASSERT_EQ(compactCopy.recipe, testKey.recipe);
-	ASSERT_STREQ(compactCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
-
-	auto fullSerializedBinaryForm = testKey.toSerializedBinaryForm();
-	auto fullCopy = SigningKey::fromSerializedBinaryForm(fullSerializedBinaryForm);
-	ASSERT_EQ(fullCopy.recipe, testKey.recipe);
-	ASSERT_STREQ(fullCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
-
+	auto serializedBinaryForm = testKey.toSerializedBinaryForm();
+	auto copy = SigningKey::fromSerializedBinaryForm(serializedBinaryForm);
+	ASSERT_EQ(copy.recipe, testKey.recipe);
+	ASSERT_STREQ(copy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
+	ASSERT_STREQ(toHexStr(copy.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 }
 
 TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
 	SigningKey testSigningKey(orderedTestKey, defaultTestSigningRecipeJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
-
 	const std::string serialized = testSignatureVerificationKey.toJson(1, '\t');
 	const SignatureVerificationKey replica = SignatureVerificationKey::fromJson(serialized);
 	ASSERT_EQ(replica.getRecipeJson(), defaultTestSigningRecipeJson);
@@ -312,7 +306,6 @@ TEST(SignatureVerificationKey, ConvertsToJsonAndBack) {
 TEST(SignatureVerificationKey, ConvertsToSerializedFormAndBack) {
 	SigningKey testSigningKey(orderedTestKey, defaultTestSigningRecipeJson);
 	const SignatureVerificationKey testSignatureVerificationKey = testSigningKey.getSignatureVerificationKey();
-
 	const auto serialized = testSignatureVerificationKey.toSerializedBinaryForm();
 	const SignatureVerificationKey replica = SignatureVerificationKey::fromSerializedBinaryForm(serialized);
 	ASSERT_EQ(replica.getRecipeJson(), defaultTestSigningRecipeJson);
@@ -379,7 +372,7 @@ TEST(SymmetricKey, EncryptsAndDecrypts) {
 }
 
 TEST(SymmetricKey, ThrowsOnEncryptEmptyMessage) {
-	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricRecipeJson);
 
 	const std::vector<unsigned char> messageVector = {};
 	const std::string unsealingInstructions = "";

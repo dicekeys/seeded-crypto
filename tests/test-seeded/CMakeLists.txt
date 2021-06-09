@@ -16,3 +16,12 @@ target_include_directories(
         ${PROJECT_SOURCE_DIR}/extern/libsodium/src/libsodium/include
 )
 
+package_add_test(test-key-formats test-key-formats.cpp lib-seeded)
+
+target_include_directories(
+    test-key-formats
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/lib-seeded
+        ${PROJECT_SOURCE_DIR}/extern/libsodium/src/libsodium/include
+)
+

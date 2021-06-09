@@ -1,4 +1,6 @@
 #include "ByteBuffer.hpp"
+#include "../convert.hpp"
+
 /**
  * https://www.ietf.org/archive/id/draft-ietf-openpgp-rfc4880bis-10.txt
  *
@@ -23,9 +25,17 @@ ByteBuffer::ByteBuffer(size_t length, const unsigned char * data) {
     byteVector.assign(data, data + length);
 }
 
+ByteBuffer ByteBuffer::fromHex(const std::string& hex) {
+  return ByteBuffer(hexStrToByteVector(hex));
+}
+std::string ByteBuffer::toHex() const {
+  return toHexStr(byteVector);
+}
+
+
 ByteBuffer::ByteBuffer() = default;
 
-uint32_t ByteBuffer::size() const { return byteVector.size(); }
+uint32_t ByteBuffer::size() const { return uint32_t(byteVector.size()); }
 
 void ByteBuffer::writeByte(uint8_t byte) {
     byteVector.push_back(byte);

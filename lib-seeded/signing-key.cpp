@@ -6,7 +6,7 @@
 #include "common-names.hpp"
 
 const SodiumBuffer convertSeedToSodiumPrivateKey(const SodiumBuffer& seedOrSodiumPrivateKey) {
-  if (seedOrSodiumPrivateKey.length != crypto_sign_SECRETKEYBYTES) {
+  if (seedOrSodiumPrivateKey.length == crypto_sign_SECRETKEYBYTES) {
     return seedOrSodiumPrivateKey;
   } else if (seedOrSodiumPrivateKey.length == crypto_sign_SEEDBYTES) {
     SodiumBuffer sodiumStylePrivateKeyBytes(crypto_sign_SECRETKEYBYTES);
@@ -133,9 +133,9 @@ const SodiumBuffer SigningKey::toSerializedBinaryForm() const {
 SigningKey SigningKey::fromSerializedBinaryForm(
   const SodiumBuffer &serializedBinaryForm
 ) {
-  const auto fields = serializedBinaryForm.splitFixedLengthList(3);
+  const auto fields = serializedBinaryForm.splitFixedLengthList(2);
   return SigningKey(
-    fields[0], fields[2].toUtf8String()
+    fields[0], fields[1].toUtf8String()
   );
 }
 
