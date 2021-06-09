@@ -378,6 +378,18 @@ TEST(SymmetricKey, EncryptsAndDecrypts) {
 	ASSERT_EQ(messageVector, unsealedPlaintext);
 }
 
+TEST(SymmetricKey, ThrowsOnEncryptEmptyMessage) {
+	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricDerivationOptionsJson);
+
+	const std::vector<unsigned char> messageVector = {};
+	const std::string unsealingInstructions = "";
+	SodiumBuffer messageBuffer(messageVector);
+
+	ASSERT_ANY_THROW(
+		const auto sealedMessage = testSymmetricKey.sealToCiphertextOnly(messageBuffer, unsealingInstructions);
+	);
+}
+
 
 TEST(SymmetricKey, EncryptsAndDecryptsPackaged) {
 	const SymmetricKey testSymmetricKey(orderedTestKey, defaultTestSymmetricRecipeJson);
