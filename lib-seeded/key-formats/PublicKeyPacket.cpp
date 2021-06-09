@@ -32,12 +32,19 @@ const ByteBuffer createPublicPacket(const ByteBuffer &publicKey, uint32_t timest
 const ByteBuffer getPublicKeyFingerprint(const ByteBuffer &publicKeyPacket) {
   ByteBuffer preimage;
   preimage.writeByte(0x99);
-  preimage.write16Bits(publicKeyPacket.size());
-  preimage.append(publicKeyPacket);
+  // body is the packet after the ptag byte and the size byte,
+  // so subtract that two byte prefix from what's written
+  preimage.write16Bits(publicKeyPacket.size() - 2);
+  preimage.append(publicKeyPacket, 2);
   sha1 hash = sha1();
   hash.add(preimage.byteVector.data(), preimage.byteVector.size());
   hash.finalize();
-  return ByteBuffer(SHA1_HASH_LENGTH_IN_BYTES, (uint8_t*) hash.state);
+  ByteBuffer hashBuffer;
+  // Write a word at a time to ensure the hash has the correct byte ordering.
+  for (uint32_t word = 0; word < 5; word++) {
+    hashBuffer.write32Bits(hash.state[word]);
+  }
+  return hashBuffer;
 }
 
 // The Key ID is the low-order 64 bits of the fingerprint.
