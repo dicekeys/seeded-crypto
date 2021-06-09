@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////
-// KeyDerivationOptions JSON Specification
+// KeyRecipe JSON Specification
 // - Automatically-generated file - NOT TO BE MODIFIED DIRECTLY
 //////////////////////////////////////////////////////////////////
 //
 // This c++ header file specifies the JSON parameter names
-// for KeyDerivationOptions.
+// for KeyRecipe.
 #pragma once
 
 #include <string>
 
-namespace DerivationOptionsJson {
+namespace RecipeJson {
 	namespace FieldNames {
 		const std::string androidPackagePrefixesAllowed = "androidPackagePrefixesAllowed";
 		const std::string urlPrefixesAllowed = "urlPrefixesAllowed";
@@ -19,6 +19,7 @@ namespace DerivationOptionsJson {
 		const std::string hashFunctionMemoryLimitInBytes = "hashFunctionMemoryLimitInBytes";
 		const std::string hashFunctionMemoryPasses = "hashFunctionMemoryPasses";
 		const std::string lengthInBits = "lengthInBits";
+		const std::string lengthInChars = "lengthInChars";
 		const std::string lengthInBytes = "lengthInBytes";
 		const std::string lengthInWords = "lengthInWords";
 		const std::string type = "type";

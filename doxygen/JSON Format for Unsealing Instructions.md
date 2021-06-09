@@ -9,7 +9,7 @@ as an empty string.)
 The Seeded Cryptography Library is agnostic to the format and value of this string, so long as
 the same string is used both during sealing and unsealing.
 
-However, since it's format mirrors @ref derivation_options_format, and the DiceKeys API Fields
+However, since it's format mirrors @ref recipe_format, and the DiceKeys API Fields
 are currently documented here, we currently document the JSON format for Unsealing Instructions
 fields below.
 
@@ -17,7 +17,7 @@ fields below.
 
 The unsealing instructions support require authentication requirements via the
 `allow`, `requireAuthenticationHandshake`, and `androidPackagePrefixesAllowed` fields
-from the derivation options format.
+from the recipe format.
 <!-- 
 #### requireUsersConsent
 

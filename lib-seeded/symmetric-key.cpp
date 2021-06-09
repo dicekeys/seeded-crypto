@@ -1,8 +1,9 @@
 #include <exception>
 #include "symmetric-key.hpp"
 #include "packaged-sealed-message.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 void _crypto_secretbox_nonce_salted(
   unsigned char *nonce,
@@ -24,8 +25,8 @@ void _crypto_secretbox_nonce_salted(
 
 SymmetricKey::SymmetricKey(
   const SodiumBuffer& _keyBytes,
-  const std::string _derivationOptionsJson
-) : keyBytes(_keyBytes), derivationOptionsJson(_derivationOptionsJson) {
+  const std::string _recipe
+) : keyBytes(_keyBytes), recipe(_recipe) {
   if (keyBytes.length != crypto_secretbox_KEYBYTES) {
     throw std::invalid_argument("Invalid key length");
   }
@@ -33,25 +34,25 @@ SymmetricKey::SymmetricKey(
 
 SymmetricKey::SymmetricKey(
   const SymmetricKey &other
-) : SymmetricKey(other.keyBytes, other.derivationOptionsJson) {}
+) : SymmetricKey(other.keyBytes, other.recipe) {}
 
 SymmetricKey::SymmetricKey(
   const std::string& seedString,
-  const std::string& derivationOptionsJson
-) : SymmetricKey(deriveFromSeed(seedString, derivationOptionsJson)) {}
+  const std::string& recipe
+) : SymmetricKey(deriveFromSeed(seedString, recipe)) {}
 
 SymmetricKey SymmetricKey::deriveFromSeed(
   const std::string& seedString,
-  const std::string& _derivationOptionsJson
+  const std::string& _recipe
 ) {
   return SymmetricKey(
-    DerivationOptions::derivePrimarySecret(
+    Recipe::derivePrimarySecret(
       seedString,
-      _derivationOptionsJson,
-      DerivationOptionsJson::type::SymmetricKey,
+      _recipe,
+      RecipeJson::type::SymmetricKey,
       crypto_secretbox_KEYBYTES
     ),
-    _derivationOptionsJson
+    _recipe
   );
 }
 
@@ -99,7 +100,7 @@ const PackagedSealedMessage SymmetricKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message, unsealingInstructions),
-    derivationOptionsJson,
+    recipe,
     unsealingInstructions
   );
 }
@@ -118,7 +119,7 @@ const PackagedSealedMessage SymmetricKey::seal(
 ) const {
     return PackagedSealedMessage( 
       sealToCiphertextOnly(message.data(), message.size(), unsealingInstructions),
-      derivationOptionsJson,
+      recipe,
       unsealingInstructions
   );
 }
@@ -131,7 +132,7 @@ const PackagedSealedMessage SymmetricKey::seal(
 ) const {
     return PackagedSealedMessage( 
       sealToCiphertextOnly(message, messageLength, unsealingInstructions),
-      derivationOptionsJson,
+      recipe,
       unsealingInstructions
   );
 }
@@ -198,14 +199,14 @@ const SodiumBuffer SymmetricKey::unseal(
   const PackagedSealedMessage& packagedSealedMessage,
   const std::string& seedString
 ) {
-  return SymmetricKey::deriveFromSeed(seedString, packagedSealedMessage.derivationOptionsJson)
+  return SymmetricKey::deriveFromSeed(seedString, packagedSealedMessage.recipe)
     .unseal(packagedSealedMessage.ciphertext, packagedSealedMessage.unsealingInstructions);
 }
 
 
 namespace SymmetricKeyJsonField {
-  const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string keyBytes = "keyBytes";
+  static const std::string recipe = CommonNames::recipe;
 }
 
 SymmetricKey SymmetricKey::fromJson(
@@ -215,7 +216,7 @@ SymmetricKey SymmetricKey::fromJson(
     nlohmann::json jsonObject = nlohmann::json::parse(symmetricKeyAsJson);
     return SymmetricKey(
       SodiumBuffer::fromHexString(jsonObject.at(SymmetricKeyJsonField::keyBytes)),
-      jsonObject.value(SymmetricKeyJsonField::derivationOptionsJson, "")
+      jsonObject.value(SymmetricKeyJsonField::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -228,18 +229,18 @@ const std::string SymmetricKey::toJson(
 ) const {
   nlohmann::json asJson;
   asJson[SymmetricKeyJsonField::keyBytes] = keyBytes.toHexString();
-  if (derivationOptionsJson.size() > 0) {
-    asJson[SymmetricKeyJsonField::derivationOptionsJson] = derivationOptionsJson;
+  if (recipe.size() > 0) {
+    asJson[SymmetricKeyJsonField::recipe] = recipe;
   }
   return asJson.dump(indent, indent_char);
 };
 
 
 const SodiumBuffer SymmetricKey::toSerializedBinaryForm() const {
-  SodiumBuffer _derivationOptionsJson = SodiumBuffer(derivationOptionsJson);
+  SodiumBuffer _recipe = SodiumBuffer(recipe);
   return SodiumBuffer::combineFixedLengthList({
     &keyBytes,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 

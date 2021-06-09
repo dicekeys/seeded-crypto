@@ -2,37 +2,38 @@
 #include "github-com-nlohmann-json/json.hpp"
 #include "exceptions.hpp"
 #include "convert.hpp"
+#include "common-names.hpp"
 
 // JSON field names
 namespace PackagedSealedMessageJsonFields {
   static const std::string ciphertext = "ciphertext";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string recipe = CommonNames::recipe;
   static const std::string unsealingInstructions = "unsealingInstructions";
 }
 
 PackagedSealedMessage::PackagedSealedMessage(
         const std::vector<unsigned char>& _ciphertext,
-        const std::string& _derivationOptionsJson,
+        const std::string& _recipe,
         const std::string& _unsealingInstructions
 ) : 
     ciphertext(_ciphertext),
-    derivationOptionsJson(_derivationOptionsJson),
+    recipe(_recipe),
     unsealingInstructions(_unsealingInstructions)
     {}
 
 PackagedSealedMessage::PackagedSealedMessage(const PackagedSealedMessage &other) :
   ciphertext(other.ciphertext),
-  derivationOptionsJson(other.derivationOptionsJson),
+  recipe(other.recipe),
   unsealingInstructions(other.unsealingInstructions)
   {}
 
 const SodiumBuffer PackagedSealedMessage::toSerializedBinaryForm() const {
   SodiumBuffer _ciphertext(ciphertext);
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _recipe(recipe);
   SodiumBuffer _unsealingInstructions(unsealingInstructions);
   return SodiumBuffer::combineFixedLengthList({
     &_ciphertext,
-    &_derivationOptionsJson,
+    &_recipe,
     &_unsealingInstructions
   });
 }
@@ -48,8 +49,8 @@ const std::string PackagedSealedMessage::toJson(
 ) const {
   nlohmann::json asJson;
   asJson[PackagedSealedMessageJsonFields::ciphertext] = toHexStr(ciphertext);
-  if (derivationOptionsJson.size() > 0) {
-    asJson[PackagedSealedMessageJsonFields::derivationOptionsJson] = derivationOptionsJson;
+  if (recipe.size() > 0) {
+    asJson[PackagedSealedMessageJsonFields::recipe] = recipe;
   }
   if (unsealingInstructions.size() > 0) {
     asJson[PackagedSealedMessageJsonFields::unsealingInstructions] = unsealingInstructions;
@@ -62,7 +63,7 @@ PackagedSealedMessage PackagedSealedMessage::fromJson(const std::string& package
     nlohmann::json jsonObject = nlohmann::json::parse(packagedSealedMessageAsJson);
     return PackagedSealedMessage(
       hexStrToByteVector(jsonObject.at(PackagedSealedMessageJsonFields::ciphertext)),
-      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::derivationOptionsJson, ""),
+      jsonObject.value<std::string>(PackagedSealedMessageJsonFields::recipe, ""),
       jsonObject.value<std::string>(PackagedSealedMessageJsonFields::unsealingInstructions, "")
     );
   } catch (nlohmann::json::exception e) {

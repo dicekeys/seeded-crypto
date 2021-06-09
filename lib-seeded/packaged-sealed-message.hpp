@@ -5,8 +5,8 @@
 #include "sodium-buffer.hpp"
 
 /**
- * @brief When a message is sealed, the ciphertext is packaged with the derivationOptionsJson
- * in @ref derivation_options_format, as well as any optional unsealing instructions
+ * @brief When a message is sealed, the ciphertext is packaged with the recipe
+ * in @ref recipe_format, as well as any optional unsealing instructions
  * it was sealed with (unsealingInstructions).
  * 
  * @ingroup BuildingBlocks
@@ -19,10 +19,10 @@ public:
      */
     const std::vector<unsigned char> ciphertext;
     /**
-     * @brief The derivation options used to generate the
+     * @brief The recipe used to generate the
      * encryption/decryption keys.
      */
-    const std::string derivationOptionsJson;
+    const std::string recipe;
     /**
      * @brief Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
@@ -33,14 +33,14 @@ public:
      * @brief Construct directly from the constituent members
      * 
      * @param ciphertext  The binary sealed message
-     * @param derivationOptionsJson  The derivation options used to generate the
+     * @param recipe  The recipe used to generate the
      * encryption/decryption keys.
      * @param unsealingInstructions Optional public instructions that the sealer
      * requests the unsealer to follow as a condition of unsealing.
      */
     PackagedSealedMessage(
         const std::vector<unsigned char>& ciphertext,
-        const std::string& derivationOptionsJson,
+        const std::string& recipe,
         const std::string& unsealingInstructions
     );
 
@@ -53,7 +53,7 @@ public:
 
   /**
    * @brief Serialize to byte array as a list of:
-   *   (keyBytes, derivationOptionsJson)
+   *   (keyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.
@@ -62,7 +62,7 @@ public:
 
   /**
    * @brief Deserialize from a byte array stored as a list of:
-   *   (keyBytes, derivationOptionsJson)
+   *   (keyBytes, recipe)
    * 
    * Stored in SodiumBuffer's fixed-length list format.
    * Strings are stored as UTF8 byte arrays.

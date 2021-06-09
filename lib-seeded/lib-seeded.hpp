@@ -8,12 +8,12 @@
  */
 
 #include "sodium-buffer.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 #include "packaged-sealed-message.hpp"
 
 /** @defgroup DerivedFromSeeds Derived Keys
  * Keys derived from seed strings using 
- * @ref derivation_options_format
+ * @ref recipe_format
  * (and  which clients can use to derive their own keys).
  */
 

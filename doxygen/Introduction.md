@@ -17,7 +17,7 @@ const auto sealed_message = sk.seal(plaintext);
 ```
 
 All keys and secrets are derived from _seed_ strings, using options specified in
-the @ref derivation_options_format. This is different from most other libraries,
+the @ref recipe_format. This is different from most other libraries,
 where keys are generated using a random number generator. You can still create
 keys using the random number generator with this library, but you would do so
 by having the generator create a random seed string.
@@ -41,7 +41,7 @@ _decrypt_ operations, the library supports only _seal_ and _unseal_.
 The difference is that sealing a message always attaches a message authentication code (MAC)
 to the ciphertext, and unsealing always ensures that the ciphertext has not been modified
 by checking the MAC.
-The seal operation also packages the ciphertext along with the derivation options
+The seal operation also packages the ciphertext along with the recipe
 needed to derive the key needed to unseal the message from the seed.
 
 When sealing data, you can also attach a string that must be known

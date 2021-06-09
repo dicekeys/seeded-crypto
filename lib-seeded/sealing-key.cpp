@@ -4,18 +4,19 @@
 #include "convert.hpp"
 #include "lib-seeded.hpp"
 #include "exceptions.hpp"
+#include "common-names.hpp"
 
 namespace SealingKeyJsonFieldName {
   const std::string keyBytes = "keyBytes";
-  const std::string derivationOptionsJson = "derivationOptionsJson";
+  const std::string recipe = CommonNames::recipe;
 }
 
 SealingKey::SealingKey(
     const std::vector<unsigned char> &_sealingKeyBytes,
-    const std::string& _derivationOptionsJson
-  ) : sealingKeyBytes(_sealingKeyBytes), derivationOptionsJson(_derivationOptionsJson) {
+    const std::string& _recipe
+  ) : sealingKeyBytes(_sealingKeyBytes), recipe(_recipe) {
     if (sealingKeyBytes.size() != crypto_box_PUBLICKEYBYTES) {
-      throw InvalidDerivationOptionValueException("Invalid key size exception");
+      throw InvalidRecipeValueException("Invalid key size exception");
     }
   }
 
@@ -24,7 +25,7 @@ SealingKey SealingKey::fromJson(const std::string& sealingKeyAsJson) {
     nlohmann::json jsonObject = nlohmann::json::parse(sealingKeyAsJson);
     return SealingKey(
       hexStrToByteVector(jsonObject.at(SealingKeyJsonFieldName::keyBytes)),
-      jsonObject.value(SealingKeyJsonFieldName::derivationOptionsJson, "")
+      jsonObject.value(SealingKeyJsonFieldName::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -37,8 +38,8 @@ const std::string SealingKey::toJson(
 ) const {
 	nlohmann::json asJson;  
   asJson[SealingKeyJsonFieldName::keyBytes] = toHexStr(sealingKeyBytes);
-  asJson[SealingKeyJsonFieldName::derivationOptionsJson] =
-    derivationOptionsJson;
+  asJson[SealingKeyJsonFieldName::recipe] =
+    recipe;
   return asJson.dump(indent, indent_char);
 };
 
@@ -102,7 +103,7 @@ const PackagedSealedMessage SealingKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message.data(), message.size(), unsealingInstructions),
-    derivationOptionsJson,
+    recipe,
     unsealingInstructions
   );  
 }
@@ -113,7 +114,7 @@ const PackagedSealedMessage SealingKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message.data, message.length, unsealingInstructions),
-    derivationOptionsJson,
+    recipe,
     unsealingInstructions
   );
 }
@@ -125,7 +126,7 @@ const PackagedSealedMessage SealingKey::seal(
 ) const {
   return PackagedSealedMessage(
     sealToCiphertextOnly(message, messageLength, unsealingInstructions),
-    derivationOptionsJson,
+    recipe,
     unsealingInstructions
   );
 }
@@ -143,12 +144,12 @@ const std::vector<unsigned char> SealingKey::getSealingKeyBytes(
 }
 
 const SodiumBuffer SealingKey::toSerializedBinaryForm() const {
-  SodiumBuffer derivationOptionsJsonBuffer = SodiumBuffer(derivationOptionsJson);
+  SodiumBuffer recipeBuffer = SodiumBuffer(recipe);
   SodiumBuffer _SealingKeyBytes(sealingKeyBytes);
-  SodiumBuffer _derivationOptionsJson(derivationOptionsJson);
+  SodiumBuffer _recipe(recipe);
   return SodiumBuffer::combineFixedLengthList({
     &_SealingKeyBytes,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 

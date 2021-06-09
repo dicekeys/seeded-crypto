@@ -1,16 +1,17 @@
 #include "password.hpp"
-#include "derivation-options.hpp"
+#include "recipe.hpp"
 #include "exceptions.hpp"
 #include "word-lists.hpp"
 #include <algorithm>    // std::min
 #include <sstream> 
+#include "common-names.hpp"
 
 const std::vector<std::string> parseOrGetWordList(
-  const DerivationOptions& derivationOptions,
+  const Recipe& recipe,
   const std::string& wordListAsSingleString
 ) {
   if (wordListAsSingleString.length() <= 2) {
-    return getWordList(derivationOptions.wordList);
+    return getWordList(recipe.wordList);
   }
 
   // Parse the word list
@@ -35,14 +36,14 @@ const std::vector<std::string> parseOrGetWordList(
 
 
 const std::vector<std::string> asWordVector(
-  const DerivationOptions& derivationOptions,
+  const Recipe& recipe,
   const SodiumBuffer& secretBytes,
   const std::string& wordListAsSingleString = ""
 ) {
-  const std::vector<std::string> wordList = parseOrGetWordList(derivationOptions, wordListAsSingleString);
+  const std::vector<std::string> wordList = parseOrGetWordList(recipe, wordListAsSingleString);
   std::vector<std::string> wordsGenerated;
 
-  unsigned int wordsNeeded = derivationOptions.lengthInWords;
+  unsigned int wordsNeeded = recipe.lengthInWords;
   unsigned int bytesConsumed = 0;
   unsigned char currentByte = 0;
   unsigned int bitsLeftInByte = 0;
@@ -65,13 +66,13 @@ const std::vector<std::string> asWordVector(
 
 // add format
 const std::string derivePassword(
-  const DerivationOptions& derivationOptions,
+  const Recipe& recipe,
   const SodiumBuffer& secretBytes,
   const std::string& wordListAsSingleString = ""
 ) {
   const char* const delim = "-";
 
-  const std::vector<std::string> words = asWordVector(derivationOptions, secretBytes, wordListAsSingleString);
+  const std::vector<std::string> words = asWordVector(recipe, secretBytes, wordListAsSingleString);
 
   std::ostringstream joined;
   joined << words.size();
@@ -83,56 +84,56 @@ const std::string derivePassword(
   for (size_t wordIndex = 1; wordIndex < words.size(); wordIndex++) {
     joined << delim << words[wordIndex];
   }
-  return joined.str();
+  return joined.str().substr(0, recipe.lengthInChars);
 }
 
 const std::string derivePassword(
-  const std::string& derivationOptionsJson,
+  const std::string& recipe,
   const std::string& seedString,
   const std::string& wordListAsSingleString = ""
 ) {
- const DerivationOptions derivationOptions(derivationOptionsJson, DerivationOptionsJson::type::Password);
- const SodiumBuffer secretBytes = derivationOptions.derivePrimarySecret(
+ const Recipe recipeObj(recipe, RecipeJson::type::Password);
+ const SodiumBuffer secretBytes = recipeObj.derivePrimarySecret(
     seedString,
-    DerivationOptionsJson::type::Password
+    RecipeJson::type::Password
   );
-  return derivePassword(derivationOptions, secretBytes, wordListAsSingleString);
+  return derivePassword(recipeObj, secretBytes, wordListAsSingleString);
 }
 
 
 Password::Password(
   const std::string& _password,
-  const std::string& _derivationOptionsJson
-) : password(_password), derivationOptionsJson(_derivationOptionsJson) {}
+  const std::string& _recipe
+) : password(_password), recipe(_recipe) {}
 
 // Password::Password(
 //   const std::string& seedString,
-//   const std::string& _derivationOptionsJson,
+//   const std::string& _recipe,
 //   const std::string& wordListAsSingleString
-// ) : password(derivePassword(seedString, _derivationOptionsJson, wordListAsSingleString)),
-//   derivationOptionsJson(_derivationOptionsJson) {}
+// ) : password(derivePassword(seedString, _recipe, wordListAsSingleString)),
+//   recipe(_recipe) {}
 
 Password Password::deriveFromSeedAndWordList(
   const std::string& seedString,
-  const std::string& derivationOptionsJson,
+  const std::string& recipe,
   const std::string& wordListAsSingleString
 ) {
   return Password(
     derivePassword(
-      derivationOptionsJson,
+      recipe,
       seedString,
       wordListAsSingleString
     ),
-    derivationOptionsJson
+    recipe
   );
 }
 
-Password::Password(const Password &other) : Password(other.password, other.derivationOptionsJson) {}
+Password::Password(const Password &other) : Password(other.password, other.recipe) {}
 
 // JSON field names
 namespace PasswordJsonFields {
   static const std::string password = "password";
-  static const std::string derivationOptionsJson = "derivationOptionsJson";
+  static const std::string recipe = CommonNames::recipe;
 }
 
 Password Password::fromJson(const std::string& secretAsJson) {
@@ -140,7 +141,7 @@ Password Password::fromJson(const std::string& secretAsJson) {
     nlohmann::json jsonObject = nlohmann::json::parse(secretAsJson);
     return Password(
       jsonObject.value<std::string>(PasswordJsonFields::password, ""),
-      jsonObject.value<std::string>(PasswordJsonFields::derivationOptionsJson, "")
+      jsonObject.value<std::string>(PasswordJsonFields::recipe, "")
     );
   } catch (nlohmann::json::exception e) {
     throw JsonParsingException(e.what());
@@ -154,8 +155,8 @@ const char indent_char
 ) const {
   nlohmann::json asJson;
   asJson[PasswordJsonFields::password] = this->password;
-  if (derivationOptionsJson.size() > 0) {
-    asJson[PasswordJsonFields::derivationOptionsJson] = derivationOptionsJson;
+  if (recipe.size() > 0) {
+    asJson[PasswordJsonFields::recipe] = recipe;
   }
   return asJson.dump(indent, indent_char);
 }
@@ -163,10 +164,10 @@ const char indent_char
 
 const SodiumBuffer Password::toSerializedBinaryForm() const {
   SodiumBuffer _password(this->password);
-  SodiumBuffer _derivationOptionsJson(this->derivationOptionsJson);
+  SodiumBuffer _recipe(this->recipe);
   return SodiumBuffer::combineFixedLengthList({
     &_password,
-    &_derivationOptionsJson
+    &_recipe
   });
 }
 

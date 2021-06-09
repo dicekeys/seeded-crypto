@@ -54,10 +54,10 @@ public:
 };
 
 /**
- * @brief Thrown when a derivationOptionsJson string is not in
+ * @brief Thrown when a recipe string is not in
  * valid JSON format and cannot be parsed.
  */
-class InvalidDerivationOptionsJsonException: public std::invalid_argument
+class InvalidRecipeJsonException: public std::invalid_argument
 {
 	public:
 	/**
@@ -65,15 +65,15 @@ class InvalidDerivationOptionsJsonException: public std::invalid_argument
 	 * 
 	 * @param m The exception message
 	 */
-	InvalidDerivationOptionsJsonException(const char* m = NULL) :
-		std::invalid_argument(m ? m : "Invalid JSON key derivation options") {};
+	InvalidRecipeJsonException(const char* m = NULL) :
+		std::invalid_argument(m ? m : "Invalid JSON key recipe") {};
 };
 
 /**
- * @brief Thrown when a JSON value in the derivationOptionsJson is
+ * @brief Thrown when a JSON value in the recipe is
  * in an invalid format or contains an invalid value.
  */
-class InvalidDerivationOptionValueException: public std::invalid_argument
+class InvalidRecipeValueException: public std::invalid_argument
 {
 	public:
 	/**
@@ -81,8 +81,8 @@ class InvalidDerivationOptionValueException: public std::invalid_argument
 	 * 
 	 * @param m The exception message
 	 */
-	InvalidDerivationOptionValueException(const char* m = NULL) :
-		std::invalid_argument(m ? m : "Invalid key derivation options") {};
+	InvalidRecipeValueException(const char* m = NULL) :
+		std::invalid_argument(m ? m : "Invalid key recipe") {};
 };
 
 /** @} */ // end of Exceptions group
