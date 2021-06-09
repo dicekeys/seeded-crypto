@@ -19,25 +19,6 @@
  * @ingroup DerivedFromSeeds
  */
 class SigningKey {
-protected:
-  /**
-   * @brief _May_ store the byte representation of this SigningKey's
-   * corresponding SignatureVerificationKey.
-   * 
-   * When a signing key is generated, it's corresponding signature-verification
-   * key is generated with it. However, it can also be re-generated from the
-   * signature-verification key. Thus, storing the signature-verification key
-   * is more a matter of efficiency than necessity.  We store it by default.
-   * 
-   * However, when a SigningKey is encoded into JSON format, the default
-   * representation elides the verificaiton key since it can be re-generated
-   * if needed so that the encoding is more compact. If this signing-key
-   * is reconsistuted from JSON format, the signatureVerificationKeyBytes
-   * will be empty (a zero-length vector) and it will only be re-generated
-   * when getSignatureVerificationKeyBytes() is called.
-   */
-  std::vector<unsigned char> signatureVerificationKeyBytes;
-
 public:
   /**
    * @brief The raw binary representation of the cryptographic signing key.
@@ -56,21 +37,14 @@ public:
   );
 
   /**
-   * @brief Construct from the objects members, excluding the
-   * signature-verification key (which can be re-generated if needed)
+   * @brief Construct from the objects members
+   *
+   * @param signingKeyBytes may either be a 32-byte ED25519 seed or a 64-byte sodium-style
+   * private signing key which embeds the public key so that it doesn't have to be re-computed.
+   * If the 32-byte seed is provided, the constructor will compute the 64-byte sodium-style key.
    */
   SigningKey(
     const SodiumBuffer &signingKeyBytes,
-    const std::string& recipe
-  );
-
-  /**
-   * @brief Construct from the objects members, excluding the
-   * signature-verification key
-   */
-  SigningKey(
-    const SodiumBuffer &signingKeyBytes,
-    const std::vector<unsigned char> &signatureVerificationKeyBytes,
     const std::string& recipe
   );
 
@@ -117,17 +91,24 @@ public:
   );
 
   /**
+   * @brief Extract the 32-byte private seed (the compact representation of the private key)
+   * from the 64-byte sodium private key (which contains a copy of the public key, which
+   * sodium stores so as to avoid unnecessary computation when the public key is needed).
+   */
+  const SodiumBuffer getSeedBytes() const;
+
+  /**
    * @brief Get the raw binary representation of the signature-verification key,
    * re-deriving them from the signing key if signatureVerificationKeyBytes is a
    * zero-length vector
    */
-  const std::vector<unsigned char> getSignatureVerificationKeyBytes();
+  const std::vector<unsigned char> getSignatureVerificationKeyBytes() const;
 
   /**
    * @brief Get a SignatureVerificationKey which is used to verify
    * signatures generated with this SigningKey.
    */
-  const SignatureVerificationKey getSignatureVerificationKey();
+  const SignatureVerificationKey getSignatureVerificationKey() const;
 
   /**
    * @brief Generate a signature for a message which can be used
@@ -176,7 +157,6 @@ public:
    * @return const std::string
    */
   const std::string toJson(
-    bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater = true,
     int indent = -1,
     const char indent_char = ' '
   ) const;
@@ -194,9 +174,7 @@ public:
    * replica can re-generate a signature-verification key from the signing key,
    * which takes a little computation in return for the 28 bytes saved in this format.
    */
-  const SodiumBuffer toSerializedBinaryForm(
-    bool minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater = true
-  ) const;
+  const SodiumBuffer toSerializedBinaryForm() const;
 
   /**
    * @brief Deserialize from a byte array stored as a list of:

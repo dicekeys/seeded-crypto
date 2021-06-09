@@ -23,3 +23,8 @@
 #include "sealing-key.hpp"
 #include "unsealing-key.hpp"
 #include "signing-key.hpp"
+
+/** @defgroup Files
+ */
+#include "key-formats/OpenPgpKey.hpp"
+#include "key-formats/OpenSshKey.hpp"

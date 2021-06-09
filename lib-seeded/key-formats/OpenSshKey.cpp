@@ -1,14 +1,6 @@
-#include <random>
-#include "ByteBuffer.hpp"
+#include "OpenSshKey.hpp"
 #include "../convert.hpp"
-
-uint32_t get32RandomBits () {
-    std::random_device rd;     // only used once to initialise (seed) engine
-    std::mt19937 rng(rd());    // random-number engine used (Mersenne-Twister in this case)
-    std::uniform_int_distribution<uint32_t> uni(0, 0xffffffff); // guaranteed unbiased
-    return uni(rng);
-}
-
+#include <sodium.h>
 
 class PgpByteBuffer : public ByteBuffer {
 public:
@@ -28,8 +20,7 @@ public:
     }
 
     void appendPrivateKeyEd25519(
-            const ByteBuffer &privateKey,
-            const ByteBuffer &publicKey,
+            const SigningKey &signingKey,
             const std::string &comment,
             uint32_t checksum = get32RandomBits()
     ) {
@@ -37,12 +28,12 @@ public:
         // This method allow you to provide a checksum in order to validate the unit tests
         write32Bits(checksum);
         write32Bits(checksum);
-        appendPublicKeyEd25519(publicKey);
+        appendPublicKeyEd25519(signingKey.getSignatureVerificationKeyBytes());
 
         // scalar, point # Private Key part + Public Key part (AGAIN)
         ByteBuffer privateKeyConcatenatedWithPublicKey;
-        privateKeyConcatenatedWithPublicKey.append(privateKey);
-        privateKeyConcatenatedWithPublicKey.append(publicKey);
+        privateKeyConcatenatedWithPublicKey.append(signingKey.getSeedBytes());
+        privateKeyConcatenatedWithPublicKey.append(signingKey.getSignatureVerificationKeyBytes());
         appendDataWithLengthPrefix(privateKeyConcatenatedWithPublicKey);
 
         // Comment
@@ -55,30 +46,23 @@ public:
             writeByte(i);
         }
     }
-
 };
 
-
-
-std::string createAuthorizedPublicKeyEd25519(const ByteBuffer &publicKey) {
+std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey) {
     PgpByteBuffer out;
-    out.appendPublicKeyEd25519(publicKey);
+    out.appendPublicKeyEd25519(publicKey.getKeyBytes());
     return "ssh-ed25519 " + toHexStr(out.byteVector) + " DiceKeys";
 }
 
 std::string createPrivateKeyEd25519(
-        const ByteBuffer &privateKey,
-        const ByteBuffer &publicKey,
+        const SigningKey &signingKey,
         const std::string comment,
-        uint32_t checksum = get32RandomBits()
+        uint32_t checksum
 ) {
-    // FIXME
-    //const privateKeyEd255119 = Ed25519PrivateKeyParameters(privateKey, 0)
-    //val publicKey = privateKeyEd255119.generatePublicKey().encoded
-
     PgpByteBuffer out;
     out.append("openssh-key-v1");
     out.writeByte(0); // null byte
+    ByteBuffer publicKey(signingKey.getSignatureVerificationKeyBytes());
 
     out.appendDataWithLengthPrefix("none"); // CipherName
     out.appendDataWithLengthPrefix("none"); // KdfName
@@ -91,7 +75,7 @@ std::string createPrivateKeyEd25519(
         out.appendDataWithLengthPrefix(pubKeyBuffer);
     } {
         PgpByteBuffer privateKeyBuffer;
-        privateKeyBuffer.appendPrivateKeyEd25519(privateKey, publicKey, comment, checksum);
+        privateKeyBuffer.appendPrivateKeyEd25519(signingKey, comment, checksum);
         out.appendDataWithLengthPrefix(privateKeyBuffer);
     }
 }

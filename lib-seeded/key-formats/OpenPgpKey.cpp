@@ -1,11 +1,19 @@
-#include <string>
+#include "OpenPgpKey.hpp"
 #include "PublicKeyPacket.hpp"
 #include "SecretKeyPacket.hpp"
 #include "SignaturePacket.hpp"
 #include "UserPacket.hpp"
 #include "PEM.hpp"
 
-std::string generateOpenPgpKey(const ByteBuffer &privateKey, const ByteBuffer &publicKey, const std::string & name, const std::string &email, uint32_t timestamp) {
+std::string generateOpenPgpKey(
+    const SigningKey &signingKey,
+    const std::string &name,
+    const std::string &email,
+    uint32_t timestamp
+) {
+    const ByteBuffer privateKey(signingKey.signingKeyBytes);
+    const ByteBuffer &publicKey(signingKey.getSignatureVerificationKeyBytes());
+
     ByteBuffer out;
     const ByteBuffer secretPacket = createSecretPacket(privateKey, publicKey, timestamp);
     const ByteBuffer userPacket = createUserPacket(name, email);
@@ -17,14 +25,3 @@ std::string generateOpenPgpKey(const ByteBuffer &privateKey, const ByteBuffer &p
 
     return PEM("PGP PRIVATE KEY BLOCK", out);
 }
-
-//
-//const std::string generateOpenPgpKey(u_int8_t privateKey[], std::string name, std::string email, uint32_t timestamp) {
-//  std::vector<u_int8_t> out;
-//  std::vector<u_int8_t> secretPacket = getSecretPacket(privateKey, timestamp);
-//  std::vector<u_int8_t> userPacket = getUserIdPacket(name, email);
-//  std::vector<u_int8_t> signaturePacket = signaturePacket(privateKey, timestamp, userPacket);
-//  out.insert( out.end(), secretPacket.begin(), secretPacket.end() );
-//  out.insert( out.end(), userPacket.begin(), userPacket.end() );
-//  out.insert( out.end(), signaturePacket.begin(), signaturePacket.end() );
-//}

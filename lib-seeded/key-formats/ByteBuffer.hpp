@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "../sodium-buffer.hpp"
 /**
  * https://www.ietf.org/archive/id/draft-ietf-openpgp-rfc4880bis-10.txt
  * 
@@ -19,21 +20,23 @@ class ByteBuffer {
     std::vector<uint8_t> byteVector;
 
     ByteBuffer(const std::vector<uint8_t> &_byteVector);
+    ByteBuffer(const SodiumBuffer &sodiumBuffer);
     ByteBuffer(size_t length, const unsigned char * data);
     ByteBuffer();
 
     uint32_t size() const;
 
+    ByteBuffer slice(size_t start, size_t count) const;
+
     void writeByte(uint8_t byte);
 
     void write16Bits(uint16_t value);
     void write32Bits(uint32_t value);
-  
+
     void append(const std::vector<uint8_t> &value, size_t skipBytes = 0);
+    void append(const SodiumBuffer &value, size_t skipBytes = 0);
     void append(size_t numBytes, const uint8_t* data);
     void append(const ByteBuffer &value, size_t skipBytes = 0);
-    void append(const std::string str);
-
-    ByteBuffer slice(size_t start, size_t count) const;
+    void append(const std::string &str);
 };
 

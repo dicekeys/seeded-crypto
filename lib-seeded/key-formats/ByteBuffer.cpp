@@ -1,7 +1,4 @@
-#pragma once
-
 #include "ByteBuffer.hpp"
-#include "Packet.hpp"
 /**
  * https://www.ietf.org/archive/id/draft-ietf-openpgp-rfc4880bis-10.txt
  *
@@ -16,6 +13,10 @@
 
 ByteBuffer::ByteBuffer(const std::vector<uint8_t> &_byteVector) {
     byteVector = _byteVector;
+}
+
+ByteBuffer::ByteBuffer(const SodiumBuffer &sodiumBuffer) {
+    byteVector.assign(sodiumBuffer.data, sodiumBuffer.data + sodiumBuffer.length);
 }
 
 ByteBuffer::ByteBuffer(size_t length, const unsigned char * data) {
@@ -44,6 +45,9 @@ void ByteBuffer::write32Bits(uint32_t value) {
     write16Bits(low);
 }
 
+void ByteBuffer::append(const SodiumBuffer &value, size_t skipBytes) {
+    byteVector.insert( byteVector.end(), value.data + skipBytes, value.data + (value.length - skipBytes) );
+}
 void ByteBuffer::append(const std::vector<uint8_t> &value, size_t skipBytes) {
     auto start = value.begin();
     if (skipBytes > 0) {
@@ -60,10 +64,9 @@ void ByteBuffer::append(const ByteBuffer &value, size_t skipBytes) {
     append(value.byteVector, skipBytes);
 }
 
-void ByteBuffer::append(const std::string str) {
+void ByteBuffer::append(const std::string &str) {
     byteVector.insert( byteVector.end(), str.begin(), str.end() );
 }
-
 
 ByteBuffer ByteBuffer::slice(size_t start, size_t count) const {
     return ByteBuffer(count, byteVector.data() + start);
