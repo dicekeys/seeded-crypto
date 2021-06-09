@@ -121,9 +121,9 @@ endif()
 #
 #############################################################
 
-option(SEEDED_CREATE_AND_RUN_TESTS "Create and run tests" False)
+option(SEEDED_CREATE_AND_RUN_TESTS "Create and run tests" OFF)
 message("SEEDED_CREATE_AND_RUN_TESTS=${SEEDED_CREATE_AND_RUN_TESTS}")
-if ("${SEEDED_CREATE_AND_RUN_TESTS}" STREQUAL "True")
+if ("${SEEDED_CREATE_AND_RUN_TESTS}" STREQUAL "ON")
     include(CTest)
     enable_testing()
     add_subdirectory(tests)

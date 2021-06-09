@@ -1,5 +1,3 @@
-#pragma once
-
 #include <sodium.h>
 #include "Packet.hpp"
 #include "SignaturePacket.hpp"

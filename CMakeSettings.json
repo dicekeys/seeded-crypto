@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "SEEDED_CREATE_AND_RUN_TESTS",
-          "value": "True",
+          "value": "ON",
           "type": "BOOL"
         }
       ]

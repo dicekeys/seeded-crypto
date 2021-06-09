@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Packet.hpp"
 #include "SecretKeyPacket.hpp"
 #include "PublicKeyPacket.hpp"

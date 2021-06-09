@@ -276,7 +276,7 @@ TEST(SigningKey, GetsSigningKeyFromEmptyOptions) {
 TEST(SigningKey, ConvertsToJsonAndBack) {
 	SigningKey testKey(orderedTestKey, defaultTestSigningRecipeJson);
 
-	const std::string json = testKey.toJson(true, 1, '\t');
+	const std::string json = testKey.toJson(1, '\t');
 	SigningKey replica = SigningKey::fromJson(json);
 	ASSERT_EQ(replica.recipe, defaultTestSigningRecipeJson);
 	ASSERT_STREQ(replica.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
@@ -287,16 +287,14 @@ TEST(SigningKey, ConvertsToJsonAndBack) {
 TEST(SigningKey, ConvertsToSerializedFormAndBack) {
 	SigningKey testKey(orderedTestKey, defaultTestSigningRecipeJson);
 
-	auto comactSerializedBinaryForm = testKey.toSerializedBinaryForm(true);
+	auto comactSerializedBinaryForm = testKey.toSerializedBinaryForm();
 	auto compactCopy = SigningKey::fromSerializedBinaryForm(comactSerializedBinaryForm);
 	ASSERT_EQ(compactCopy.recipe, testKey.recipe);
-	ASSERT_STREQ(toHexStr(compactCopy.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 	ASSERT_STREQ(compactCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
 
-	auto fullSerializedBinaryForm = testKey.toSerializedBinaryForm(false);
+	auto fullSerializedBinaryForm = testKey.toSerializedBinaryForm();
 	auto fullCopy = SigningKey::fromSerializedBinaryForm(fullSerializedBinaryForm);
 	ASSERT_EQ(fullCopy.recipe, testKey.recipe);
-	ASSERT_STREQ(toHexStr(fullCopy.getSignatureVerificationKeyBytes()).c_str(), toHexStr(testKey.getSignatureVerificationKeyBytes()).c_str());
 	ASSERT_STREQ(fullCopy.signingKeyBytes.toHexString().c_str(), testKey.signingKeyBytes.toHexString().c_str());
 
 }
