@@ -1,5 +1,6 @@
 #include "OpenSshKey.hpp"
 #include "../convert.hpp"
+#include "PEM.hpp"
 #include <sodium.h>
 
 class PgpByteBuffer : public ByteBuffer {
@@ -48,13 +49,13 @@ public:
     }
 };
 
-std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey) {
+const std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey) {
     PgpByteBuffer out;
     out.appendPublicKeyEd25519(publicKey.getKeyBytes());
-    return "ssh-ed25519 " + toHexStr(out.byteVector) + " DiceKeys";
+    return "ssh-ed25519 " + base64Encode(out.byteVector) + " DiceKeys";
 }
 
-ByteBuffer createPrivateKeyEd25519(
+const ByteBuffer createPrivateKeyEd25519(
         const SigningKey &signingKey,
         const std::string comment,
         uint32_t checksum

@@ -11,9 +11,9 @@ inline uint32_t get32RandomBits () {
     return uni(rng);
 }
 
-std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey);
+const std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey);
 
-ByteBuffer createPrivateKeyEd25519(
+const ByteBuffer createPrivateKeyEd25519(
         const SigningKey &signingKey,
         const std::string comment,
         uint32_t checksum = get32RandomBits()

@@ -1,13 +1,14 @@
 #include "gtest/gtest.h"
 #include <string>
+#include "../lib-seeded/lib-seeded.hpp"
+#include "../lib-seeded/convert.hpp"
 #include "../lib-seeded/key-formats/Packet.hpp"
 #include "../lib-seeded/key-formats/ByteBuffer.hpp"
 #include "../lib-seeded/key-formats/UserPacket.hpp"
 #include "../lib-seeded/key-formats/PublicKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SecretKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
-#include "../lib-seeded/lib-seeded.hpp"
-#include "../lib-seeded/convert.hpp"
+#include "../lib-seeded/key-formats/PEM.hpp"
 
 struct TestVector {
 	std::string privateKeyHex;
@@ -172,3 +173,53 @@ TEST(KeyFormats, WrapKey) {
 		"0100F741CC9AC284484A9282152E36CDEE239EBA572F5C258979C9657AA3F7E95EBC"
 	);
 }
+
+
+TEST(OpenSSH, PublicKey) {
+	const auto privateKey = ByteBuffer::fromHex("05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41");
+	const auto publicKey = ByteBuffer::fromHex("C953742F5D7A26111D868FBBAD228C9C180524FD1743891A2796D49F4735FD3D");
+
+	SigningKey sk(SodiumBuffer(privateKey.byteVector), "");
+	SignatureVerificationKey svk = sk.getSignatureVerificationKey();
+
+	const auto openSSHKey = createAuthorizedPublicKeyEd25519(svk);
+	ASSERT_STREQ(
+		openSSHKey.c_str(),
+		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09 DiceKeys"
+	);
+}
+
+TEST(OpenSSH, PrivateKey) {
+	const auto privateKey = ByteBuffer::fromHex("05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41");
+	SigningKey sk(SodiumBuffer(privateKey.byteVector), "");
+	const uint32_t checksum = 0x103D60C3;
+	const auto pk = createPrivateKeyEd25519(sk, "DiceKeys", checksum);
+	const auto pkBase64 = base64Encode(pk.byteVector);
+	ASSERT_STREQ(
+		pkBase64.c_str(),
+		"b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAJAQPWDDED1gwwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAEAFrXdopr92us8RzW6VhoXCkhotCh97MxPLZvpxOC/PQclTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09AAAACERpY2VLZXlzAQIDBAU="
+	);
+
+}
+
+/*
+
+class OpenSshHelperUnitTests {
+		private val privateKey = "05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41".hexStringToByteArray()
+		private val publicKey = "C953742F5D7A26111D868FBBAD228C9C180524FD1743891A2796D49F4735FD3D".hexStringToByteArray()
+
+		@Test
+		fun test_authorizedKey(){
+				Assert.assertEquals("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09 DiceKeys", OpenSslHelper.createAuthorizedPublicKeyEd25519(publicKey))
+		}
+
+		@Test
+		fun test_privateKey(){
+				val checksum = 0x103D60C3
+				Assert.assertEquals(
+								"b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAJAQPWDDED1gwwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAEAFrXdopr92us8RzW6VhoXCkhotCh97MxPLZvpxOC/PQclTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09AAAACERpY2VLZXlzAQIDBAU=",
+								BaseEncoding.base64().encode(OpenSslHelper.createPrivateKeyEd25519(privateKey, "DiceKeys", checksum)))
+		}
+
+
+*/
