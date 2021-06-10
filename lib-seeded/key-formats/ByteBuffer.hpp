@@ -21,7 +21,8 @@ class ByteBuffer {
 
     ByteBuffer(const std::vector<uint8_t> &_byteVector);
     ByteBuffer(const SodiumBuffer &sodiumBuffer);
-    ByteBuffer(size_t length, const unsigned char * data);
+    ByteBuffer(size_t length, const unsigned char* data);
+    ByteBuffer(size_t length);
     ByteBuffer();
 
     static ByteBuffer fromHex(const std::string &hex);

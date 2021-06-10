@@ -11,7 +11,7 @@ const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecr
   return checksum;
 }
 
-const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, const ByteBuffer &publicKey, uint32_t timestamp) {
+const ByteBuffer createEd25519SecretKeyPacketBody(const ByteBuffer& secretKey, const ByteBuffer& publicKey, uint32_t timestamp) {
   ByteBuffer packetBody;
   packetBody.writeByte(Version);
   packetBody.write32Bits(timestamp);
@@ -26,5 +26,20 @@ const ByteBuffer createSecretPacket(const ByteBuffer &secretKey, const ByteBuffe
   const ByteBuffer wrappedSecretKey = wrapKeyWithLengthPrefixAndTrim(secretKey);
   packetBody.append(wrappedSecretKey);
   packetBody.write16Bits(calculateCheckSumOfWrappedSecretKey(wrappedSecretKey));
+  return packetBody;
+}
+
+const ByteBuffer createEd25519SecretKeyPacket(const ByteBuffer &packetBody) {
   return createPacket(pTagSecretPacket, packetBody);
+}
+
+const ByteBuffer createEd25519SecretKeyPacket(const ByteBuffer& secretKey, const ByteBuffer& publicKey, uint32_t timestamp) {
+  return createEd25519SecretKeyPacket(createEd25519SecretKeyPacketBody(secretKey, publicKey, timestamp));
+}
+
+const ByteBuffer createEd25519SecretKeyPacket(
+  const SigningKey& signingKey,
+  uint32_t timestamp
+) {
+  return createEd25519SecretKeyPacket(ByteBuffer(signingKey.getSeedBytes()), ByteBuffer(signingKey.getSignatureVerificationKeyBytes()), timestamp);
 }

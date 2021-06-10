@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "sodium-buffer.hpp"
 
 
@@ -28,3 +29,9 @@ inline unsigned char parseHexChar(char c) {
 
 const std::string toHexStr(const std::vector<unsigned char> bytes);
 const std::vector<unsigned char> hexStrToByteVector(const std::string hexStr);
+
+inline std::string toUpper(const std::string& a) {
+  std::string upper = a;
+  std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
+  return upper;
+}

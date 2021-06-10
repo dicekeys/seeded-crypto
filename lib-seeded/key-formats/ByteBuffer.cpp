@@ -25,6 +25,10 @@ ByteBuffer::ByteBuffer(size_t length, const unsigned char * data) {
     byteVector.assign(data, data + length);
 }
 
+ByteBuffer::ByteBuffer(size_t length) {
+  byteVector.assign(length, 0);
+}
+
 ByteBuffer ByteBuffer::fromHex(const std::string& hex) {
   return ByteBuffer(hexStrToByteVector(hex));
 }

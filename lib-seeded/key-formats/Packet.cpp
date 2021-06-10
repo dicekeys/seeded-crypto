@@ -33,11 +33,9 @@ const ByteBuffer wrapKeyWithLengthPrefixAndTrim(const ByteBuffer &value) {
 const ByteBuffer createPacket(uint8_t type, const ByteBuffer &packetBodyBuffer) {
   ByteBuffer packet;
   packet.writeByte(type);
-  // RFC2440 Section 4.2.2
-  // Should follow the spec as described in RFC4880-bis-10 - Section 5.2.3.1.
-  // Hardcoded to one byte as 191 length is enough for our use case.
+  // RFC2440 Section 4.2.
+  // Should follow the spec as described in RFC4880-bis-10 - Section 4.2.
   packet.writeByte(packetBodyBuffer.size());
   packet.append(packetBodyBuffer);
   return packet;
 }
-

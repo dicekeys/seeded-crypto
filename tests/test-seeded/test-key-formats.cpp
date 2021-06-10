@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 #include <string>
-#include <iostream>
 #include "../lib-seeded/key-formats/Packet.hpp"
 #include "../lib-seeded/key-formats/ByteBuffer.hpp"
 #include "../lib-seeded/key-formats/UserPacket.hpp"
@@ -10,11 +9,47 @@
 #include "../lib-seeded/lib-seeded.hpp"
 #include "../lib-seeded/convert.hpp"
 
-std::string toUpper (const std::string& a) {
-	std::string upper = a;
-	std::transform(upper.begin(), upper.end(), upper.begin(), ::toupper);
-	return upper;
-}
+struct TestVector {
+	std::string privateKeyHex;
+	std::string publicKeyHex;
+	uint32_t timestamp;
+
+	std::string name;
+	std::string email;
+
+	std::string fingerprintHex;
+	std::string publicPacketHex;
+	std::string secretPacketHex;
+	std::string userIdPacketHex;
+	std::string signaturePacketHex;
+};
+
+std::vector<TestVector> testCases = {
+	{
+		"58CBA8496EABC3D58F84C034448EF1C1F95C9C6582E006C2BB205B70EB58D5CF",
+   	"71F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8",
+		0x60844560u,
+		"DK_USER_1",
+		"dkuser1@dicekeys.org",
+		"FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8",
+		"9833046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8",
+		"9458046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E80000FF58CBA8496EABC3D58F84C034448EF1C1F95C9C6582E006C2BB205B70EB58D5CF135C",
+		"B420444B5F555345525F31203C646B757365723140646963656B6579732E6F72673E",
+		"8890041316080038162104FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8050260844560021B01050B0908070206150A09080B020416020301021E01021780000A091085B7A357B0E9FFD865EB0100C5A77D28D9623C74B493A7A5E72ABF24F34C4E133DA85E314C6105B06A4E26AF0100A6EC13920C8023FC0444705D4F32A55B977EC147BE3B6B68F112601A52B6730A"
+	}, {
+		"F741CC9AC284484A9282152E36CDEE239EBA572F5C258979C9657AA3F7E95EBC",
+		"207E2C90C6F41BCC055CD939DF50575E9BD77F1BFAAD6F85BE1058FFB6AEDBDF",
+		0x6084459bu,
+		"DK_USER_2",
+		"dkuser2____@dicekeys.com",
+		"4F98C213FCBBBD97004A4473E99D26BEB59B3C9A",
+		"9833046084459B16092B06010401DA470F01010740207E2C90C6F41BCC055CD939DF50575E9BD77F1BFAAD6F85BE1058FFB6AEDBDF",
+		"9458046084459B16092B06010401DA470F01010740207E2C90C6F41BCC055CD939DF50575E9BD77F1BFAAD6F85BE1058FFB6AEDBDF000100F741CC9AC284484A9282152E36CDEE239EBA572F5C258979C9657AA3F7E95EBC1088",
+		"B424444B5F555345525F32203C646B75736572325F5F5F5F40646963656B6579732E636F6D3E",
+		"88900413160800381621044F98C213FCBBBD97004A4473E99D26BEB59B3C9A05026084459B021B01050B0908070206150A09080B020416020301021E01021780000A0910E99D26BEB59B3C9A485400FE298973EBB860EF016F581FAD2C80226C05056C3B6B6710B7AD20BE06DE22F7820100EE4FC5C1C204F897FACF9CF4973C052C7E703EE658F97C5CAEF99C09CE27E700"
+	}
+};
+
 
 void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEncodedValue) {
 	const auto encoded = wrapKeyWithLengthPrefixAndTrim(ByteBuffer::fromHex(toEncode));
@@ -22,31 +57,83 @@ void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEnco
 	ASSERT_STRCASEEQ(encodedHex.c_str(), toCheckAgainstEncodedValue.c_str());
 }
 
+TEST(KeyFormats, SignaturHashPreImage) {
+	const auto& testCase = testCases[0];
+	const auto publicKey = ByteBuffer::fromHex(testCase.publicKeyHex);
+	const auto userIdPacketBody = createUserPacketBody(testCase.name, testCase.email);
+	const ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(publicKey, testCase.timestamp);
+	const ByteBuffer pubicKeyFingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
+	const ByteBuffer publicKeyId = getPublicKeyIdFromPublicKeyPacketBody(publicKeyPacketBody);
+
+	ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, testCase.timestamp);
+
+	// Calculate the SHA256-bit hash of the packet before appending the
+	// unhashed subpackets (which, as the name implies, shouldn't be hashed).
+	ByteBuffer signaturePacketBodyIncludedInHash =
+		createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, testCase.timestamp);
+	ByteBuffer preimage = createSignaturePacketHashPreImage(
+		publicKeyPacketBody,
+		userIdPacketBody,
+		signaturePacketBodyIncludedInHash
+	);
+	ASSERT_STRCASEEQ(toUpper(preimage.toHex()).c_str(), 
+		"990033046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8B400000020444B5F555345525F31203C646B757365723140646963656B6579732E6F72673E041316080038162104FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8050260844560021B01050B0908070206150A09080B020416020301021E0102178004FF0000003E"
+	);
+}
+
 TEST(KeyFormats, PacketFunctions) {
-	const std::string privateKeyHex = "58CBA8496EABC3D58F84C034448EF1C1F95C9C6582E006C2BB205B70EB58D5CF";
-	const std::string publicKeyHex = "71F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8";
-	uint32_t timestamp = 0x60844560u;
+	for (const auto& testCase : testCases) {
+		const auto userIdPacketBody = createUserPacketBody(testCase.name, testCase.email);
+		const auto userIdPacket = createUserPacket(userIdPacketBody);
+		ASSERT_STRCASEEQ(userIdPacket.toHex().c_str(), testCase.userIdPacketHex.c_str());
 
-	const std::string name = "DK_USER_1";
-	const std::string email = "dkuser1@dicekeys.org";
-	const std::string userIdPacketBinary = "B420444B5F555345525F31203C646B757365723140646963656B6579732E6F72673E";
-	const auto userIdPacket = createUserPacket(name, email);
-	const auto userIdPacketHex = userIdPacket.toHex();
-	ASSERT_STRCASEEQ(userIdPacketHex.c_str(), userIdPacketBinary.c_str());
+		ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ByteBuffer publicKeyPacket = createPublicKeyPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ASSERT_STRCASEEQ(publicKeyPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
+		ByteBuffer fingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
+		ASSERT_STRCASEEQ(fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
 
-	const std::string fingerprintHex = "FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8";
-	const std::string publicPacketBinary = "9833046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8";
-	ByteBuffer publicKeyPacket = createPublicPacket(ByteBuffer::fromHex(publicKeyHex), timestamp);
-	ASSERT_STRCASEEQ(publicKeyPacket.toHex().c_str(), publicPacketBinary.c_str());
-	ByteBuffer fingerprint = getPublicKeyFingerprint(publicKeyPacket);
-	ASSERT_STRCASEEQ(fingerprint.toHex().c_str(), fingerprintHex.c_str());
+		ByteBuffer secretPacket = createEd25519SecretKeyPacket(ByteBuffer::fromHex(testCase.privateKeyHex), ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ASSERT_STRCASEEQ(secretPacket.toHex().c_str(), testCase.secretPacketHex.c_str());
 
-	const std::string secretPacketBinary = "9458046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E80000FF58CBA8496EABC3D58F84C034448EF1C1F95C9C6582E006C2BB205B70EB58D5CF135C";
-	ByteBuffer secretPacket = createSecretPacket(ByteBuffer::fromHex(privateKeyHex), ByteBuffer::fromHex(publicKeyHex), timestamp);
-	ASSERT_STRCASEEQ(secretPacket.toHex().c_str(), secretPacketBinary.c_str());
-	
-	const std::string signaturePacketBinary = "8890041316080038162104FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8050260844560021B01050B0908070206150A09080B020416020301021E01021780000A091085B7A357B0E9FFD865EB0100C5A77D28D9623C74B493A7A5E72ABF24F34C4E133DA85E314C6105B06A4E26AF0100A6EC13920C8023FC0444705D4F32A55B977EC147BE3B6B68F112601A52B6730A";
-	ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(privateKeyHex), ByteBuffer::fromHex(publicKeyHex), userIdPacket, timestamp);
+		
+		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), ByteBuffer::fromHex(testCase.publicKeyHex), userIdPacketBody, testCase.timestamp);
+		ASSERT_STRCASEEQ(signaturePacket.toHex().c_str(), testCase.signaturePacketHex.c_str());
+
+	}
+}
+
+TEST(KeyFormats, SigningKeyConstuctor) {
+	for (const auto& testCase : testCases) {
+		SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testCase.privateKeyHex).byteVector), "");
+
+		const ByteBuffer privateKey = ByteBuffer(signingKey.getSeedBytes());
+		const ByteBuffer publicKey = ByteBuffer(signingKey.getSignatureVerificationKeyBytes());
+
+		ASSERT_STRCASEEQ(privateKey.toHex().c_str(), testCase.privateKeyHex.c_str());
+		ASSERT_STRCASEEQ(publicKey.toHex().c_str(), testCase.publicKeyHex.c_str());
+	}
+}
+
+
+TEST(KeyFormats, OpenPGP) {
+	const auto& testData = testCases[0];
+	const SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testData.privateKeyHex).byteVector), "{\"bogusRecipeWhichWillBeIgnored\": true}");
+
+	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testData.privateKeyHex.c_str());
+	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testData.publicKeyHex.c_str());
+
+	const std::string pem = generateOpenPgpKey(signingKey, testData.name, testData.email, testData.timestamp);
+	std::string expectedKeyBlock = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
+		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
+		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
+		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\n"
+		"BvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\n"
+		"hbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\n"
+		"E5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n"
+		"-----END PGP PRIVATE KEY BLOCK-----\n";
+
+		ASSERT_STREQ(pem.c_str(), expectedKeyBlock.c_str());
 }
 
 TEST(KeyFormats, WrapKey) {

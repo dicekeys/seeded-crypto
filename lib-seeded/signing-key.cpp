@@ -11,7 +11,7 @@ const SodiumBuffer convertSeedToSodiumPrivateKey(const SodiumBuffer& seedOrSodiu
   } else if (seedOrSodiumPrivateKey.length == crypto_sign_SEEDBYTES) {
     SodiumBuffer sodiumStylePrivateKeyBytes(crypto_sign_SECRETKEYBYTES);
     SodiumBuffer pubBytes(crypto_sign_PUBLICKEYBYTES);
-    crypto_sign_seed_keypair(sodiumStylePrivateKeyBytes.data, pubBytes.data, seedOrSodiumPrivateKey.data);
+    crypto_sign_seed_keypair(pubBytes.data, sodiumStylePrivateKeyBytes.data, seedOrSodiumPrivateKey.data);
     return sodiumStylePrivateKeyBytes;
   } else {
     throw InvalidRecipeValueException("Invalid signing key size");
