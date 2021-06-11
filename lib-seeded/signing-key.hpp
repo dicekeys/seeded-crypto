@@ -147,7 +147,7 @@ public:
    * 
    * @param minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater
    * The JSON-encoding will always include the binary signing key bytes (in hex format)
-   * and the keyDerviationOptionsJson used to derive the key, but the
+   * and the recipe used to derive the key, but the
    * signature-verification key bytes will not be included unless you set
    * this value to false. Rather, if it is elided, the signature-verification key
    * can be reconstituted from the signing-key after the object is reconstituted,
@@ -186,9 +186,9 @@ public:
   static SigningKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
   
   /**
-   * @brief Convert to an OpenSSH-format private key binary writiable to a key file
+   * @brief Convert to an OpenSSH-format private key binary writeable to a key file
   */
-  const std::string SigningKey::toOpenSshPemPrivateKey(const std::string &comment) const;
+  const std::string toOpenSshPemPrivateKey(const std::string &comment) const;
 
   /**
    * @brief Convert the signature-verification key to an OpenSSH public key string
@@ -206,7 +206,7 @@ public:
    * @param timestamp seconds elapsed since midnight, 1 January 1970 UTC.
    *        https://datatracker.ietf.org/doc/html/rfc4880#section-3.5
   */
-  const std::string SigningKey::toOpenPgpPemFormatSecretKey(
+  const std::string toOpenPgpPemFormatSecretKey(
     const std::string& UserIdPacketContent,
     uint32_t timestamp
   ) const;
