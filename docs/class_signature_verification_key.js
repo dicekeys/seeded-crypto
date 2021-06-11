@@ -5,6 +5,7 @@ var class_signature_verification_key =
     [ "getKeyBytesAsHexDigits", "class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de", null ],
     [ "getRecipeJson", "class_signature_verification_key.html#a5fdcb00a6f55356a227b81076b64119c", null ],
     [ "toJson", "class_signature_verification_key.html#a4d8c091c3f2582d3ceaa805fd7dde446", null ],
+    [ "toOpenSshPublicKey", "class_signature_verification_key.html#a9e1d61b28521e5e1a7d67b60ae7cc6b6", null ],
     [ "toSerializedBinaryForm", "class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29", null ],
     [ "verify", "class_signature_verification_key.html#af6326406b0306b4e28cb46e7dc94b07e", null ],
     [ "verify", "class_signature_verification_key.html#a379acadf256a5faf45d86785e0c0f6c7", null ],

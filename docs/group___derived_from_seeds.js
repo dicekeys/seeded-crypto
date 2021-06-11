@@ -38,6 +38,7 @@ var group___derived_from_seeds =
       [ "getKeyBytesAsHexDigits", "class_signature_verification_key.html#a01ddfcec375ebced79b74af9b047e2de", null ],
       [ "getRecipeJson", "class_signature_verification_key.html#a5fdcb00a6f55356a227b81076b64119c", null ],
       [ "toJson", "class_signature_verification_key.html#a4d8c091c3f2582d3ceaa805fd7dde446", null ],
+      [ "toOpenSshPublicKey", "class_signature_verification_key.html#a9e1d61b28521e5e1a7d67b60ae7cc6b6", null ],
       [ "toSerializedBinaryForm", "class_signature_verification_key.html#a249bcba1668ab5bff3548377f5cbff29", null ],
       [ "verify", "class_signature_verification_key.html#af6326406b0306b4e28cb46e7dc94b07e", null ],
       [ "verify", "class_signature_verification_key.html#a379acadf256a5faf45d86785e0c0f6c7", null ],
@@ -55,6 +56,9 @@ var group___derived_from_seeds =
       [ "getSignatureVerificationKey", "class_signing_key.html#a820b7e090433f7e7ebad5ea691356c4b", null ],
       [ "getSignatureVerificationKeyBytes", "class_signing_key.html#affa52eb5128fbae4456866344a0e6562", null ],
       [ "toJson", "class_signing_key.html#a586ebeef4ff3790ab2f15efeeaca6b53", null ],
+      [ "toOpenPgpPemFormatSecretKey", "class_signing_key.html#a6c8f1db3eeec2f55eaab261f379c26f9", null ],
+      [ "toOpenSshPemPrivateKey", "class_signing_key.html#aaa214f2cdee46358666ae88734c72d97", null ],
+      [ "toOpenSshPublicKey", "class_signing_key.html#aadeb8ef86c86bafb6373996cb415e935", null ],
       [ "toSerializedBinaryForm", "class_signing_key.html#aae3e30ba725366bd95e5142befe200a2", null ],
       [ "recipe", "class_signing_key.html#a4f6e044a83613bde16e447e65562b1e3", null ],
       [ "signingKeyBytes", "class_signing_key.html#ace2901409405775e50558dd922b4d206", null ]
