@@ -1,8 +1,8 @@
 var annotated_dup =
 [
     [ "CryptographicVerificationFailureException", "class_cryptographic_verification_failure_exception.html", "class_cryptographic_verification_failure_exception" ],
-    [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html", "class_invalid_derivation_option_value_exception" ],
     [ "InvalidRecipeJsonException", "class_invalid_recipe_json_exception.html", "class_invalid_recipe_json_exception" ],
+    [ "InvalidRecipeValueException", "class_invalid_recipe_value_exception.html", "class_invalid_recipe_value_exception" ],
     [ "JsonParsingException", "class_json_parsing_exception.html", "class_json_parsing_exception" ],
     [ "KeyLengthException", "class_key_length_exception.html", "class_key_length_exception" ],
     [ "PackagedSealedMessage", "class_packaged_sealed_message.html", "class_packaged_sealed_message" ],

@@ -14,7 +14,7 @@ git clone --recursive https://github.com/dicekeys/seeded-crypto.git
 cd seeded-crypto
 ```
 
-You will need to set SEEDED_CREATE_AND_RUN_TESTS in order to create/run tests.
+You will need to set SEEDED_CREATE_AND_RUN_TESTS to "ON" in order to create/run tests.
 
 #### Prerequisite installs
 

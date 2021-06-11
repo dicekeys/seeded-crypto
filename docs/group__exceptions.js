@@ -35,7 +35,7 @@ var group__exceptions =
     [ "InvalidRecipeJsonException", "class_invalid_recipe_json_exception.html", [
       [ "InvalidRecipeJsonException", "class_invalid_recipe_json_exception.html#a40fedc2e34f6c46c353996e972c6fd7c", null ]
     ] ],
-    [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html", [
-      [ "InvalidDerivationOptionValueException", "class_invalid_derivation_option_value_exception.html#af3aebc4f3504fb03657a6f927fcd6ba2", null ]
+    [ "InvalidRecipeValueException", "class_invalid_recipe_value_exception.html", [
+      [ "InvalidRecipeValueException", "class_invalid_recipe_value_exception.html#a8ffed8562adebb60b5dcbbc31456f42f", null ]
     ] ]
 ];

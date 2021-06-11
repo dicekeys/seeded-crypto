@@ -1,6 +1,8 @@
 file(GLOB SRCS
     "*.h"
     "*/*.h"
+    "*.hpp"
+    "*/*.hpp"
     "*.cpp"
     "*/*.cpp"
 )

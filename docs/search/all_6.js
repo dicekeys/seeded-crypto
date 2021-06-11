@@ -6,6 +6,7 @@ var searchData=
   ['getrecipejson_17',['getRecipeJson',['../class_sealing_key.html#a9dfac46319771afea138d6275bb3d76e',1,'SealingKey::getRecipeJson()'],['../class_signature_verification_key.html#a5fdcb00a6f55356a227b81076b64119c',1,'SignatureVerificationKey::getRecipeJson()']]],
   ['getsealingkey_18',['getSealingKey',['../class_unsealing_key.html#a6a270e0fc1af19cc12ebbb341d6e6201',1,'UnsealingKey']]],
   ['getsealingkeybytes_19',['getSealingKeyBytes',['../class_sealing_key.html#a19dfdcd068c638c72083390d2ae8ce43',1,'SealingKey']]],
-  ['getsignatureverificationkey_20',['getSignatureVerificationKey',['../class_signing_key.html#a5fdf0c3fc992f2c931711eabc3c7f526',1,'SigningKey']]],
-  ['getsignatureverificationkeybytes_21',['getSignatureVerificationKeyBytes',['../class_signing_key.html#a414c55c8b70ff01ac651ce668ad886ba',1,'SigningKey']]]
+  ['getseedbytes_20',['getSeedBytes',['../class_signing_key.html#aa9b1c8d470ba5506f4ffdb4a408e3da0',1,'SigningKey']]],
+  ['getsignatureverificationkey_21',['getSignatureVerificationKey',['../class_signing_key.html#a820b7e090433f7e7ebad5ea691356c4b',1,'SigningKey']]],
+  ['getsignatureverificationkeybytes_22',['getSignatureVerificationKeyBytes',['../class_signing_key.html#affa52eb5128fbae4456866344a0e6562',1,'SigningKey']]]
 ];
