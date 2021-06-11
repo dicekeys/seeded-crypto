@@ -1,11 +1,12 @@
 #include "UserPacket.hpp"
 #include "Packet.hpp"
 
-const ByteBuffer createUserPacketBody(const std::string& userName, const std::string& email) {
-  // FIXME -- encoding or validation needed?
-  std::string userNameAndEmail = userName + " <" + email + ">";
-  std::vector<uint8_t> userNameAndEmailByteVector(userNameAndEmail.begin(), userNameAndEmail.end());
-  return ByteBuffer(userNameAndEmailByteVector);
+const std::string createUserIdPacketContent(const std::string& userName, const std::string& email) {
+  return userName + " <" + email + ">";
+}
+
+const ByteBuffer createUserPacketBody(const std::string& contentString) {
+  return ByteBuffer(std::vector<uint8_t>(contentString.begin(), contentString.end()));
 }
 
 const ByteBuffer createUserPacketHashPreimage(const ByteBuffer& userIdPacketBody) {
@@ -21,5 +22,5 @@ const ByteBuffer createUserPacket(const ByteBuffer& userPacketBody) {
 }
 
 const ByteBuffer createUserPacket(const std::string &userName, const std::string &email) {
-    return createUserPacket(createUserPacketBody(userName, email));
+    return createUserPacket(createUserPacketBody(createUserIdPacketContent(userName, email)));
 }

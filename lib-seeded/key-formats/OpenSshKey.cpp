@@ -49,13 +49,13 @@ public:
     }
 };
 
-const std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey) {
+const std::string getOpenSSHPublicKeyEd25519(const SignatureVerificationKey &publicKey) {
     PgpByteBuffer out;
     out.appendPublicKeyEd25519(publicKey.getKeyBytes());
     return "ssh-ed25519 " + base64Encode(out.byteVector) + " DiceKeys";
 }
 
-const ByteBuffer createPrivateKeyEd25519(
+const ByteBuffer getOpenSSHPrivateKeyEd25519(
         const SigningKey &signingKey,
         const std::string comment,
         uint32_t checksum
@@ -80,4 +80,12 @@ const ByteBuffer createPrivateKeyEd25519(
         out.appendDataWithLengthPrefix(privateKeyBuffer);
     }
     return out;
+}
+
+const std::string getOpenSshPemPrivateKeyEd25519(
+  const SigningKey& signingKey,
+  const std::string comment,
+  uint32_t checksum
+) {
+  return PEM("OPENSSH PRIVATE KEY", getOpenSSHPrivateKeyEd25519(signingKey, comment, checksum));
 }

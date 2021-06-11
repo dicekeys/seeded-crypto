@@ -184,6 +184,30 @@ public:
    * Strings are stored as UTF8 byte arrays.
    */
   static SigningKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
+  
+  /**
+   * @brief Convert to an OpenSSH-format private key binary writiable to a key file
+  */
+  const std::string SigningKey::toOpenSshPemPrivateKey(const std::string &comment) const;
 
+  /**
+   * @brief Convert the signature-verification key to an OpenSSH public key string
+  */
+  const std::string toOpenSshPublicKey() const;
 
+  /**
+   * @brief Convert to an OpenPGP PEM formatted (string) private key.
+   * 
+   * 
+   * https://datatracker.ietf.org/doc/html/rfc4880#section-5.11
+   * 
+   * @param name The keyholder's name to appear in the PEM format
+   * @param email The keyholder's email to appear in the PEM format.
+   * @param timestamp seconds elapsed since midnight, 1 January 1970 UTC.
+   *        https://datatracker.ietf.org/doc/html/rfc4880#section-3.5
+  */
+  const std::string SigningKey::toOpenPgpPemFormatSecretKey(
+    const std::string& UserIdPacketContent,
+    uint32_t timestamp
+  ) const;
 };

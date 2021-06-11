@@ -4,6 +4,9 @@
 #include "convert.hpp"
 #include <stdexcept>
 #include "common-names.hpp"
+#include "key-formats/OpenSshKey.hpp"
+#include "key-formats/OpenPgpKey.hpp"
+#include "key-formats/PEM.hpp"
 
 namespace SignatureVerificationKeyJsonFieldName {
   static const std::string keyBytes = "keyBytes";
@@ -137,4 +140,8 @@ SignatureVerificationKey SignatureVerificationKey::fromSerializedBinaryForm(
   return SignatureVerificationKey(
     fields[0].toVector(), fields[1].toUtf8String()
   );
+}
+
+const std::string SignatureVerificationKey::toOpenSshPublicKey() const {
+  return getOpenSSHPublicKeyEd25519(*this);
 }

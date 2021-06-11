@@ -4,6 +4,9 @@
 #include "convert.hpp"
 #include "exceptions.hpp"
 #include "common-names.hpp"
+#include "key-formats/OpenSshKey.hpp"
+#include "key-formats/OpenPgpKey.hpp"
+#include "key-formats/PEM.hpp"
 
 const SodiumBuffer convertSeedToSodiumPrivateKey(const SodiumBuffer& seedOrSodiumPrivateKey) {
   if (seedOrSodiumPrivateKey.length == crypto_sign_SECRETKEYBYTES) {
@@ -139,3 +142,17 @@ SigningKey SigningKey::fromSerializedBinaryForm(
   );
 }
 
+const std::string SigningKey::toOpenSshPemPrivateKey(const std::string &comment) const {
+  return getOpenSshPemPrivateKeyEd25519(*this, comment);
+}
+
+const std::string SigningKey::toOpenSshPublicKey() const {
+  return getSignatureVerificationKey().toOpenSshPublicKey();
+}
+
+const std::string SigningKey::toOpenPgpPemFormatSecretKey(
+  const std::string& UserIdPacketContent,
+  uint32_t timestamp
+) const {
+  return generateOpenPgpKey(*this, UserIdPacketContent, timestamp);
+}

@@ -7,8 +7,7 @@
 
 std::string generateOpenPgpKey(
     const SigningKey &signingKey,
-    const std::string &name,
-    const std::string &email,
+    const std::string &userIdPacketContent,
     uint32_t timestamp
 ) {
     const ByteBuffer privateKey(signingKey.getSeedBytes());
@@ -16,7 +15,7 @@ std::string generateOpenPgpKey(
 
     ByteBuffer out;
     const ByteBuffer secretPacket = createEd25519SecretKeyPacket(privateKey, publicKey, timestamp);
-    const ByteBuffer userPacketBody = createUserPacketBody(name, email);
+    const ByteBuffer userPacketBody = createUserPacketBody(userIdPacketContent);
     const ByteBuffer userPacket = createUserPacket(userPacketBody);
     const ByteBuffer signaturePacket = createSignaturePacket(privateKey, publicKey, userPacketBody, timestamp);
 

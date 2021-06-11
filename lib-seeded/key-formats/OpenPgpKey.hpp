@@ -5,7 +5,6 @@
 
 std::string generateOpenPgpKey(
         const SigningKey &signingKey,
-        const std::string &name,
-        const std::string &email,
+        const std::string &userIdPacketContent,
         uint32_t timestamp
 );

@@ -230,5 +230,9 @@ public:
    */
   static SignatureVerificationKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
+  /**
+   * @brief Convert the signature-verification key to an OpenSSH public key string
+  */
+  const std::string toOpenSshPublicKey() const;
 };
 

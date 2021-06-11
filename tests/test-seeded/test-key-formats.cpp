@@ -8,7 +8,10 @@
 #include "../lib-seeded/key-formats/PublicKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SecretKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
+#include "../lib-seeded/key-formats/OpenSshKey.hpp"
+#include "../lib-seeded/key-formats/OpenPgpKey.hpp"
 #include "../lib-seeded/key-formats/PEM.hpp"
+
 
 struct TestVector {
 	std::string privateKeyHex;
@@ -61,7 +64,7 @@ void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEnco
 TEST(KeyFormats, SignaturHashPreImage) {
 	const auto& testCase = testCases[0];
 	const auto publicKey = ByteBuffer::fromHex(testCase.publicKeyHex);
-	const auto userIdPacketBody = createUserPacketBody(testCase.name, testCase.email);
+	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 	const ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(publicKey, testCase.timestamp);
 	const ByteBuffer pubicKeyFingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
 	const ByteBuffer publicKeyId = getPublicKeyIdFromPublicKeyPacketBody(publicKeyPacketBody);
@@ -84,7 +87,7 @@ TEST(KeyFormats, SignaturHashPreImage) {
 
 TEST(KeyFormats, PacketFunctions) {
 	for (const auto& testCase : testCases) {
-		const auto userIdPacketBody = createUserPacketBody(testCase.name, testCase.email);
+		const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 		const auto userIdPacket = createUserPacket(userIdPacketBody);
 		ASSERT_STRCASEEQ(userIdPacket.toHex().c_str(), testCase.userIdPacketHex.c_str());
 
@@ -124,7 +127,7 @@ TEST(KeyFormats, OpenPGP) {
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testData.privateKeyHex.c_str());
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testData.publicKeyHex.c_str());
 
-	const std::string pem = generateOpenPgpKey(signingKey, testData.name, testData.email, testData.timestamp);
+	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testData.name, testData.email), testData.timestamp);
 	std::string expectedKeyBlock = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
 		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
 		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
@@ -182,7 +185,7 @@ TEST(OpenSSH, PublicKey) {
 	SigningKey sk(SodiumBuffer(privateKey.byteVector), "");
 	SignatureVerificationKey svk = sk.getSignatureVerificationKey();
 
-	const auto openSSHKey = createAuthorizedPublicKeyEd25519(svk);
+	const auto openSSHKey = getOpenSSHPublicKeyEd25519(svk);
 	ASSERT_STREQ(
 		openSSHKey.c_str(),
 		"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09 DiceKeys"
@@ -193,7 +196,7 @@ TEST(OpenSSH, PrivateKey) {
 	const auto privateKey = ByteBuffer::fromHex("05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41");
 	SigningKey sk(SodiumBuffer(privateKey.byteVector), "");
 	const uint32_t checksum = 0x103D60C3;
-	const auto pk = createPrivateKeyEd25519(sk, "DiceKeys", checksum);
+	const auto pk = getOpenSSHPrivateKeyEd25519(sk, "DiceKeys", checksum);
 	const auto pkBase64 = base64Encode(pk.byteVector);
 	ASSERT_STREQ(
 		pkBase64.c_str(),

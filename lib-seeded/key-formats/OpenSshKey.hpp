@@ -11,10 +11,16 @@ inline uint32_t get32RandomBits () {
     return uni(rng);
 }
 
-const std::string createAuthorizedPublicKeyEd25519(const SignatureVerificationKey &publicKey);
+const std::string getOpenSSHPublicKeyEd25519(const SignatureVerificationKey &publicKey);
 
-const ByteBuffer createPrivateKeyEd25519(
+const ByteBuffer getOpenSSHPrivateKeyEd25519(
         const SigningKey &signingKey,
         const std::string comment,
         uint32_t checksum = get32RandomBits()
+);
+
+const std::string getOpenSshPemPrivateKeyEd25519(
+  const SigningKey& signingKey,
+  const std::string comment,
+  uint32_t checksum = get32RandomBits()
 );
