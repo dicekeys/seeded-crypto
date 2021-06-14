@@ -4,12 +4,8 @@
 #include <string>
 #include "ByteBuffer.hpp"
 
-namespace Version {
-  const uint8_t VERSION_4 = 0x04;
-  const uint8_t VERSION_5 = 0x04;
-}
-
-
+const uint8_t VERSION_4 = 0x04;
+const uint8_t VERSION_5 = 0x04;
 
 
 const size_t  SHA1_HASH_LENGTH_IN_BYTES = 20; // 160 bits
@@ -51,41 +47,14 @@ const ByteBuffer wrapKeyWithLengthPrefixAndTrim(const ByteBuffer &value);
 const ByteBuffer createOpenPgpPacket(uint8_t packetTag, const ByteBuffer &packetBodyBuffer);
 
 
-abstract class OpenPgpPacket {
-  const uint8_t packetTag,
-  
+class OpenPgpPacket {
+public:
+  uint8_t packetTag;
+
   OpenPgpPacket(uint8_t _packetTag) {
     packetTag = _packetTag;
-    packetBodyBuffer = _packetBodyBuffer;
   }
 
-  virtual void writeBody(ByteBuffer &outputBuffer);
-
-  virtual void writePreImage(ByteBuffer &outputBuffer) {
-    writeBody();
-  }
-
-  ByteBuffer getBody() {
-    ByteBuffer outputBuffer;
-    writeBody(outputBuffer);
-    return outputBuffer;
-  }
-
-  ByteBuffer getPreimage() {
-    ByteBuffer outputBuffer;
-    writeBody(outputBuffer);
-    return outputBuffer;
-  };
-
-  ByteBuffer encode() {
-    ByteBuffer packet; 
-    ByteBuffer packet;
-    https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-09#section-4.3
-    packet.writeByte(packetTag);
-    // RFC2440 Section 4.2.
-    // Should follow the spec as described in RFC4880-bis-10 - Section 4.2.
-    packet.append(encodeOpenPgpPacketLength(packetBodyBuffer.size()));
-    packet.append(getBody());
-    return packet;
-  };
-}
+  virtual const ByteBuffer& getBody() = 0;
+  ByteBuffer encode();
+};

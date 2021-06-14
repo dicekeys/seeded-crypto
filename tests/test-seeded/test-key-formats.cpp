@@ -2,10 +2,10 @@
 #include <string>
 #include "../lib-seeded/lib-seeded.hpp"
 #include "../lib-seeded/convert.hpp"
-#include "../lib-seeded/key-formats/Packet.hpp"
+#include "../lib-seeded/key-formats/OpenPgpPacket.hpp"
 #include "../lib-seeded/key-formats/ByteBuffer.hpp"
 #include "../lib-seeded/key-formats/UserPacket.hpp"
-#include "../lib-seeded/key-formats/PublicKeyPacket.hpp"
+#include "../lib-seeded/key-formats/EdDsaPublicPacket.hpp"
 #include "../lib-seeded/key-formats/SecretKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
 #include "../lib-seeded/key-formats/OpenSshKey.hpp"
@@ -65,18 +65,16 @@ TEST(KeyFormats, SignaturHashPreImage) {
 	const auto& testCase = testCases[0];
 	const auto publicKey = ByteBuffer::fromHex(testCase.publicKeyHex);
 	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
-	const ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(publicKey, testCase.timestamp);
-	const ByteBuffer pubicKeyFingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
-	const ByteBuffer publicKeyId = getPublicKeyIdFromPublicKeyPacketBody(publicKeyPacketBody);
+	const EdDsaPublicPacket publicPacket(publicKey, testCase.timestamp);
 
-	ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, testCase.timestamp);
+	ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 
 	// Calculate the SHA256-bit hash of the packet before appending the
 	// unhashed subpackets (which, as the name implies, shouldn't be hashed).
 	ByteBuffer signaturePacketBodyIncludedInHash =
-		createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, testCase.timestamp);
+		createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 	ByteBuffer preimage = createSignaturePacketHashPreImage(
-		publicKeyPacketBody,
+		publicPacket.body,
 		userIdPacketBody,
 		signaturePacketBodyIncludedInHash
 	);
@@ -91,17 +89,16 @@ TEST(KeyFormats, PacketFunctions) {
 		const auto userIdPacket = createUserPacket(userIdPacketBody);
 		ASSERT_STRCASEEQ(userIdPacket.toHex().c_str(), testCase.userIdPacketHex.c_str());
 
-		ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
-		ByteBuffer publicKeyPacket = createPublicKeyPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
-		ASSERT_STRCASEEQ(publicKeyPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
-		ByteBuffer fingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
-		ASSERT_STRCASEEQ(fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
+		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ByteBuffer encodedPublicPacket = publicPacket.encode();
+		ASSERT_STRCASEEQ(encodedPublicPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
+		ASSERT_STRCASEEQ(publicPacket.fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
 
-		ByteBuffer secretPacket = createEd25519SecretKeyPacket(ByteBuffer::fromHex(testCase.privateKeyHex), ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ByteBuffer secretPacket = createEd25519SecretKeyPacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.toHex().c_str(), testCase.secretPacketHex.c_str());
 
 		
-		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), ByteBuffer::fromHex(testCase.publicKeyHex), userIdPacketBody, testCase.timestamp);
+		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userIdPacketBody, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 	}

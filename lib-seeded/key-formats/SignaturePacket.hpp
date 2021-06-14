@@ -1,10 +1,11 @@
 #pragma once
 
 #include "ByteBuffer.hpp"
+#include "EdDsaPublicPacket.hpp"
 
 const ByteBuffer createSignaturePacket(
     const ByteBuffer &secretKey,
-    const ByteBuffer &publicKey,
+    const EdDsaPublicPacket& publicKeyPacket,
     const ByteBuffer &userIdPacketBody,
     uint32_t timestamp
 );
@@ -15,8 +16,8 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
   uint32_t timestamp
 );
 const ByteBuffer createSignaturePacketHashPreImage(
-  const ByteBuffer& publicKeyPacketBody,
+  const ByteBuffer& EdDsaPublicPacketBody,
   const ByteBuffer& userIdPacketBody,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 );
-const ByteBuffer createPublicKeyPacketHashPreimage(const ByteBuffer& publicKeyPacketBody);
+const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& EdDsaPublicPacketBody);

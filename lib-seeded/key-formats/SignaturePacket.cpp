@@ -1,8 +1,8 @@
 #include <sodium.h>
 #include "../sodium-buffer.hpp"
-#include "Packet.hpp"
+#include "OpenPgpPacket.hpp"
 #include "SignaturePacket.hpp"
-#include "PublicKeyPacket.hpp"
+#include "EdDsaPublicPacket.hpp"
 #include "SecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
@@ -93,12 +93,12 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
 
 
 const ByteBuffer createSignaturePacketHashPreImage(
-  const ByteBuffer& publicKeyPacketBody,
+  const ByteBuffer& EdDsaPublicPacketBody,
   const ByteBuffer& userIdPacketBody,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
   ByteBuffer preimage;
-  preimage.append(createPublicKeyPacketHashPreimage(publicKeyPacketBody));
+  preimage.append(createEdDsaPublicPacketHashPreimage(EdDsaPublicPacketBody));
   preimage.append(createUserPacketHashPreimage(userIdPacketBody));
   preimage.append(signaturePacketBodyIncludedInHash);
   // Document?
@@ -112,22 +112,22 @@ const ByteBuffer createSignaturePacketHashPreImage(
 
 const ByteBuffer createSignaturePacket(
     const ByteBuffer &secretKey,
-    const ByteBuffer &publicKey,
+    const EdDsaPublicPacket &publicKeyPacket,
     const ByteBuffer &userIdPacketBody,
     uint32_t timestamp
 ) {
-    const ByteBuffer publicKeyPacketBody = createPublicKeyPacketBody(publicKey, timestamp);
-    const ByteBuffer pubicKeyFingerprint = getPublicKeyFingerprint(publicKeyPacketBody);
-    const ByteBuffer publicKeyId = getPublicKeyIdFromPublicKeyPacketBody(publicKeyPacketBody);
+//    const ByteBuffer EdDsaPublicPacketBody = publicKeyPacket.body;
+//    const ByteBuffer pubicKeyFingerprint = publicKeyPacket.fingerprint;
+    const ByteBuffer publicKeyId = publicKeyPacket.keyId;
 
-    ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, timestamp);
+    ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, timestamp);
 
     // Calculate the SHA256-bit hash of the packet before appending the
     // unhashed subpackets (which, as the name implies, shouldn't be hashed).
     ByteBuffer signaturePacketBodyIncludedInHash =
-      createSignaturePacketBodyIncludedInHash(pubicKeyFingerprint, timestamp);
+      createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, timestamp);
     ByteBuffer preimage = createSignaturePacketHashPreImage(
-      publicKeyPacketBody,
+      publicKeyPacket.body,
       userIdPacketBody,
       signaturePacketBodyIncludedInHash
     );

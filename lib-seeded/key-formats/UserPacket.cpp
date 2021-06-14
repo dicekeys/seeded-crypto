@@ -1,5 +1,5 @@
 #include "UserPacket.hpp"
-#include "Packet.hpp"
+#include "OpenPgpPacket.hpp"
 
 const std::string createUserIdPacketContent(const std::string& userName, const std::string& email) {
   return userName + " <" + email + ">";
