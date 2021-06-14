@@ -55,6 +55,6 @@ public:
     packetTag = _packetTag;
   }
 
-  virtual const ByteBuffer& getBody() = 0;
-  ByteBuffer encode();
+  virtual const ByteBuffer& getBody() const = 0;
+  ByteBuffer encode() const;
 };

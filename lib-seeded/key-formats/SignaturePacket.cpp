@@ -3,7 +3,7 @@
 #include "OpenPgpPacket.hpp"
 #include "SignaturePacket.hpp"
 #include "EdDsaPublicPacket.hpp"
-#include "SecretKeyPacket.hpp"
+#include "EdDsaSecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
 const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBuffer) {
@@ -94,12 +94,12 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
 
 const ByteBuffer createSignaturePacketHashPreImage(
   const ByteBuffer& EdDsaPublicPacketBody,
-  const ByteBuffer& userIdPacketBody,
+  const UserPacket& userPacket,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
   ByteBuffer preimage;
   preimage.append(createEdDsaPublicPacketHashPreimage(EdDsaPublicPacketBody));
-  preimage.append(createUserPacketHashPreimage(userIdPacketBody));
+  preimage.append(userPacket.getPreImage());
   preimage.append(signaturePacketBodyIncludedInHash);
   // Document?
   preimage.writeByte(Version);
@@ -113,7 +113,7 @@ const ByteBuffer createSignaturePacketHashPreImage(
 const ByteBuffer createSignaturePacket(
     const ByteBuffer &secretKey,
     const EdDsaPublicPacket &publicKeyPacket,
-    const ByteBuffer &userIdPacketBody,
+    const UserPacket& userPacket,
     uint32_t timestamp
 ) {
 //    const ByteBuffer EdDsaPublicPacketBody = publicKeyPacket.body;
@@ -128,7 +128,7 @@ const ByteBuffer createSignaturePacket(
       createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, timestamp);
     ByteBuffer preimage = createSignaturePacketHashPreImage(
       publicKeyPacket.body,
-      userIdPacketBody,
+      userPacket,
       signaturePacketBodyIncludedInHash
     );
 

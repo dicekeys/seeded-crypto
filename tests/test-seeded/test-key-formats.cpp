@@ -6,7 +6,7 @@
 #include "../lib-seeded/key-formats/ByteBuffer.hpp"
 #include "../lib-seeded/key-formats/UserPacket.hpp"
 #include "../lib-seeded/key-formats/EdDsaPublicPacket.hpp"
-#include "../lib-seeded/key-formats/SecretKeyPacket.hpp"
+#include "../lib-seeded/key-formats/EdDsaSecretKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
 #include "../lib-seeded/key-formats/OpenSshKey.hpp"
 #include "../lib-seeded/key-formats/OpenPgpKey.hpp"
@@ -64,7 +64,8 @@ void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEnco
 TEST(KeyFormats, SignaturHashPreImage) {
 	const auto& testCase = testCases[0];
 	const auto publicKey = ByteBuffer::fromHex(testCase.publicKeyHex);
-	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
+	const UserPacket userPacket(testCase.name, testCase.email);
+//	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 	const EdDsaPublicPacket publicPacket(publicKey, testCase.timestamp);
 
 	ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
@@ -75,7 +76,7 @@ TEST(KeyFormats, SignaturHashPreImage) {
 		createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 	ByteBuffer preimage = createSignaturePacketHashPreImage(
 		publicPacket.body,
-		userIdPacketBody,
+		userPacket,
 		signaturePacketBodyIncludedInHash
 	);
 	ASSERT_STRCASEEQ(toUpper(preimage.toHex()).c_str(), 
@@ -85,20 +86,21 @@ TEST(KeyFormats, SignaturHashPreImage) {
 
 TEST(KeyFormats, PacketFunctions) {
 	for (const auto& testCase : testCases) {
-		const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
-		const auto userIdPacket = createUserPacket(userIdPacketBody);
-		ASSERT_STRCASEEQ(userIdPacket.toHex().c_str(), testCase.userIdPacketHex.c_str());
+		const UserPacket userPacket(testCase.name, testCase.email);
+//		const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
+//		const auto userIdPacket = createUserPacket(userIdPacketBody);
+		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
 		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
 		ByteBuffer encodedPublicPacket = publicPacket.encode();
 		ASSERT_STRCASEEQ(encodedPublicPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
 		ASSERT_STRCASEEQ(publicPacket.fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
 
-		ByteBuffer secretPacket = createEd25519SecretKeyPacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, testCase.timestamp);
-		ASSERT_STRCASEEQ(secretPacket.toHex().c_str(), testCase.secretPacketHex.c_str());
+		EdDsaSecretKeyPacket secretPacket(publicPacket, ByteBuffer::fromHex(testCase.privateKeyHex), testCase.timestamp);
+		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
 		
-		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userIdPacketBody, testCase.timestamp);
+		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 	}
@@ -123,7 +125,6 @@ TEST(KeyFormats, OpenPGP) {
 
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testData.privateKeyHex.c_str());
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testData.publicKeyHex.c_str());
-
 	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testData.name, testData.email), testData.timestamp);
 	std::string expectedKeyBlock = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
 		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
@@ -201,25 +202,3 @@ TEST(OpenSSH, PrivateKey) {
 	);
 
 }
-
-/*
-
-class OpenSshHelperUnitTests {
-		private val privateKey = "05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41".hexStringToByteArray()
-		private val publicKey = "C953742F5D7A26111D868FBBAD228C9C180524FD1743891A2796D49F4735FD3D".hexStringToByteArray()
-
-		@Test
-		fun test_authorizedKey(){
-				Assert.assertEquals("ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMlTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09 DiceKeys", OpenSslHelper.createAuthorizedPublicKeyEd25519(publicKey))
-		}
-
-		@Test
-		fun test_privateKey(){
-				val checksum = 0x103D60C3
-				Assert.assertEquals(
-								"b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAJAQPWDDED1gwwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAEAFrXdopr92us8RzW6VhoXCkhotCh97MxPLZvpxOC/PQclTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09AAAACERpY2VLZXlzAQIDBAU=",
-								BaseEncoding.base64().encode(OpenSslHelper.createPrivateKeyEd25519(privateKey, "DiceKeys", checksum)))
-		}
-
-
-*/

@@ -13,7 +13,7 @@ public:
   ByteBuffer fingerprint;
   ByteBuffer keyId;
 
-  const ByteBuffer& getBody() override;
+  const ByteBuffer& getBody() const override;
   EdDsaPublicPacket(
     const ByteBuffer& _publicKeyBytes,
     uint32_t _timestamp

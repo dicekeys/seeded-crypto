@@ -70,4 +70,4 @@ EdDsaPublicPacket::EdDsaPublicPacket(
   keyId(getPublicKeyIdFromFingerprint(fingerprint))
 {};
 
-const ByteBuffer& EdDsaPublicPacket::getBody() { return body; }
+const ByteBuffer& EdDsaPublicPacket::getBody() const { return body; }

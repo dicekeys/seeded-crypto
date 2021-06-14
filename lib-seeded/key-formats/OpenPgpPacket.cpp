@@ -78,7 +78,7 @@ const ByteBuffer createOpenPgpPacket(uint8_t packetTag, const ByteBuffer &packet
   return packet;
 }
 
-ByteBuffer OpenPgpPacket::encode() {
+ByteBuffer OpenPgpPacket::encode() const {
   ByteBuffer packet;
   ByteBuffer body = getBody();
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-09#section-4.3
