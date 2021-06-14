@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ByteBuffer.hpp"
+#include "Packet.hpp"
 
 const ByteBuffer taggedPublicKey(const ByteBuffer &publicKey);
 const ByteBuffer createPublicKeyPacketBody(const ByteBuffer& publicKeyBytes, uint32_t timestamp);

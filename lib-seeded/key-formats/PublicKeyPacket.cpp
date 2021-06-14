@@ -2,23 +2,61 @@
 #include "Packet.hpp"
 #include "SHA1.hpp"
 
-const ByteBuffer taggedPublicKey(const ByteBuffer &publicKey) {
-  // RFC4880-bis-10 - Section 13.3 - EdDSA Point Format
-  // 0x40 indicate compressed format
-  // Kotlin:      val taggedPublicKey = byteArrayOf(0x40) + publicKey
-  ByteBuffer taggedPublicKeyBuffer;
-  taggedPublicKeyBuffer.writeByte(0x40);
-  taggedPublicKeyBuffer.append(publicKey);
-  return taggedPublicKeyBuffer;
+// For EC DH (elliptic curve diffie helman public-key crypto for message confidentiality)
+// https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-10#section-5.6.6
+
+
+
+class PublicKeyPacket : Packet {
+  const ByteBuffer& publicKeyBytes;
+  const uint32_t timestamp;
+  PublicKeyPacker(
+    const ByteBuffer& _publicKeyBytes,
+    uint32_t _timestamp
+  ) {
+    super(pTagPublicPacket);
+    publicKeyBytes = _publicKeyBytes;
+    timestamp = _timestamp;
+  }
+
+  const ByteBuffer taggedPublicKey() {
+    // RFC4880-bis-10 - Section 13.3 - EdDSA Point Format
+    // 0x40 indicate compressed format
+    // Kotlin:      val taggedPublicKey = byteArrayOf(0x40) + publicKey
+    ByteBuffer taggedPublicKeyBuffer;
+    taggedPublicKeyBuffer.writeByte(0x40);
+    taggedPublicKeyBuffer.append(publicKeyBytes);
+    return taggedPublicKeyBuffer;
+  }
+
+  virtual void writeBody(ByteBuffer &outputBuffer) {
+    outputBuffer.writeByte(Version);
+    outputBuffer.write32Bits(timestamp);
+    outputBuffer.writeByte(ALGORITHM_ED_DSA);
+    outputBuffer.writeByte(ALGORITHM_ED_DSA_CURVE_OID_25519.size());
+    outputBuffer.append(ALGORITHM_ED_DSA_CURVE_OID_25519);
+    outputBuffer.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKeyBytes)));
+  }
+
+  override writePreImage(ByteBuffer &outputBuffer) {
+    preimage.writeByte(0x99);
+    ByteBuffer body = getBody();
+    preimage.write16Bits(body.size()); // 2-bytes
+    preimage.append(body);
+  }
+
 }
 
+
+// For ED_DSA
+/// https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-10#section-5.6.5
 const ByteBuffer createPublicKeyPacketBody(const ByteBuffer& publicKeyBytes, uint32_t timestamp) {
   ByteBuffer packetBody;
   packetBody.writeByte(Version);
   packetBody.write32Bits(timestamp);
-  packetBody.writeByte(Ed25519Algorithm);
-  packetBody.writeByte(Ed25519CurveOid.size());
-  packetBody.append(Ed25519CurveOid);
+  packetBody.writeByte(ALGORITHM_ED_DSA);
+  packetBody.writeByte(ALGORITHM_ED_DSA_CURVE_OID_25519.size());
+  packetBody.append(ALGORITHM_ED_DSA_CURVE_OID_25519);
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKeyBytes)));
   return packetBody;
 }
@@ -33,7 +71,7 @@ const ByteBuffer createPublicKeyPacketHashPreimage(const ByteBuffer& publicKeyPa
 }
 
 const ByteBuffer createPublicKeyPacket(const ByteBuffer& publicKeyPacketBody) {
-  return createPacket(pTagPublicPacket, publicKeyPacketBody);
+  return createOpenPgpPacket(pTagPublicPacket, publicKeyPacketBody);
 }
 
 const ByteBuffer createPublicKeyPacket(const ByteBuffer &publicKeyBytes, uint32_t timestamp) {

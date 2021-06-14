@@ -80,8 +80,8 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
       ByteBuffer packetBody;
     packetBody.writeByte(Version);
     packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
-    packetBody.writeByte(Ed25519Algorithm);
-    packetBody.writeByte(Sha256Algorithm);
+    packetBody.writeByte(ALGORITHM_ED_DSA);
+    packetBody.writeByte(ALGORITHM_HASH_SHA_256);
 
     // Write the subpackets that will be part of the hash, prefixed
     // by the length of all the subpackets combined.
@@ -160,6 +160,6 @@ const ByteBuffer createSignaturePacket(
     //// which should thus be wrapped using the wrapping encoding for numbers.
     packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0,32)));
     packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32,32)));
-    return createPacket(pTagSignaturePacket, packetBody);
+    return createOpenPgpPacket(pTagSignaturePacket, packetBody);
 }
 

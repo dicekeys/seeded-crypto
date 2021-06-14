@@ -15,9 +15,9 @@ const ByteBuffer createEd25519SecretKeyPacketBody(const ByteBuffer& secretKey, c
   ByteBuffer packetBody;
   packetBody.writeByte(Version);
   packetBody.write32Bits(timestamp);
-  packetBody.writeByte(Ed25519Algorithm);
-  packetBody.writeByte(Ed25519CurveOid.size());
-  packetBody.append(Ed25519CurveOid);
+  packetBody.writeByte(ALGORITHM_ED_DSA);
+  packetBody.writeByte(ALGORITHM_ED_DSA_CURVE_OID_25519.size());
+  packetBody.append(ALGORITHM_ED_DSA_CURVE_OID_25519);
 
   packetBody.append(wrapKeyWithLengthPrefixAndTrim(taggedPublicKey(publicKey)));
 
@@ -30,7 +30,7 @@ const ByteBuffer createEd25519SecretKeyPacketBody(const ByteBuffer& secretKey, c
 }
 
 const ByteBuffer createEd25519SecretKeyPacket(const ByteBuffer &packetBody) {
-  return createPacket(pTagSecretPacket, packetBody);
+  return createOpenPgpPacket(pTagSecretPacket, packetBody);
 }
 
 const ByteBuffer createEd25519SecretKeyPacket(const ByteBuffer& secretKey, const ByteBuffer& publicKey, uint32_t timestamp) {

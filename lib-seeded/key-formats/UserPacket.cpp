@@ -18,7 +18,7 @@ const ByteBuffer createUserPacketHashPreimage(const ByteBuffer& userIdPacketBody
 }
 
 const ByteBuffer createUserPacket(const ByteBuffer& userPacketBody) {
-  return createPacket(pTagUserIdPacket, userPacketBody);
+  return createOpenPgpPacket(pTagUserIdPacket, userPacketBody);
 }
 
 const ByteBuffer createUserPacket(const std::string &userName, const std::string &email) {
