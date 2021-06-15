@@ -131,7 +131,7 @@ public:
   /**
  * @brief If the data in the buffer represents a UTF8-format string, reconstitute
  * the data back into a UTF8 std::string.  Note that the result will be in a
- * region of memor that is *not* guaranteed to be erased when the object is destroyed.
+ * region of memory that is *not* guaranteed to be erased when the object is destroyed.
  */
   const std::string toUtf8String() const;
 

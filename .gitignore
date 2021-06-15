@@ -65,6 +65,5 @@ Browse.VC.db
 extern/**
 !extern/*.cmake
 builds
-.vscode/c_cpp_properties.json
 .vscode/settings.json
 documentation

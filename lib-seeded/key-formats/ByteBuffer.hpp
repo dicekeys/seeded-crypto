@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "../sodium-buffer.hpp"
+#include "sodium-buffer.hpp"
 /**
  * https://www.ietf.org/archive/id/draft-ietf-openpgp-rfc4880bis-10.txt
  * 
