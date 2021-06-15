@@ -2,23 +2,27 @@
 
 #include "ByteBuffer.hpp"
 #include "EdDsaPublicPacket.hpp"
+#include "EdDsaSecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
-const ByteBuffer createSignaturePacket(
-    const ByteBuffer &secretKey,
-    const EdDsaPublicPacket& publicKeyPacket,
+class SignaturePacket : public OpenPgpPacket {
+public:
+  const uint32_t timestamp;
+  const ByteBuffer packetBodyIncludedInSignatureHash;
+  const ByteBuffer signatureHashPreImage;
+  const ByteBuffer signatureHashSha256;
+  const ByteBuffer signature;
+  const ByteBuffer unhashedSubpacketsWithSizePrefix;
+  const ByteBuffer body;
+
+  SignaturePacket(
+    const SigningKey& signingKey,
     const UserPacket& userPacket,
-    uint32_t timestamp
-);
+    const EdDsaSecretKeyPacket& secretPacket,
+    const EdDsaPublicPacket& publicKeyPacket,
+    uint32_t _timestamp
+  );
 
+  const ByteBuffer& getBody() const override;
 
-const ByteBuffer createSignaturePacketBodyIncludedInHash(
-  const ByteBuffer& pubicKeyFingerprint,
-  uint32_t timestamp
-);
-const ByteBuffer createSignaturePacketHashPreImage(
-  const ByteBuffer& EdDsaPublicPacketBody,
-  const UserPacket& userPacket,
-  const ByteBuffer& signaturePacketBodyIncludedInHash
-);
-const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& EdDsaPublicPacketBody);
+};

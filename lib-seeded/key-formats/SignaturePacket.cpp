@@ -77,7 +77,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
   const ByteBuffer& pubicKeyFingerprint,
   uint32_t timestamp
 ) {
-      ByteBuffer packetBody;
+    ByteBuffer packetBody;
     packetBody.writeByte(Version);
     packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
     packetBody.writeByte(ALGORITHM_ED_DSA);
@@ -93,73 +93,92 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
 
 
 const ByteBuffer createSignaturePacketHashPreImage(
-  const ByteBuffer& EdDsaPublicPacketBody,
+  const EdDsaPublicPacket& publicKeyPacket,
   const UserPacket& userPacket,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
-  ByteBuffer preimage;
-  preimage.append(createEdDsaPublicPacketHashPreimage(EdDsaPublicPacketBody));
-  preimage.append(userPacket.getPreImage());
-  preimage.append(signaturePacketBodyIncludedInHash);
+  ByteBuffer preImage;
+  preImage.append(publicKeyPacket.preImage);
+  preImage.append(userPacket.getPreImage());
+  preImage.append(signaturePacketBodyIncludedInHash);
   // Document?
-  preimage.writeByte(Version);
-  preimage.writeByte(0xff);
+  preImage.writeByte(Version);
+  preImage.writeByte(0xff);
   // The signature hash size is the size of the packetBody constructed so far,
   // which is the content to be used as a hash preimage.
-  preimage.write32Bits(signaturePacketBodyIncludedInHash.size());
-  return preimage;
+  preImage.write32Bits(signaturePacketBodyIncludedInHash.size());
+  return preImage;
 }
 
-const ByteBuffer createSignaturePacket(
-    const ByteBuffer &secretKey,
-    const EdDsaPublicPacket &publicKeyPacket,
-    const UserPacket& userPacket,
-    uint32_t timestamp
+const ByteBuffer createSignatureHashSHA256(
+  const ByteBuffer &preImage
 ) {
-//    const ByteBuffer EdDsaPublicPacketBody = publicKeyPacket.body;
-//    const ByteBuffer pubicKeyFingerprint = publicKeyPacket.fingerprint;
-    const ByteBuffer publicKeyId = publicKeyPacket.keyId;
-
-    ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, timestamp);
-
-    // Calculate the SHA256-bit hash of the packet before appending the
-    // unhashed subpackets (which, as the name implies, shouldn't be hashed).
-    ByteBuffer signaturePacketBodyIncludedInHash =
-      createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, timestamp);
-    ByteBuffer preimage = createSignaturePacketHashPreImage(
-      publicKeyPacket.body,
-      userPacket,
-      signaturePacketBodyIncludedInHash
-    );
-
-    // Calculate the SHA256 hash of the preimage.
-    ByteBuffer sha256Hash(crypto_hash_sha256_BYTES);
-    crypto_hash_sha256(sha256Hash.byteVector.data(), preimage.byteVector.data(), preimage.byteVector.size());
-    
-    // The unhashed subpackets should not be hashed/signed.
-    // (It's just a keyId which can be re-derived from the hashed content.)
-    ByteBuffer unhashedSubpackets;
-    {
-        // Issuer 0x10 (keyId which is last 8 bytes of SHA256 of public key packet body)
-        unhashedSubpackets.append(createSubpacket(0x10 /* issuer */, publicKeyId));
-    }
-    packetBody.write16Bits(unhashedSubpackets.size()); // unhashed_area_len
-    packetBody.append(unhashedSubpackets);
-    // write first two bytes of SHA256 hash of the signature before writing the signature
-    // itself
-
-    packetBody.writeByte(sha256Hash.byteVector[0]);
-    packetBody.writeByte(sha256Hash.byteVector[1]);
-
-    //// Sign the hash
-    ByteBuffer signature(crypto_sign_BYTES);
-    const auto sk = SigningKey(SodiumBuffer(secretKey.byteVector), "");
-    crypto_sign_detached(signature.byteVector.data(), NULL, sha256Hash.byteVector.data(), crypto_hash_sha256_BYTES, sk.signingKeyBytes.data);
-
-    //// Append the signature point, which is two 256-bit numbers (r and s),
-    //// which should thus be wrapped using the wrapping encoding for numbers.
-    packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0,32)));
-    packetBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32,32)));
-    return createOpenPgpPacket(pTagSignaturePacket, packetBody);
+  ByteBuffer sha256Hash(crypto_hash_sha256_BYTES);
+  crypto_hash_sha256(sha256Hash.byteVector.data(), preImage.byteVector.data(), preImage.byteVector.size());
+  return sha256Hash;
 }
 
+const ByteBuffer createSignature(
+  const SigningKey sk,
+  const ByteBuffer& signatureHashSha256
+) {
+  ByteBuffer signatureBody;
+  // write first two bytes of SHA256 hash of the signature before writing the signature
+  // itself
+  signatureBody.writeByte(signatureHashSha256.byteVector[0]);
+  signatureBody.writeByte(signatureHashSha256.byteVector[1]);
+
+  ByteBuffer signature(crypto_sign_BYTES);
+  //    const auto sk = SigningKey(SodiumBuffer(secretKey.byteVector), "");
+  crypto_sign_detached(signature.byteVector.data(), NULL, signatureHashSha256.byteVector.data(), crypto_hash_sha256_BYTES, sk.signingKeyBytes.data);
+
+  //// Append the signature point, which is two 256-bit numbers (r and s),
+  //// which should thus be wrapped using the wrapping encoding for numbers.
+  signatureBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0, 32)));
+  signatureBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32, 32)));
+  return signatureBody;
+}
+
+const ByteBuffer createUnhashedSubpacketsWithSizePrefix(const ByteBuffer& keyId) {
+  ByteBuffer unhashedSubpackets;
+  {
+    // Issuer 0x10 (keyId which is last 8 bytes of SHA256 of public key packet body)
+    unhashedSubpackets.append(createSubpacket(0x10 /* issuer */, keyId));
+  }
+  ByteBuffer unhashedSubpacketsWithSizePrefix;
+  unhashedSubpacketsWithSizePrefix.write16Bits(unhashedSubpackets.size()); // unhashed_area_len
+  unhashedSubpacketsWithSizePrefix.append(unhashedSubpackets);
+  return unhashedSubpacketsWithSizePrefix;
+}
+
+const ByteBuffer createSignaturePacketBody(
+  const ByteBuffer packetBodyIncludedInSignatureHash,
+  const ByteBuffer signature,
+  const ByteBuffer unhashedSubpacketsWithSizePrefix
+) {
+  ByteBuffer packetBody;
+  packetBody.append(packetBodyIncludedInSignatureHash);
+  packetBody.append(unhashedSubpacketsWithSizePrefix);
+  packetBody.append(signature);
+  return packetBody;
+}
+
+SignaturePacket::SignaturePacket(
+  const SigningKey& signingKey,
+  const UserPacket& userPacket,
+  const EdDsaSecretKeyPacket& secretPacket,
+  const EdDsaPublicPacket& publicKeyPacket,
+  uint32_t _timestamp
+) :
+  OpenPgpPacket(pTagSignaturePacket),
+  timestamp(_timestamp),
+  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, _timestamp)),
+  signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
+  signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
+  signature(createSignature(signingKey, signatureHashSha256)),
+  unhashedSubpacketsWithSizePrefix(createUnhashedSubpacketsWithSizePrefix(publicKeyPacket.keyId)),
+  body(createSignaturePacketBody(packetBodyIncludedInSignatureHash, signature, unhashedSubpacketsWithSizePrefix))
+{}
+
+
+const ByteBuffer& SignaturePacket::getBody() const { return body; };

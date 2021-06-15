@@ -16,15 +16,12 @@ std::string generateOpenPgpKey(
     ByteBuffer out;
     const EdDsaPublicPacket publicKeyPacket(publicKey, timestamp);
     const EdDsaSecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
-//    const ByteBuffer secretPacket = createEd25519EdDsaSecretKeyPacket(privateKey, publicKeyPacket, timestamp);
     const UserPacket userPacket(userIdPacketContent);
-//    const ByteBuffer userPacketBody = createUserPacketBody(userIdPacketContent);
-//    const ByteBuffer userPacket = createUserPacket(userPacketBody);
-    const ByteBuffer signaturePacket = createSignaturePacket(privateKey, publicKeyPacket, userPacket, timestamp);
+    const SignaturePacket signaturePacket(signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
 
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
-    out.append(signaturePacket);
+    out.append(signaturePacket.encode());
 
     return PEM("PGP PRIVATE KEY BLOCK", out);
 }

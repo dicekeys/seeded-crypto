@@ -28,11 +28,11 @@ const std::string createUserIdPacketContent(const std::string& userName, const s
 //
 //
 const ByteBuffer UserPacket::getPreImage() const {
-  ByteBuffer preimage;
-  preimage.writeByte(pTagUserIdPacket);
-  preimage.write32Bits(body.size());
-  preimage.append(body);
-  return preimage;
+  ByteBuffer preImage;
+  preImage.writeByte(pTagUserIdPacket);
+  preImage.write32Bits(body.size());
+  preImage.append(body);
+  return preImage;
 };
 
 const ByteBuffer& UserPacket::getBody() const { return body; };

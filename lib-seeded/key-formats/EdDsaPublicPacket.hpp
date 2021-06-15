@@ -9,7 +9,7 @@ public:
   const ByteBuffer publicKeyBytes;
   const ByteBuffer publicKeyInEdDsaPointFormat;
   const ByteBuffer body;
-  const ByteBuffer preimage;
+  const ByteBuffer preImage;
   ByteBuffer fingerprint;
   ByteBuffer keyId;
 

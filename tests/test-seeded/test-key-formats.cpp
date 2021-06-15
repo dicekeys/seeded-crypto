@@ -64,28 +64,28 @@ void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEnco
 TEST(KeyFormats, SignaturHashPreImage) {
 	const auto& testCase = testCases[0];
 	const auto publicKey = ByteBuffer::fromHex(testCase.publicKeyHex);
+	const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
 	const UserPacket userPacket(testCase.name, testCase.email);
 //	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 	const EdDsaPublicPacket publicPacket(publicKey, testCase.timestamp);
+	const EdDsaSecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
-	ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
+	const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
+	const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+//		ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 
 	// Calculate the SHA256-bit hash of the packet before appending the
 	// unhashed subpackets (which, as the name implies, shouldn't be hashed).
-	ByteBuffer signaturePacketBodyIncludedInHash =
-		createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
-	ByteBuffer preimage = createSignaturePacketHashPreImage(
-		publicPacket.body,
-		userPacket,
-		signaturePacketBodyIncludedInHash
-	);
-	ASSERT_STRCASEEQ(toUpper(preimage.toHex()).c_str(), 
+	ASSERT_STRCASEEQ(toUpper(signaturePacket.signatureHashPreImage.toHex()).c_str(),
 		"990033046084456016092B06010401DA470F0101074071F0631525A110B2A6046D4C1DCF0A2B8B8CD9DEF1E773DB408165A747A2E3E8B400000020444B5F555345525F31203C646B757365723140646963656B6579732E6F72673E041316080038162104FBE62AB5DC8C41B12C06F37E85B7A357B0E9FFD8050260844560021B01050B0908070206150A09080B020416020301021E0102178004FF0000003E"
 	);
 }
 
 TEST(KeyFormats, PacketFunctions) {
 	for (const auto& testCase : testCases) {
+		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
+		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
+
 		const UserPacket userPacket(testCase.name, testCase.email);
 //		const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 //		const auto userIdPacket = createUserPacket(userIdPacketBody);
@@ -96,12 +96,12 @@ TEST(KeyFormats, PacketFunctions) {
 		ASSERT_STRCASEEQ(encodedPublicPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
 		ASSERT_STRCASEEQ(publicPacket.fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
 
-		EdDsaSecretKeyPacket secretPacket(publicPacket, ByteBuffer::fromHex(testCase.privateKeyHex), testCase.timestamp);
+		EdDsaSecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
-		
-		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userPacket, testCase.timestamp);
-		ASSERT_STRCASEEQ(signaturePacket.toHex().c_str(), testCase.signaturePacketHex.c_str());
+		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+//		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userPacket, testCase.timestamp);
+		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 	}
 }

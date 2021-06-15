@@ -27,20 +27,20 @@ const ByteBuffer createEdDsaPublicPacketBody(const ByteBuffer& publicKeyInEdDsaP
 }
 
 const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& EdDsaPublicPacketBody) {
-  ByteBuffer preimage;
-  preimage.writeByte(0x99);
-  preimage.write16Bits(EdDsaPublicPacketBody.size()); // 2-bytes
-  preimage.append(EdDsaPublicPacketBody);
-  return preimage;
+  ByteBuffer preImage;
+  preImage.writeByte(0x99);
+  preImage.write16Bits(EdDsaPublicPacketBody.size()); // 2-bytes
+  preImage.append(EdDsaPublicPacketBody);
+  return preImage;
 }
 
 
 // A V4 fingerprint is the 160-bit SHA-1 hash of the octet 0x99,
 // followed by the two-octet packet length, followed by the entire
 // Public-Key packet starting with the version field.
-const ByteBuffer getPublicKeyFingerprintFromPreImage(const ByteBuffer& preimage) {
+const ByteBuffer getPublicKeyFingerprintFromPreImage(const ByteBuffer& preImage) {
   sha1 hash = sha1();
-  hash.add(preimage.byteVector.data(), preimage.byteVector.size());
+  hash.add(preImage.byteVector.data(), preImage.byteVector.size());
   hash.finalize();
   ByteBuffer hashBuffer;
   // Write a word at a time to ensure the hash has the correct byte ordering.
@@ -65,8 +65,8 @@ EdDsaPublicPacket::EdDsaPublicPacket(
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEdDsaPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
   body(createEdDsaPublicPacketBody(publicKeyInEdDsaPointFormat, timestamp)),
-  preimage(createEdDsaPublicPacketHashPreimage(body)),
-  fingerprint(getPublicKeyFingerprintFromPreImage(preimage)),
+  preImage(createEdDsaPublicPacketHashPreimage(body)),
+  fingerprint(getPublicKeyFingerprintFromPreImage(preImage)),
   keyId(getPublicKeyIdFromFingerprint(fingerprint))
 {};
 
