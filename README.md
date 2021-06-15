@@ -29,7 +29,7 @@ Open this directory in Visual Studio 2019 to automatically build and load tests 
 
 ```
 cd dicekeys-seeded-crypto
-cmake -DCMAKE_CXX_STANDARD=17 -DSEEDED_CREATE_AND_RUN_TESTS=True -B build
+cmake -DCMAKE_CXX_STANDARD=17 -DSEEDED_CREATE_AND_RUN_TESTS=ON -B build
 cd build
 make
 ctest
