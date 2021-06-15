@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ByteBuffer.hpp"
-#include "EdDsaPublicPacket.hpp"
-#include "EdDsaSecretKeyPacket.hpp"
+#include "PublicKeyPacket.hpp"
+#include "SecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
 class SignaturePacket : public OpenPgpPacket {
@@ -18,7 +18,7 @@ public:
   SignaturePacket(
     const SigningKey& signingKey,
     const UserPacket& userPacket,
-    const EdDsaSecretKeyPacket& secretPacket,
+    const SecretKeyPacket& secretPacket,
     const EdDsaPublicPacket& publicKeyPacket,
     uint32_t _timestamp
   );

@@ -2,7 +2,7 @@
 
 #include "ByteBuffer.hpp"
 #include "../signing-key.hpp"
-#include "EdDsaPublicPacket.hpp"
+#include "PublicKeyPacket.hpp"
 
 //const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey);
 //const ByteBuffer createEd25519EdDsaSecretKeyPacket(
@@ -16,13 +16,13 @@
 //  uint32_t timestamp
 //);
 
-class EdDsaSecretKeyPacket: public OpenPgpPacket {
+class SecretKeyPacket: public OpenPgpPacket {
 public:
   const ByteBuffer secretKey;
   const uint32_t timestamp;
   const ByteBuffer body;
 
-  EdDsaSecretKeyPacket(
+  SecretKeyPacket(
     const EdDsaPublicPacket& publicKeyPacket,
     const ByteBuffer& _secretKey,
     uint32_t _timestamp

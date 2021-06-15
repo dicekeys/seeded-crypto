@@ -1,10 +1,25 @@
 #include "OpenPgpPacket.hpp"
-#include "EdDsaPublicPacket.hpp"
+#include "PublicKeyPacket.hpp"
 #include "SHA1.hpp"
 
 // For EC DH (elliptic curve diffie helman public-key crypto for message confidentiality)
 // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-10#section-5.6.6
 
+
+//                 9.2.  ECC Curve OID
+//                  The parameter curve OID is an array of octets that define a named
+//                  curve.  The table below specifies the exact sequence of bytes for
+//                  each named curve referenced in this document:
+//                 ...
+//                 | 1.3.6.1.4.1.11591.15.1 | 9   | 2B 06 01 04 01  | Ed25519    |
+//                 |                        |     | DA 47 0F 01     |            |
+//                 ...
+//                 The first omitted field is one octet
+//                 representing the Object Identifier tag,
+//                 and the second omitted field
+//                  is the length of the Object Identifier body.
+PublicKeyConfiguration edDsaConfiguration(ALGORITHM_ED_DSA, ALGORITHM_ED_DSA_CURVE_OID_25519);
+PublicKeyConfiguration ecDhConfiguration(ALGORITHM_EC_DH, ALGORITHM_EC_DH_CURVE_OID_25519);
 
 const ByteBuffer encodePublicKeyBytesToEccCompressedPointFormat(
   const ByteBuffer& publicKeyBytes
@@ -40,7 +55,11 @@ const ByteBuffer encodePublicKeyBytesToEccCompressedPointFormat(
   return compressedPointFormat;
 }
 
-const ByteBuffer createEdDsaPublicPacketBody(const ByteBuffer& publicKeyInEdDsaPointFormat, uint32_t timestamp) {
+const ByteBuffer createEdDsaPublicPacketBody(
+  const PublicKeyConfiguration& configuration,
+  const ByteBuffer& publicKeyInPointFormat,
+  uint32_t timestamp
+) {
   ByteBuffer packetBody;
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-3.7
   // 5.5.2.  Public-Key Packet Formats
@@ -60,7 +79,7 @@ const ByteBuffer createEdDsaPublicPacketBody(const ByteBuffer& publicKeyInEdDsaP
   //  *  A four-octet number denoting the time that the key was created.
   packetBody.write32Bits(timestamp);
   //  *  A one-octet number denoting the public-key algorithm of this key.
-  packetBody.writeByte(ALGORITHM_ED_DSA);
+  packetBody.writeByte(configuration.algorithm);
   //
   //  *  A series of multiprecision integers comprising the key material.
   //     This is algorithm-specific and described in Section 5.6.
@@ -73,35 +92,27 @@ const ByteBuffer createEdDsaPublicPacketBody(const ByteBuffer& publicKeyInEdDsaP
   //        
   //             -  a one-octet size of the following field; values 0 and 0xFF are
   //                reserved for future extensions,
-  packetBody.writeByte(ALGORITHM_ED_DSA_CURVE_OID_25519.size());
+  packetBody.writeByte(configuration.curve.size());
   //        
   //             -  the octets representing a curve OID, defined in Section 9.2;
   //                 https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-9.2
-  //                 9.2.  ECC Curve OID
-
-  //                  The parameter curve OID is an array of octets that define a named
-  //                  curve.  The table below specifies the exact sequence of bytes for
-  //                  each named curve referenced in this document:
-  //                 ...
-  //                 | 1.3.6.1.4.1.11591.15.1 | 9   | 2B 06 01 04 01  | Ed25519    |
-  //                 |                        |     | DA 47 0F 01     |            |
-  //                 ...
-  //                 The first omitted field is one octet
-  //                 representing the Object Identifier tag,
-  //                 and the second omitted field
-  //                  is the length of the Object Identifier body.
-  packetBody.append(ALGORITHM_ED_DSA_CURVE_OID_25519);
+  packetBody.append(configuration.curve);
   //  [popping back up to 5.6.4]
   //  *  a MPI of an EC point representing a public key.
-  packetBody.append(wrapKeyAsMpiFormat(publicKeyInEdDsaPointFormat));
+  packetBody.append(wrapKeyAsMpiFormat(publicKeyInPointFormat));
   return packetBody;
 }
 
-const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& EdDsaPublicPacketBody) {
+const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& publicPacketBody) {
   ByteBuffer preImage;
-  preImage.writeByte(0x99);
-  preImage.write16Bits(EdDsaPublicPacketBody.size()); // 2-bytes
-  preImage.append(EdDsaPublicPacketBody);
+  // 5.2.4.  Computing Signatures
+  // ...
+  //  When a V4 signature is made over a key, the hash data starts with the
+  //  octet 0x99, followed by a two-octet length of the key, and then body
+  //  of the key packet;
+  preImage.writeByte(START_V4_SIGNATURE_PREIMAGE); // 0x99
+  preImage.write16Bits(publicPacketBody.size()); // 2 octets
+  preImage.append(publicPacketBody);
   return preImage;
 }
 
@@ -127,7 +138,8 @@ const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFinger
 }
 
 
-EdDsaPublicPacket::EdDsaPublicPacket(
+PublicKeyPacket::PublicKeyPacket(
+  const PublicKeyConfiguration& configuration,
   const ByteBuffer& _publicKeyBytes,
   uint32_t _timestamp
 ) :
@@ -135,10 +147,21 @@ EdDsaPublicPacket::EdDsaPublicPacket(
   publicKeyBytes(_publicKeyBytes),
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEccCompressedPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
-  body(createEdDsaPublicPacketBody(publicKeyInEdDsaPointFormat, timestamp)),
+  body(createEdDsaPublicPacketBody(configuration, publicKeyInEdDsaPointFormat, timestamp)),
   preImage(createEdDsaPublicPacketHashPreimage(body)),
   fingerprint(getPublicKeyFingerprintFromPreImage(preImage)),
   keyId(getPublicKeyIdFromFingerprint(fingerprint))
 {};
 
-const ByteBuffer& EdDsaPublicPacket::getBody() const { return body; }
+const ByteBuffer& PublicKeyPacket::getBody() const { return body; }
+
+EdDsaPublicPacket::EdDsaPublicPacket(
+  const ByteBuffer& _publicKeyBytes,
+  uint32_t _timestamp
+) : PublicKeyPacket(edDsaConfiguration, _publicKeyBytes, _timestamp) {}
+
+EcDhPublicPacket::EcDhPublicPacket(
+  const ByteBuffer& _publicKeyBytes,
+  uint32_t _timestamp
+) : PublicKeyPacket(ecDhConfiguration, _publicKeyBytes, _timestamp) {}
+

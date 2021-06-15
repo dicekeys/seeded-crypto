@@ -67,6 +67,9 @@ const uint8_t PTAG_USER_ID = pTagOctetOldFormat(13); // 0xb4, type 13: 0x80 | ((
 // | 17 | User Attribute Packet |
 
 
+
+const uint8_t START_V4_SIGNATURE_PREIMAGE = 0x99;
+
 const uint8_t ALGORITHM_HASH_SHA_256 = 0x08; // RFC4880-bis-10 - Section 9.5 - 08 - SHA2-256 [FIPS180]
 
 const uint8_t ALGORITHM_EC_DH = 0x12; // RFC4880-bis-10 - Section 9.1 - 18 (0x12) - ECDH [RFC8032]

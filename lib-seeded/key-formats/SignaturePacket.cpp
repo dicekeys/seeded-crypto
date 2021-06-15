@@ -2,8 +2,8 @@
 #include "../sodium-buffer.hpp"
 #include "OpenPgpPacket.hpp"
 #include "SignaturePacket.hpp"
-#include "EdDsaPublicPacket.hpp"
-#include "EdDsaSecretKeyPacket.hpp"
+#include "PublicKeyPacket.hpp"
+#include "SecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
 const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBuffer) {
@@ -99,7 +99,6 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
     packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
 
     // *  One-octet public-key algorithm.
-
     packetBody.writeByte(ALGORITHM_ED_DSA);
     
     // *  One-octet hash algorithm.
@@ -133,11 +132,15 @@ const ByteBuffer createSignaturePacketHashPreImage(
   preImage.append(publicKeyPacket.preImage);
   preImage.append(userPacket.getPreImage());
   preImage.append(signaturePacketBodyIncludedInHash);
-  // Document?
+  // 5.2.4. Computing Signatures
+  // (the above function takes us to the end of the line that includes "the hashed subpacket body")
+  // ...
+  //   -  the two octets 0x04 and 0xFF,
   preImage.writeByte(VERSION_4);
   preImage.writeByte(0xff);
-  // The signature hash size is the size of the packetBody constructed so far,
-  // which is the content to be used as a hash preimage.
+  //   -  a four-octet big-endian number that is the length of the hashed
+  //      data from the Signature packet stopping right before the 0x04,
+  //      0xff octets
   preImage.write32Bits(signaturePacketBodyIncludedInHash.size());
   return preImage;
 }
@@ -208,7 +211,7 @@ const ByteBuffer createSignaturePacketBody(
 SignaturePacket::SignaturePacket(
   const SigningKey& signingKey,
   const UserPacket& userPacket,
-  const EdDsaSecretKeyPacket& secretPacket,
+  const SecretKeyPacket& secretPacket,
   const EdDsaPublicPacket& publicKeyPacket,
   uint32_t _timestamp
 ) :

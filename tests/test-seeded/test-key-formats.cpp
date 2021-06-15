@@ -5,8 +5,8 @@
 #include "../lib-seeded/key-formats/OpenPgpPacket.hpp"
 #include "../lib-seeded/key-formats/ByteBuffer.hpp"
 #include "../lib-seeded/key-formats/UserPacket.hpp"
-#include "../lib-seeded/key-formats/EdDsaPublicPacket.hpp"
-#include "../lib-seeded/key-formats/EdDsaSecretKeyPacket.hpp"
+#include "../lib-seeded/key-formats/PublicKeyPacket.hpp"
+#include "../lib-seeded/key-formats/SecretKeyPacket.hpp"
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
 #include "../lib-seeded/key-formats/OpenSshKey.hpp"
 #include "../lib-seeded/key-formats/OpenPgpKey.hpp"
@@ -68,7 +68,7 @@ TEST(KeyFormats, SignaturHashPreImage) {
 	const UserPacket userPacket(testCase.name, testCase.email);
 //	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 	const EdDsaPublicPacket publicPacket(publicKey, testCase.timestamp);
-	const EdDsaSecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
+	const SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
 	const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
 	const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
@@ -94,7 +94,7 @@ TEST(KeyFormats, PacketFunctions) {
 		ASSERT_STRCASEEQ(encodedPublicPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
 		ASSERT_STRCASEEQ(publicPacket.fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
 
-		EdDsaSecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
+		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
 		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);

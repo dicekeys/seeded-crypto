@@ -1,5 +1,5 @@
 #include "OpenPgpPacket.hpp"
-#include "EdDsaSecretKeyPacket.hpp"
+#include "SecretKeyPacket.hpp"
 
 const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey) {
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-5.5.3
@@ -19,7 +19,7 @@ const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecr
 }
 
 
-const ByteBuffer createEd25519EdDsaSecretKeyPacketBody(const ByteBuffer& secretKey, const EdDsaPublicPacket& publicKeyPacket, uint32_t timestamp) {
+const ByteBuffer createSecretKeyPacketBody(const ByteBuffer& secretKey, const PublicKeyPacket& publicKeyPacket, uint32_t timestamp) {
   ByteBuffer packetBody;
 // 5.5.1.3.  Secret-Key Packet (Tag 5)
 //
@@ -56,14 +56,14 @@ const ByteBuffer createEd25519EdDsaSecretKeyPacketBody(const ByteBuffer& secretK
   return packetBody;
 }
 
-EdDsaSecretKeyPacket::EdDsaSecretKeyPacket(
+SecretKeyPacket::SecretKeyPacket(
   const EdDsaPublicPacket& publicKeyPacket,
   const ByteBuffer& _secretKey,
   uint32_t _timestamp
 ) : OpenPgpPacket(PTAG_SECRET),
   secretKey(_secretKey),
   timestamp(_timestamp),
-  body(createEd25519EdDsaSecretKeyPacketBody(secretKey, publicKeyPacket, timestamp))
+  body(createSecretKeyPacketBody(secretKey, publicKeyPacket, timestamp))
   {}
 
-const ByteBuffer& EdDsaSecretKeyPacket::getBody() const { return body; };
+const ByteBuffer& SecretKeyPacket::getBody() const { return body; };

@@ -1,6 +1,6 @@
 #include "OpenPgpKey.hpp"
-#include "EdDsaPublicPacket.hpp"
-#include "EdDsaSecretKeyPacket.hpp"
+#include "PublicKeyPacket.hpp"
+#include "SecretKeyPacket.hpp"
 #include "SignaturePacket.hpp"
 #include "UserPacket.hpp"
 #include "PEM.hpp"
@@ -99,7 +99,7 @@ std::string generateOpenPgpKey(
 
     ByteBuffer out;
     const EdDsaPublicPacket publicKeyPacket(publicKey, timestamp);
-    const EdDsaSecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
+    const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
     const UserPacket userPacket(userIdPacketContent);
     const SignaturePacket signaturePacket(signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
 
