@@ -17,7 +17,7 @@ const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBu
   return packet;
 }
 
-const ByteBuffer createSignedSubpackets(const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
+const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
   ByteBuffer signedSubpackets;
   // Issuer Fingerprint
   {
@@ -73,21 +73,48 @@ const ByteBuffer createSignedSubpackets(const ByteBuffer & pubicKeyFingerprint, 
   return signedSubpackets;
 }
 
-const ByteBuffer createSignaturePacketBodyIncludedInHash(
+const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
   const ByteBuffer& pubicKeyFingerprint,
   uint32_t timestamp
 ) {
     ByteBuffer packetBody;
+    // 5.2.3.  Version 4 and 5 Signature Packet Formats
+    //   The body of a V4 or V5 Signature packet contains:
+
+    // *  One-octet version number.  This is 4 for V4 signatures and 5 for
+    //     V5 signatures.
     packetBody.writeByte(VERSION_4);
+
+    // *  One-octet signature type.
+    // *  One-octet hash algorithm.
+    //       https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-5.2.1
+    //       5.2.1.  Signature Types
+    //       ...
+    //       0x13: Positive certification of a User ID and Public - Key packet.
+    //             The issuer of this certification has done substantial verification
+    //             of the claim of identity.Most OpenPGP implementations make their
+    //             "key signatures" as 0x10 certifications.Some implementations can
+    //             issue 0x11 - 0x13 certifications, but few differentiate between the
+    //             types.
     packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
+
+    // *  One-octet public-key algorithm.
+
     packetBody.writeByte(ALGORITHM_ED_DSA);
+    
+    // *  One-octet hash algorithm.
     packetBody.writeByte(ALGORITHM_HASH_SHA_256);
 
-    // Write the subpackets that will be part of the hash, prefixed
-    // by the length of all the subpackets combined.
-    ByteBuffer hashedSubpackets = createSignedSubpackets(pubicKeyFingerprint, timestamp);
+    //  *  Two-octet scalar octet count for following hashed subpacket data.
+    //     Note that this is the length in octets of all of the hashed
+    //     subpackets; a pointer incremented by this number will skip over
+    //     the hashed subpackets.
+
+    //  *  Hashed subpacket data set (zero or more subpackets).
+    ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(pubicKeyFingerprint, timestamp);
     packetBody.write16Bits(hashedSubpackets.size()); // hashed_area_len
     packetBody.append(hashedSubpackets);
+
     return packetBody;
 }
 
@@ -98,6 +125,11 @@ const ByteBuffer createSignaturePacketHashPreImage(
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
   ByteBuffer preImage;
+  // 5.2.3.  Version 4 and 5 Signature Packet Formats
+  // ...
+  //  The concatenation of the data being signed and the signature data
+  //  from the version number through the hashed subpacket data (inclusive)
+  //  is hashed.
   preImage.append(publicKeyPacket.preImage);
   preImage.append(userPacket.getPreImage());
   preImage.append(signaturePacketBodyIncludedInHash);
@@ -123,17 +155,27 @@ const ByteBuffer createSignature(
   const ByteBuffer& signatureHashSha256
 ) {
   ByteBuffer signatureBody;
-  // write first two bytes of SHA256 hash of the signature before writing the signature
-  // itself
+  // 5.2.3.  Version 4 and 5 Signature Packet Formats
+  // ...   The high 16
+  //  bits (first two octets) of the hash are included in the Signature
+  //  packet to provide a way to reject some invalid signatures without
+  //  performing a signature verification.
+
   signatureBody.writeByte(signatureHashSha256.byteVector[0]);
   signatureBody.writeByte(signatureHashSha256.byteVector[1]);
 
+  // Use libsodium directly to create a raw signature
   ByteBuffer signature(crypto_sign_BYTES);
-  //    const auto sk = SigningKey(SodiumBuffer(secretKey.byteVector), "");
   crypto_sign_detached(signature.byteVector.data(), NULL, signatureHashSha256.byteVector.data(), crypto_hash_sha256_BYTES, sk.signingKeyBytes.data);
 
-  //// Append the signature point, which is two 256-bit numbers (r and s),
-  //// which should thus be wrapped using the wrapping encoding for numbers.
+  // 5.2.3...
+  // Algorithm-Specific Fields for EdDSA signatures:
+  //
+  //       -  MPI of an EC point r.
+  //
+  //       -  EdDSA value s, in MPI, in the little endian representation.
+  //
+  //    The format of R and S for use with EdDSA is described in [RFC8032].
   signatureBody.append(wrapKeyAsMpiFormat(signature.slice(0, 32)));
   signatureBody.append(wrapKeyAsMpiFormat(signature.slice(32, 32)));
   return signatureBody;
@@ -172,7 +214,7 @@ SignaturePacket::SignaturePacket(
 ) :
   OpenPgpPacket(PTAG_SIGNATURE),
   timestamp(_timestamp),
-  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, _timestamp)),
+  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(publicKeyPacket.fingerprint, _timestamp)),
   signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
   signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
   signature(createSignature(signingKey, signatureHashSha256)),
