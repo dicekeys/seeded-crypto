@@ -87,8 +87,6 @@ TEST(KeyFormats, PacketFunctions) {
 		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
 
 		const UserPacket userPacket(testCase.name, testCase.email);
-//		const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
-//		const auto userIdPacket = createUserPacket(userIdPacketBody);
 		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
 		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
@@ -100,7 +98,6 @@ TEST(KeyFormats, PacketFunctions) {
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
 		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
-//		ByteBuffer signaturePacket = createSignaturePacket(ByteBuffer::fromHex(testCase.privateKeyHex), publicPacket, userPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 	}
