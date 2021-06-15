@@ -19,10 +19,10 @@ const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBu
 
 const ByteBuffer createSignedSubpackets(const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
   ByteBuffer signedSubpackets;
-  // Issuer Fingerprint)
+  // Issuer Fingerprint
   {
     ByteBuffer body;
-    body.writeByte(Version);
+    body.writeByte(VERSION_4);
     body.append(pubicKeyFingerprint);
     signedSubpackets.append(createSubpacket(0x21 /* issuer */, body));
   } {
@@ -78,7 +78,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInHash(
   uint32_t timestamp
 ) {
     ByteBuffer packetBody;
-    packetBody.writeByte(Version);
+    packetBody.writeByte(VERSION_4);
     packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
     packetBody.writeByte(ALGORITHM_ED_DSA);
     packetBody.writeByte(ALGORITHM_HASH_SHA_256);
@@ -102,7 +102,7 @@ const ByteBuffer createSignaturePacketHashPreImage(
   preImage.append(userPacket.getPreImage());
   preImage.append(signaturePacketBodyIncludedInHash);
   // Document?
-  preImage.writeByte(Version);
+  preImage.writeByte(VERSION_4);
   preImage.writeByte(0xff);
   // The signature hash size is the size of the packetBody constructed so far,
   // which is the content to be used as a hash preimage.
@@ -134,8 +134,8 @@ const ByteBuffer createSignature(
 
   //// Append the signature point, which is two 256-bit numbers (r and s),
   //// which should thus be wrapped using the wrapping encoding for numbers.
-  signatureBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(0, 32)));
-  signatureBody.append(wrapKeyWithLengthPrefixAndTrim(signature.slice(32, 32)));
+  signatureBody.append(wrapKeyAsMpiFormat(signature.slice(0, 32)));
+  signatureBody.append(wrapKeyAsMpiFormat(signature.slice(32, 32)));
   return signatureBody;
 }
 
@@ -170,7 +170,7 @@ SignaturePacket::SignaturePacket(
   const EdDsaPublicPacket& publicKeyPacket,
   uint32_t _timestamp
 ) :
-  OpenPgpPacket(pTagSignaturePacket),
+  OpenPgpPacket(PTAG_SIGNATURE),
   timestamp(_timestamp),
   packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInHash(publicKeyPacket.fingerprint, _timestamp)),
   signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
@@ -179,6 +179,5 @@ SignaturePacket::SignaturePacket(
   unhashedSubpacketsWithSizePrefix(createUnhashedSubpacketsWithSizePrefix(publicKeyPacket.keyId)),
   body(createSignaturePacketBody(packetBodyIncludedInSignatureHash, signature, unhashedSubpacketsWithSizePrefix))
 {}
-
 
 const ByteBuffer& SignaturePacket::getBody() const { return body; };

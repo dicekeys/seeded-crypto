@@ -56,7 +56,7 @@ std::vector<TestVector> testCases = {
 
 
 void wrapTest(const std::string& toEncode, const std::string& toCheckAgainstEncodedValue) {
-	const auto encoded = wrapKeyWithLengthPrefixAndTrim(ByteBuffer::fromHex(toEncode));
+	const auto encoded = wrapKeyAsMpiFormat(ByteBuffer::fromHex(toEncode));
 	auto encodedHex = toUpper(encoded.toHex());
 	ASSERT_STRCASEEQ(encodedHex.c_str(), toCheckAgainstEncodedValue.c_str());
 }
