@@ -134,7 +134,7 @@ const <a class="el" href="class_signature_verification_key.html">SignatureVerifi
 <tr class="separator:aae3e30ba725366bd95e5142befe200a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa214f2cdee46358666ae88734c72d97"><td class="memItemLeft" align="right" valign="top"><a id="aaa214f2cdee46358666ae88734c72d97"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#aaa214f2cdee46358666ae88734c72d97">toOpenSshPemPrivateKey</a> (const std::string &amp;comment) const</td></tr>
-<tr class="memdesc:aaa214f2cdee46358666ae88734c72d97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to an OpenSSH-format private key binary writiable to a key file. <br /></td></tr>
+<tr class="memdesc:aaa214f2cdee46358666ae88734c72d97"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to an OpenSSH-format private key binary writeable to a key file. <br /></td></tr>
 <tr class="separator:aaa214f2cdee46358666ae88734c72d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadeb8ef86c86bafb6373996cb415e935"><td class="memItemLeft" align="right" valign="top"><a id="aadeb8ef86c86bafb6373996cb415e935"></a>
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#aadeb8ef86c86bafb6373996cb415e935">toOpenSshPublicKey</a> () const</td></tr>
@@ -449,7 +449,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <p>It can be reconstituted by calling the constructor with this string.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater</td><td>The JSON-encoding will always include the binary signing key bytes (in hex format) and the keyDerviationOptionsJson used to derive the key, but the signature-verification key bytes will not be included unless you set this value to false. Rather, if it is elided, the signature-verification key can be reconstituted from the signing-key after the object is reconstituted, which takes a little computation in return for the space saved in the JSON format. </td></tr>
+    <tr><td class="paramname">minimizeSizeByRemovingTheSignatureVerificationKeyBytesWhichCanBeRegeneratedLater</td><td>The JSON-encoding will always include the binary signing key bytes (in hex format) and the recipe used to derive the key, but the signature-verification key bytes will not be included unless you set this value to false. Rather, if it is elided, the signature-verification key can be reconstituted from the signing-key after the object is reconstituted, which takes a little computation in return for the space saved in the JSON format. </td></tr>
     <tr><td class="paramname">indent</td><td>The number of characters to indent the JSON (optional) </td></tr>
     <tr><td class="paramname">indent_char</td><td>The character with which to indent the JSON (optional) </td></tr>
   </table>
