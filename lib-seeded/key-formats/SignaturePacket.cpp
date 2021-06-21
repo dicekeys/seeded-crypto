@@ -21,54 +21,54 @@ const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerpri
   ByteBuffer signedSubpackets;
   // Issuer Fingerprint
   {
-    ByteBuffer body;
-    body.writeByte(VERSION_4);
-    body.append(pubicKeyFingerprint);
-    signedSubpackets.append(createSubpacket(0x21 /* issuer */, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(VERSION_4);
+    subpacket.append(pubicKeyFingerprint);
+    signedSubpackets.append(createSubpacket(0x21 /* issuer */, subpacket));
   } {
     // Signature Creation Time (0x2)
-    ByteBuffer body;
-    body.write32Bits(timestamp);
-    signedSubpackets.append(createSubpacket(0x02, body));
+    ByteBuffer subpacket;
+    subpacket.write32Bits(timestamp);
+    signedSubpackets.append(createSubpacket(0x02, subpacket));
   } {
     // Key Flags (0x1b)
-    ByteBuffer body;
-    body.writeByte(0x01); // Certify (0x1)
-    signedSubpackets.append(createSubpacket(0x1b, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x01); // Certify (0x1)
+    signedSubpackets.append(createSubpacket(0x1b, subpacket));
   } {
     // Preferred Symmetric Algorithms (0xb)
-    ByteBuffer body;
-    body.writeByte(0x09); // AES with 256-bit key (0x9)
-    body.writeByte(0x08); // AES with 192-bit key (0x8)
-    body.writeByte(0x07); // AES with 128-bit key (0x7)
-    body.writeByte(0x02); // TripleDES (DES-EDE, 168 bit key derived from 192) (0x2)
-    signedSubpackets.append(createSubpacket(0x0b, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x09); // AES with 256-bit key (0x9)
+    subpacket.writeByte(0x08); // AES with 192-bit key (0x8)
+    subpacket.writeByte(0x07); // AES with 128-bit key (0x7)
+    subpacket.writeByte(0x02); // TripleDES (DES-EDE, 168 bit key derived from 192) (0x2)
+    signedSubpackets.append(createSubpacket(0x0b, subpacket));
   } {
     // Preferred Hash Algorithms (0x15)
-    ByteBuffer body;
-    body.writeByte(0x0a); // SHA512 (0xa)
-    body.writeByte(0x09); // SHA384 (0x9)
-    body.writeByte(0x08); // SHA256 (0x8)
-    body.writeByte(0x0b); // SHA224 (0xb)
-    body.writeByte(0x02); // SHA1 (0x2)
-    signedSubpackets.append(createSubpacket(0x15, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x0a); // SHA512 (0xa)
+    subpacket.writeByte(0x09); // SHA384 (0x9)
+    subpacket.writeByte(0x08); // SHA256 (0x8)
+    subpacket.writeByte(0x0b); // SHA224 (0xb)
+    subpacket.writeByte(0x02); // SHA1 (0x2)
+    signedSubpackets.append(createSubpacket(0x15, subpacket));
   } {
     // Preferred Compression Algorithms (0x16)
-    ByteBuffer body;
-    body.writeByte(0x02); // ZLIB (0x2)
-    body.writeByte(0x03); // BZip2 (0x3)
-    body.writeByte(0x01); // ZIP (0x1)
-    signedSubpackets.append(createSubpacket(0x16, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x02); // ZLIB (0x2)
+    subpacket.writeByte(0x03); // BZip2 (0x3)
+    subpacket.writeByte(0x01); // ZIP (0x1)
+    signedSubpackets.append(createSubpacket(0x16, subpacket));
   } {
     // Features (0x1e)
-    ByteBuffer body;
-    body.writeByte(0x01); // Modification detection (0x1)
-    signedSubpackets.append(createSubpacket(0x1e, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x01); // Modification detection (0x1)
+    signedSubpackets.append(createSubpacket(0x1e, subpacket));
   } {
     // Key Server Preferences (0x17)
-    ByteBuffer body;
-    body.writeByte(0x80); // No-modify (0x80)
-    signedSubpackets.append(createSubpacket(0x17, body));
+    ByteBuffer subpacket;
+    subpacket.writeByte(0x80); // No-modify (0x80)
+    signedSubpackets.append(createSubpacket(0x17, subpacket));
   }
   return signedSubpackets;
 }
@@ -86,8 +86,6 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
     packetBody.writeByte(VERSION_4);
 
     // *  One-octet signature type.
-    // *  One-octet hash algorithm.
-    //       https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-5.2.1
     //       5.2.1.  Signature Types
     //       ...
     //       0x13: Positive certification of a User ID and Public - Key packet.
