@@ -11,6 +11,15 @@
 #include "../lib-seeded/key-formats/OpenSshKey.hpp"
 #include "../lib-seeded/key-formats/OpenPgpKey.hpp"
 #include "../lib-seeded/key-formats/PEM.hpp"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#ifdef __APPLE__
+namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
+
 
 
 struct TestVector {
@@ -100,10 +109,20 @@ TEST(KeyFormats, PacketFunctions) {
 		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
+		const std::string testResultsDirectoryPath = "./test-results";
+		fs::create_directories(testResultsDirectoryPath);
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";
+		std::ofstream privateKeyFile(keyFileName);
+		ByteBuffer out;
+    out.append(secretPacket.encode());
+    out.append(userPacket.encode());
+    out.append(signaturePacket.encode());
+    const std::string pemData = PEM("PGP PRIVATE KEY BLOCK", out);
+		privateKeyFile << pemData;
 	}
 }
 
-TEST(KeyFormats, SigningKeyConstuctor) {
+TEST(KeyFormats, SigningKeyConstructor) {
 	for (const auto& testCase : testCases) {
 		SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testCase.privateKeyHex).byteVector), "");
 
@@ -123,15 +142,9 @@ TEST(KeyFormats, OpenPGP) {
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testData.privateKeyHex.c_str());
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testData.publicKeyHex.c_str());
 	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testData.name, testData.email), testData.timestamp);
-	std::string expectedKeyBlock = "-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
-		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
-		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
-		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\n"
-		"BvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\n"
-		"hbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\n"
-		"E5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n"
-		"-----END PGP PRIVATE KEY BLOCK-----\n";
 
+	std::string expectedKeyBlock = "\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\np0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\nU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\nBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\nhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\nE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n=lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFlp0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19VU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEsBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbsE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n-----END PGP PRIVATE KEY BLOCK-----\n";
+	
 		ASSERT_STREQ(pem.c_str(), expectedKeyBlock.c_str());
 }
 
@@ -197,5 +210,4 @@ TEST(OpenSSH, PrivateKey) {
 		pkBase64.c_str(),
 		"b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAJAQPWDDED1gwwAAAAtzc2gtZWQyNTUxOQAAACDJU3QvXXomER2Gj7utIoycGAUk/RdDiRonltSfRzX9PQAAAEAFrXdopr92us8RzW6VhoXCkhotCh97MxPLZvpxOC/PQclTdC9deiYRHYaPu60ijJwYBST9F0OJGieW1J9HNf09AAAACERpY2VLZXlzAQIDBAU="
 	);
-
 }
