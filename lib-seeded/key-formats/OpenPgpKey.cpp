@@ -90,6 +90,7 @@
 //    especially if a transferable public key accompanies the transferable
 //    secret key.
 std::string generateOpenPgpKey(
+    uint8_t version,
     const SigningKey &signingKey,
     const std::string &userIdPacketContent,
     uint32_t timestamp
@@ -98,10 +99,10 @@ std::string generateOpenPgpKey(
     const ByteBuffer publicKey(signingKey.getSignatureVerificationKeyBytes());
 
     ByteBuffer out;
-    const EdDsaPublicPacket publicKeyPacket(publicKey, timestamp);
+    const EdDsaPublicPacket publicKeyPacket(version, publicKey, timestamp);
     const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
     const UserPacket userPacket(userIdPacketContent);
-    const SignaturePacket signaturePacket(signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
+    const SignaturePacket signaturePacket(version, signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
 
     out.append(secretPacket.encode());
     out.append(userPacket.encode());

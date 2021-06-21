@@ -26,6 +26,7 @@ public:
 
   const ByteBuffer& getBody() const override;
   PublicKeyPacket(
+    const uint8_t version,
     const PublicKeyConfiguration &configuration,
     const ByteBuffer& _publicKeyBytes,
     uint32_t _timestamp
@@ -35,6 +36,7 @@ public:
 class EdDsaPublicPacket : public PublicKeyPacket {
 public:
   EdDsaPublicPacket(
+    const uint8_t version,
     const ByteBuffer& _publicKeyBytes,
     uint32_t _timestamp
   );
@@ -43,6 +45,7 @@ public:
 class EcDhPublicPacket : public PublicKeyPacket {
 public:
   EcDhPublicPacket(
+    const uint8_t version,
     const ByteBuffer& _publicKeyBytes,
     uint32_t _timestamp
   );

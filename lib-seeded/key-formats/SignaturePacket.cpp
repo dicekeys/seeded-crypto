@@ -207,6 +207,7 @@ const ByteBuffer createSignaturePacketBody(
 }
 
 SignaturePacket::SignaturePacket(
+  const uint8_t version,
   const SigningKey& signingKey,
   const UserPacket& userPacket,
   const SecretKeyPacket& secretPacket,

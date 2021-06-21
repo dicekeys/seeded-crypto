@@ -56,6 +56,7 @@ const ByteBuffer encodePublicKeyBytesToEccCompressedPointFormat(
 }
 
 const ByteBuffer createEdDsaPublicPacketBody(
+  const uint8_t version,
   const PublicKeyConfiguration& configuration,
   const ByteBuffer& publicKeyInPointFormat,
   uint32_t timestamp
@@ -74,8 +75,8 @@ const ByteBuffer createEdDsaPublicPacketBody(
   //
   //  A version 4 packet contains:
   //
-  //  *  A one-octet version number (4).
-  packetBody.writeByte(VERSION_4);
+  //  *  A one-octet version number (4 or 5).
+  packetBody.writeByte(version);
   //  *  A four-octet number denoting the time that the key was created.
   packetBody.write32Bits(timestamp);
   //  *  A one-octet number denoting the public-key algorithm of this key.
@@ -139,6 +140,7 @@ const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFinger
 
 
 PublicKeyPacket::PublicKeyPacket(
+  const uint8_t version,
   const PublicKeyConfiguration& configuration,
   const ByteBuffer& _publicKeyBytes,
   uint32_t _timestamp
@@ -147,7 +149,7 @@ PublicKeyPacket::PublicKeyPacket(
   publicKeyBytes(_publicKeyBytes),
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEccCompressedPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
-  body(createEdDsaPublicPacketBody(configuration, publicKeyInEdDsaPointFormat, timestamp)),
+  body(createEdDsaPublicPacketBody(version, configuration, publicKeyInEdDsaPointFormat, timestamp)),
   preImage(createEdDsaPublicPacketHashPreimage(body)),
   fingerprint(getPublicKeyFingerprintFromPreImage(preImage)),
   keyId(getPublicKeyIdFromFingerprint(fingerprint))
@@ -156,12 +158,14 @@ PublicKeyPacket::PublicKeyPacket(
 const ByteBuffer& PublicKeyPacket::getBody() const { return body; }
 
 EdDsaPublicPacket::EdDsaPublicPacket(
+  const uint8_t version,
   const ByteBuffer& _publicKeyBytes,
   uint32_t _timestamp
-) : PublicKeyPacket(edDsaConfiguration, _publicKeyBytes, _timestamp) {}
+) : PublicKeyPacket(version, edDsaConfiguration, _publicKeyBytes, _timestamp) {}
 
 EcDhPublicPacket::EcDhPublicPacket(
+  const uint8_t version,
   const ByteBuffer& _publicKeyBytes,
   uint32_t _timestamp
-) : PublicKeyPacket(ecDhConfiguration, _publicKeyBytes, _timestamp) {}
+) : PublicKeyPacket(version, ecDhConfiguration, _publicKeyBytes, _timestamp) {}
 
