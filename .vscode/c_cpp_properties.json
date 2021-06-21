@@ -5,7 +5,8 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/lib-seeded/**",
-                "${workspaceFolder}/extern/libsodium/src/libsodium/include/**"
+                "${workspaceFolder}/extern/libsodium/src/libsodium/include/**",
+                "${workspaceFolder}/extern/googletest/googletest/include/**"
             ],
             "defines": [],
             "macFrameworkPath": [],
