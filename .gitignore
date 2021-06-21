@@ -67,3 +67,6 @@ extern/**
 builds
 .vscode/settings.json
 documentation
+
+// Directory for storing c++ test results
+test-results/**
