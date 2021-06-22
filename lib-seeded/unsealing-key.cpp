@@ -5,6 +5,10 @@
 #include "convert.hpp"
 #include "exceptions.hpp"
 #include "common-names.hpp"
+#include "key-formats/PublicKeyPacket.hpp"
+#include "key-formats/SecretKeyPacket.hpp"
+#include "key-formats/UserPacket.hpp"
+#include "key-formats/PEM.hpp"
 
 UnsealingKey::UnsealingKey(
     const SodiumBuffer _unsealingKeyBytes,
@@ -150,4 +154,25 @@ const SodiumBuffer UnsealingKey::toSerializedBinaryForm() const {
 UnsealingKey UnsealingKey::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(3);
   return UnsealingKey(fields[0], fields[1].toVector(), fields[2].toUtf8String());
+}
+
+const std::string UnsealingKey::toOpenPgpSecretKey(
+  const std::string& userIdPacketContent,
+  uint32_t timestamp,
+  const EcDhKeyConfiguration keyConfiguration
+) const {
+    const ByteBuffer privateKey(unsealingKeyBytes);
+    const ByteBuffer publicKey(sealingKeyBytes);
+
+    ByteBuffer out;
+    const EcDhPublicPacket publicKeyPacket(publicKey, timestamp, keyConfiguration);
+    const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
+    const UserPacket userPacket(userIdPacketContent);
+//    const SignaturePacket signaturePacket(signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
+
+    out.append(secretPacket.encode());
+    out.append(userPacket.encode());
+//    out.append(signaturePacket.encode());
+
+    return PEM("PGP PRIVATE KEY BLOCK", out);
 }

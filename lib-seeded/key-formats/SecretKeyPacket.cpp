@@ -82,7 +82,7 @@ const ByteBuffer createSecretKeyPacketBody(ubyte version, const ByteBuffer& secr
 }
 
 SecretKeyPacket::SecretKeyPacket(
-  const EdDsaPublicPacket& publicKeyPacket,
+  const PublicKeyPacket& publicKeyPacket,
   const ByteBuffer& _secretKey,
   uint32_t _timestamp
 ) : OpenPgpPacket(PTAG_SECRET),

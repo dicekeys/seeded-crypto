@@ -2,6 +2,7 @@
 
 #include "sodium-buffer.hpp"
 #include "sealing-key.hpp"
+#include "key-formats/KeyConfiguration.hpp"
 
 /**
  * @brief an UnsealingKey is used to _unseal_ messages sealed with its
@@ -203,5 +204,9 @@ public:
    */
   static UnsealingKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
-
+  const std::string toOpenPgpSecretKey(
+    const std::string& UserIdPacketContent,
+    uint32_t timestamp,
+    const EcDhKeyConfiguration keyConfiguration = EcDhKeyConfiguration()
+  ) const;
 };

@@ -38,6 +38,9 @@ struct TestVector {
 	std::string signaturePacketHex;
 };
 
+const std::string testResultsDirectoryPath = "./test-results";
+
+
 std::vector<TestVector> testCases = {
 	{
 		VERSION_4,
@@ -154,7 +157,6 @@ TEST(KeyFormats, PacketFunctionV5) {
 
 		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
 
-		const std::string testResultsDirectoryPath = "./test-results";
 		fs::create_directories(testResultsDirectoryPath);
 		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";
 		std::ofstream privateKeyFile(keyFileName);
@@ -180,7 +182,7 @@ TEST(KeyFormats, SigningKeyConstructor) {
 }
 
 
-TEST(KeyFormats, OpenPGP) {
+TEST(KeyFormats, OpenPGP_Signing) {
 	const auto& testCase = testCases[0];
 		EdDsaKeyConfiguration configuration;
 		configuration.version = testCase.version;
@@ -236,6 +238,15 @@ TEST(KeyFormats, WrapKey) {
 	);
 }
 
+TEST(KeyFormats, OpenPGP_Encryption) {
+	const UnsealingKey pk = UnsealingKey::deriveFromSeed("yo", "{}");
+
+	fs::create_directories(testResultsDirectoryPath);
+	const std::string keyFileName = testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".pem";
+	std::ofstream privateKeyFile(keyFileName);
+
+	privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u);
+}
 
 TEST(OpenSSH, PublicKey) {
 	const auto privateKey = ByteBuffer::fromHex("05AD7768A6BF76BACF11CD6E958685C2921A2D0A1F7B3313CB66FA71382FCF41");
