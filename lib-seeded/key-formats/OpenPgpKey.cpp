@@ -108,5 +108,5 @@ std::string generateOpenPgpKey(
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
 
-    return PEM("PGP PRIVATE KEY BLOCK", out);
+    return PEM("PGP PRIVATE KEY BLOCK", out, signingKey.recipe);
 }

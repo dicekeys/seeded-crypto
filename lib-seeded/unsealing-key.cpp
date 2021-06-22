@@ -174,5 +174,5 @@ const std::string UnsealingKey::toOpenPgpSecretKey(
     out.append(userPacket.encode());
 //    out.append(signaturePacket.encode());
 
-    return PEM("PGP PRIVATE KEY BLOCK", out);
+    return PEM("PGP PRIVATE KEY BLOCK", out, recipe);
 }

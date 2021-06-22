@@ -197,7 +197,9 @@ TEST(KeyFormats, OpenPGP_Signing) {
 	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testCase.name, testCase.email), testCase.timestamp, configuration);
 
 	std::string expectedKeyBlock = 
-		"\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n\n"
+		"\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
+		"Comment: recipe={\"bogusRecipeWhichWillBeIgnored\": true}\n"
+		"\n"
 		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
 		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
 		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\n"
@@ -247,13 +249,20 @@ TEST(KeyFormats, WrapKey) {
 }
 
 TEST(KeyFormats, OpenPGP_Encryption) {
-	const UnsealingKey pk = UnsealingKey::deriveFromSeed("yo", "{}");
+	const UnsealingKey pk = UnsealingKey::deriveFromSeed("yo", "{\"purpose\":\"Secure Storage of Poodle Photos\"}");
 
 	fs::create_directories(testResultsDirectoryPath);
-	const std::string keyFileName = testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".pem";
-	std::ofstream privateKeyFile(keyFileName);
-
-	privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u);
+	EcDhKeyConfiguration configuration;
+	{
+		configuration.version = VERSION_4;
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV4-" + pk.unsealingKeyBytes.toHexString() + ".pem");
+		privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
+	}
+	{
+		configuration.version = VERSION_5;
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".pem");
+		privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
+	}
 }
 
 TEST(OpenSSH, PublicKey) {
