@@ -196,8 +196,16 @@ TEST(KeyFormats, OpenPGP_Signing) {
 	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testCase.publicKeyHex.c_str());
 	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testCase.name, testCase.email), testCase.timestamp, configuration);
 
-	std::string expectedKeyBlock = "\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\np0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\nU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\nBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\nhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\nE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n=lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFlp0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19VU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEsBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbsE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n-----END PGP PRIVATE KEY BLOCK-----\n";
-	
+	std::string expectedKeyBlock = 
+		"\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n\n"
+		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
+		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
+		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\n"
+		"BvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\n"
+		"hbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\n"
+		"E5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n"
+		"=Gc1v\n"
+		"-----END PGP PRIVATE KEY BLOCK-----\n";
 		ASSERT_STREQ(pem.c_str(), expectedKeyBlock.c_str());
 }
 

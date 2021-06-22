@@ -44,7 +44,7 @@ inline const std::string checksumLine(const std::vector<unsigned char> &data) {
     ubyte((crc >>  8) & 0xff),
     ubyte((crc >>  0) & 0xff)
   };
-  return "\n=" + base64Encode(data);
+  return "\n=" + base64Encode(checksum);
 }
 
 inline const std::string base64Blocks(const std::vector<unsigned char> &data) {
