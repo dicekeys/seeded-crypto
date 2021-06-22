@@ -39,10 +39,10 @@ inline const std::string base64Encode(const std::vector<unsigned char>& data) {
 
 inline const std::string checksumLine(const std::vector<unsigned char> &data) {
   unsigned long crc = crc_octets(data.data(), data.size());
-  std::vector<uint8_t> checksum = {
-    uint8_t((crc >> 16) & 0xff),
-    uint8_t((crc >>  8) & 0xff),
-    uint8_t((crc >>  0) & 0xff)
+  std::vector<ubyte> checksum = {
+    ubyte((crc >> 16) & 0xff),
+    ubyte((crc >>  8) & 0xff),
+    ubyte((crc >>  0) & 0xff)
   };
   return "\n=" + base64Encode(data);
 }

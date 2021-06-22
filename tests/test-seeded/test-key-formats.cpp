@@ -23,7 +23,7 @@ namespace fs = std::filesystem;
 
 
 struct TestVector {
-	uint8_t version;
+	ubyte version;
 	std::string privateKeyHex;
 	std::string publicKeyHex;
 	uint32_t timestamp;
@@ -79,11 +79,17 @@ TEST(KeyFormats, SignaturHashPreImage) {
 	const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
 	const UserPacket userPacket(testCase.name, testCase.email);
 //	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
-	const EdDsaPublicPacket publicPacket(testCase.version, publicKey, testCase.timestamp);
+	EdDsaKeyConfiguration configuration;
+	configuration.version = testCase.version;
+	configuration.preferredSymmetricAlgorithms = {9,8,7,2};
+	configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
+	configuration.preferredCompressionAlgorithms = {2,3,1};
+
+	const EdDsaPublicPacket publicPacket(publicKey, testCase.timestamp, configuration);
 	const SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
 	const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
-	const SignaturePacket signaturePacket(testCase.version, sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+	const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
 //		ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 
 	// Calculate the SHA256-bit hash of the packet before appending the
@@ -101,7 +107,13 @@ TEST(KeyFormats, PacketFunctions) {
 		const UserPacket userPacket(testCase.name, testCase.email);
 		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
-		EdDsaPublicPacket publicPacket(testCase.version, ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		EdDsaKeyConfiguration configuration;
+		configuration.version = testCase.version;
+		configuration.preferredSymmetricAlgorithms = {9,8,7,2};
+		configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
+		configuration.preferredCompressionAlgorithms = {2,3,1};
+
+		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
 		ByteBuffer encodedPublicPacket = publicPacket.encode();
 		ASSERT_STRCASEEQ(encodedPublicPacket.toHex().c_str(), testCase.publicPacketHex.c_str());
 		ASSERT_STRCASEEQ(publicPacket.fingerprint.toHex().c_str(), testCase.fingerprintHex.c_str());
@@ -109,7 +121,7 @@ TEST(KeyFormats, PacketFunctions) {
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
-		const SignaturePacket signaturePacket(testCase.version, sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 		const std::string testResultsDirectoryPath = "./test-results";
@@ -133,12 +145,14 @@ TEST(KeyFormats, PacketFunctionV5) {
 		const UserPacket userPacket(testCase.name, testCase.email);
 		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
-		EdDsaPublicPacket publicPacket(VERSION_5, ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		EdDsaKeyConfiguration configuration;
+		configuration.version = VERSION_5;
+		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
 		ByteBuffer encodedPublicPacket = publicPacket.encode();
 
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
-		const SignaturePacket signaturePacket(VERSION_5, sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
 
 		const std::string testResultsDirectoryPath = "./test-results";
 		fs::create_directories(testResultsDirectoryPath);
@@ -167,12 +181,18 @@ TEST(KeyFormats, SigningKeyConstructor) {
 
 
 TEST(KeyFormats, OpenPGP) {
-	const auto& testData = testCases[0];
-	const SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testData.privateKeyHex).byteVector), "{\"bogusRecipeWhichWillBeIgnored\": true}");
+	const auto& testCase = testCases[0];
+		EdDsaKeyConfiguration configuration;
+		configuration.version = testCase.version;
+		configuration.preferredSymmetricAlgorithms = {9,8,7,2};
+		configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
+		configuration.preferredCompressionAlgorithms = {2,3,1};
 
-	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testData.privateKeyHex.c_str());
-	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testData.publicKeyHex.c_str());
-	const std::string pem = generateOpenPgpKey(testData.version, signingKey, createUserIdPacketContent(testData.name, testData.email), testData.timestamp);
+	const SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testCase.privateKeyHex).byteVector), "{\"bogusRecipeWhichWillBeIgnored\": true}");
+
+	ASSERT_STRCASEEQ(toHexStr(signingKey.getSeedBytes().toVector()).c_str(), testCase.privateKeyHex.c_str());
+	ASSERT_STRCASEEQ(toHexStr(signingKey.getSignatureVerificationKeyBytes()).c_str(), testCase.publicKeyHex.c_str());
+	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testCase.name, testCase.email), testCase.timestamp, configuration);
 
 	std::string expectedKeyBlock = "\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n\nlFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\np0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\nU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\nBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\nhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\nE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n=lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFlp0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19VU0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEsBvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQhbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbsE5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n-----END PGP PRIVATE KEY BLOCK-----\n";
 	

@@ -42,8 +42,8 @@ public:
 
         const int blockSize = 8; // for unencrypted is 8
 
-        const uint8_t paddingBytesNeeded = (blockSize - (size() % blockSize)) % blockSize;
-        for (uint8_t i = 1; i <= paddingBytesNeeded; i++) {
+        const ubyte paddingBytesNeeded = (blockSize - (size() % blockSize)) % blockSize;
+        for (ubyte i = 1; i <= paddingBytesNeeded; i++) {
             writeByte(i);
         }
     }

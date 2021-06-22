@@ -13,7 +13,7 @@
  *  n[3]).
  */
 
-ByteBuffer::ByteBuffer(const std::vector<uint8_t> &_byteVector) {
+ByteBuffer::ByteBuffer(const std::vector<ubyte> &_byteVector) {
     byteVector = _byteVector;
 }
 
@@ -41,13 +41,13 @@ ByteBuffer::ByteBuffer() = default;
 
 uint32_t ByteBuffer::size() const { return uint32_t(byteVector.size()); }
 
-void ByteBuffer::writeByte(uint8_t byte) {
+void ByteBuffer::writeByte(ubyte byte) {
     byteVector.push_back(byte);
 }
 
 void ByteBuffer::write16Bits(uint16_t value) {
-    uint8_t high = uint8_t(value >> 8u) & uint8_t(0xff);
-    uint8_t low = value & uint8_t(0xff);
+    ubyte high = ubyte(value >> 8u) & ubyte(0xff);
+    ubyte low = value & ubyte(0xff);
     writeByte(high);
     writeByte(low);
 }
@@ -62,7 +62,7 @@ void ByteBuffer::write32Bits(uint32_t value) {
 void ByteBuffer::append(const SodiumBuffer &value, size_t skipBytes) {
     byteVector.insert( byteVector.end(), value.data + skipBytes, value.data + (value.length - skipBytes) );
 }
-void ByteBuffer::append(const std::vector<uint8_t> &value, size_t skipBytes) {
+void ByteBuffer::append(const std::vector<ubyte> &value, size_t skipBytes) {
     auto start = value.begin();
     if (skipBytes > 0) {
         std::advance(start, skipBytes);
@@ -70,7 +70,7 @@ void ByteBuffer::append(const std::vector<uint8_t> &value, size_t skipBytes) {
     byteVector.insert( byteVector.end(), start, value.end() );
 }
 
-void ByteBuffer::append(size_t numBytes, const uint8_t* data) {
+void ByteBuffer::append(size_t numBytes, const ubyte* data) {
     byteVector.insert( byteVector.end(), data, data + numBytes );
 }
 

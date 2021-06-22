@@ -12,7 +12,7 @@
 class sha1 {
 private:
 
-    void add_byte_dont_count_bits(uint8_t x){
+    void add_byte_dont_count_bits(ubyte x){
         buf[i++] = x;
 
         if (i >= sizeof(buf)){
@@ -25,7 +25,7 @@ private:
         return (x << n) | (x >> (32 - n));
     }
 
-    static uint32_t make_word(const uint8_t *p){
+    static uint32_t make_word(const ubyte *p){
         return
                 ((uint32_t)p[0] << 3*8) |
                 ((uint32_t)p[1] << 2*8) |
@@ -33,7 +33,7 @@ private:
                 ((uint32_t)p[3] << 0*8);
     }
 
-    void process_block(const uint8_t *ptr){
+    void process_block(const ubyte *ptr){
         const uint32_t c0 = 0x5a827999;
         const uint32_t c1 = 0x6ed9eba1;
         const uint32_t c2 = 0x8f1bbcdc;
@@ -154,7 +154,7 @@ private:
 public:
 
     uint32_t state[5];
-    uint8_t buf[64];
+    ubyte buf[64];
     uint32_t i;
     uint64_t n_bits;
 
@@ -167,20 +167,20 @@ public:
         if (text) add(text);
     }
 
-    sha1& add(uint8_t x){
+    sha1& add(ubyte x){
         add_byte_dont_count_bits(x);
         n_bits += 8;
         return *this;
     }
 
     sha1& add(char c){
-        return add(*(uint8_t*)&c);
+        return add(*(ubyte*)&c);
     }
 
     sha1& add(const void *data, uint32_t n){
         if (!data) return *this;
 
-        const uint8_t *ptr = (const uint8_t*)data;
+        const ubyte *ptr = (const ubyte*)data;
 
         // fill up block if not full
         for (; n && i % sizeof(buf); n--) add(*ptr++);
@@ -229,7 +229,7 @@ public:
     }
 
     const sha1& print_base64(char *base64, bool zero_terminate = true) const {
-        static const uint8_t *table = (const uint8_t*)
+        static const ubyte *table = (const ubyte*)
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 "abcdefghijklmnopqrstuvwxyz"
                 "0123456789"

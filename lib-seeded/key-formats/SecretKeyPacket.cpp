@@ -12,14 +12,14 @@ const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecr
   for (size_t i = 0; i < wrappedSecretKey.byteVector.size(); i ++) {
     // arithmetic on two-byte unsigned shorts is already mod 65536
     // so we don't have to perform the mod operation
-    const uint8_t byte = wrappedSecretKey.byteVector[i];
+    const ubyte byte = wrappedSecretKey.byteVector[i];
     checksum += byte;
   }
   return checksum;
 }
 
 
-const ByteBuffer createSecretKeyPacketBody(uint8_t version, const ByteBuffer& secretKey, const PublicKeyPacket& publicKeyPacket, uint32_t timestamp) {
+const ByteBuffer createSecretKeyPacketBody(ubyte version, const ByteBuffer& secretKey, const PublicKeyPacket& publicKeyPacket, uint32_t timestamp) {
   ByteBuffer packetBody;
 // 5.5.1.3.  Secret-Key Packet (Tag 5)
 //
@@ -88,7 +88,7 @@ SecretKeyPacket::SecretKeyPacket(
 ) : OpenPgpPacket(PTAG_SECRET),
   secretKey(_secretKey),
   timestamp(_timestamp),
-  body(createSecretKeyPacketBody(publicKeyPacket.version, secretKey, publicKeyPacket, timestamp))
+  body(createSecretKeyPacketBody(publicKeyPacket.keyConfiguration.version, secretKey, publicKeyPacket, timestamp))
   {}
 
 const ByteBuffer& SecretKeyPacket::getBody() const { return body; };

@@ -4,11 +4,6 @@
 #include <string>
 #include "ByteBuffer.hpp"
 
-const uint8_t VERSION_4 = 0x04;
-const uint8_t VERSION_5 = 0x05;
-
-const size_t  VERSION_4_FINGERPRINT_LENGTH_IN_BYTES_DUE_TO_USE_OF_SHA1 = 20; // 160 bits
-const size_t  VERSION_5_FINGERPRINT_LENGTH_IN_BYTES = 32; // 160 bits
 
 // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-3.7.1.1
   //  This directly hashes the string to produce the key data.  See below
@@ -16,8 +11,8 @@ const size_t  VERSION_5_FINGERPRINT_LENGTH_IN_BYTES = 32; // 160 bits
   //
   //    Octet 0:        0x00
   //    Octet 1:        hash algorithm
-const uint8_t SECRET_KEY_ENCRYPTION_OFF = 0x00;
-const uint8_t SECRET_KEY_ENCRYPTION_ON = 0xfe; // 0xff forbidden by version 5
+const ubyte SECRET_KEY_ENCRYPTION_OFF = 0x00;
+const ubyte SECRET_KEY_ENCRYPTION_ON = 0xfe; // 0xff forbidden by version 5
 
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-4.2
   
@@ -53,35 +48,33 @@ const uint8_t SECRET_KEY_ENCRYPTION_ON = 0xfe; // 0xff forbidden by version 5
 
 // Coder's (Stuart's) note: These all have the high bit set and length type 0,
 // the formula is 0x80 | ((packetType) << 2) = 128 + (packetType * 4)
-inline uint8_t pTagOctetOldFormat(uint8_t tag) {
+inline ubyte pTagOctetOldFormat(ubyte tag) {
   return 0x80 | (tag << 2);
 }
 // | 2 | Signature Packet |
-const uint8_t PTAG_SIGNATURE = pTagOctetOldFormat(2); // 0x88,  type 2: 0x80 | ((2) << 2) = 0x88
+const ubyte PTAG_SIGNATURE = pTagOctetOldFormat(2); // 0x88,  type 2: 0x80 | ((2) << 2) = 0x88
 // | 5 | Secret - Key Packet |
-const uint8_t PTAG_SECRET = pTagOctetOldFormat(5); // 0x94, type 5: 0x80 | ((5) << 2)
+const ubyte PTAG_SECRET = pTagOctetOldFormat(5); // 0x94, type 5: 0x80 | ((5) << 2)
 // | 6 | Public - Key Packet |
-const uint8_t PTAG_PUBLIC = pTagOctetOldFormat(6); //  0x98, type 6: 0x80 | ((6) << 2) 
+const ubyte PTAG_PUBLIC = pTagOctetOldFormat(6); //  0x98, type 6: 0x80 | ((6) << 2) 
 // | 13 | User ID Packet |
-const uint8_t PTAG_USER_ID = pTagOctetOldFormat(13); // 0xb4, type 13: 0x80 | ((0xe) << 2) = 1000000 | 00110100 = 10110100 = 0xb4
+const ubyte PTAG_USER_ID = pTagOctetOldFormat(13); // 0xb4, type 13: 0x80 | ((0xe) << 2) = 1000000 | 00110100 = 10110100 = 0xb4
 // | 17 | User Attribute Packet |
 
 
 
-const uint8_t START_V4_SIGNATURE_PREIMAGE = 0x99;
-const uint8_t START_V5_SIGNATURE_PREIMAGE = 0x9A;
+const ubyte START_V4_SIGNATURE_PREIMAGE = 0x99;
+const ubyte START_V5_SIGNATURE_PREIMAGE = 0x9A;
 
-const uint8_t ALGORITHM_HASH_SHA_256 = 0x08; // RFC4880-bis-10 - Section 9.5 - 08 - SHA2-256 [FIPS180]
-
-const uint8_t ALGORITHM_EC_DH = 0x12; // RFC4880-bis-10 - Section 9.1 - 18 (0x12) - ECDH [RFC8032]
-// https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-09#section-9.2
-const std::vector<uint8_t> ALGORITHM_EC_DH_CURVE_OID_25519 = {0x2b, 0x06, 0x01, 0x04, 0x01, 0x97, 0x55, 0x01, 0x05, 0x01}; // RFC4880-bis-10 - Section 9.2.  ECC Curve OID
+// const ubyte ALGORITHM_EC_DH = 0x12; // RFC4880-bis-10 - Section 9.1 - 18 (0x12) - ECDH [RFC8032]
+// // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-09#section-9.2
+// const std::vector<ubyte> ALGORITHM_EC_DH_CURVE_OID_25519 = {0x2b, 0x06, 0x01, 0x04, 0x01, 0x97, 0x55, 0x01, 0x05, 0x01}; // RFC4880-bis-10 - Section 9.2.  ECC Curve OID
 
 
-const uint8_t ALGORITHM_ED_DSA = 0x16; // RFC4880-bis-10 - Section 9.1 - 22 (0x16) - EdDSA [RFC8032]
-const std::vector<uint8_t> ALGORITHM_ED_DSA_CURVE_OID_25519 = {0x2b, 0x06, 0x01, 0x04, 0x01, 0xda, 0x47, 0x0f, 0x01}; // RFC4880-bis-10 - Section 9.2.  ECC Curve OID
+// const ubyte ALGORITHM_ED_DSA = 0x16; // RFC4880-bis-10 - Section 9.1 - 22 (0x16) - EdDSA [RFC8032]
+// const std::vector<ubyte> ALGORITHM_ED_DSA_CURVE_OID_25519 = {0x2b, 0x06, 0x01, 0x04, 0x01, 0xda, 0x47, 0x0f, 0x01}; // RFC4880-bis-10 - Section 9.2.  ECC Curve OID
 
-const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<uint8_t> &byteVector);
+const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<ubyte> &byteVector);
 
 const ByteBuffer wrapKeyAsMpiFormat(const ByteBuffer &value);
 
@@ -96,14 +89,14 @@ const ByteBuffer wrapKeyAsMpiFormat(const ByteBuffer &value);
  * @return const ByteBuffer The packet including length information that allows
  * the reader to determien the packet length. 
  */
-const ByteBuffer createOpenPgpPacket(uint8_t packetTag, const ByteBuffer &packetBodyBuffer);
+const ByteBuffer createOpenPgpPacket(ubyte packetTag, const ByteBuffer &packetBodyBuffer);
 
 
 class OpenPgpPacket {
 public:
-  uint8_t packetTag;
+  ubyte packetTag;
 
-  OpenPgpPacket(uint8_t _packetTag) {
+  OpenPgpPacket(ubyte _packetTag) {
     packetTag = _packetTag;
   }
 

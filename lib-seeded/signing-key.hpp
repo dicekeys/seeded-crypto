@@ -2,6 +2,7 @@
 
 #include "sodium-buffer.hpp"
 #include "signature-verification-key.hpp"
+#include "key-formats/KeyConfiguration.hpp"
 
 /**
  * @brief SigningKeys generate _signatures_ of messages which can then be
@@ -209,6 +210,6 @@ public:
   const std::string toOpenPgpPemFormatSecretKey(
     const std::string& UserIdPacketContent,
     uint32_t timestamp,
-    uint8_t version = 5
+    const EdDsaKeyConfiguration keyConfiguration = EdDsaKeyConfiguration()
   ) const;
 };

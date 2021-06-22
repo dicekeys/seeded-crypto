@@ -140,9 +140,9 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#aadeb8ef86c86bafb6373996cb415e935">toOpenSshPublicKey</a> () const</td></tr>
 <tr class="memdesc:aadeb8ef86c86bafb6373996cb415e935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the signature-verification key to an OpenSSH public key string. <br /></td></tr>
 <tr class="separator:aadeb8ef86c86bafb6373996cb415e935"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af282f56cd302f634668c8719f64784c0"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#af282f56cd302f634668c8719f64784c0">toOpenPgpPemFormatSecretKey</a> (const std::string &amp;UserIdPacketContent, uint32_t timestamp, uint8_t version=5) const</td></tr>
-<tr class="memdesc:af282f56cd302f634668c8719f64784c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to an OpenPGP PEM formatted (string) private key.  <a href="class_signing_key.html#af282f56cd302f634668c8719f64784c0">More...</a><br /></td></tr>
-<tr class="separator:af282f56cd302f634668c8719f64784c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9e4c6c4831328e6b974d3be90149763"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763">toOpenPgpPemFormatSecretKey</a> (const std::string &amp;UserIdPacketContent, uint32_t timestamp, const EdDsaKeyConfiguration keyConfiguration=EdDsaKeyConfiguration()) const</td></tr>
+<tr class="memdesc:aa9e4c6c4831328e6b974d3be90149763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to an OpenPGP PEM formatted (string) private key.  <a href="class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763">More...</a><br /></td></tr>
+<tr class="separator:aa9e4c6c4831328e6b974d3be90149763"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -459,8 +459,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="af282f56cd302f634668c8719f64784c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af282f56cd302f634668c8719f64784c0">&#9670;&nbsp;</a></span>toOpenPgpPemFormatSecretKey()</h2>
+<a id="aa9e4c6c4831328e6b974d3be90149763"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9e4c6c4831328e6b974d3be90149763">&#9670;&nbsp;</a></span>toOpenPgpPemFormatSecretKey()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -480,8 +480,8 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>version</em> = <code>5</code>&#160;</td>
+          <td class="paramtype">const EdDsaKeyConfiguration&#160;</td>
+          <td class="paramname"><em>keyConfiguration</em> = <code>EdDsaKeyConfiguration()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>

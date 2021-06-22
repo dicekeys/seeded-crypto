@@ -2,10 +2,11 @@
 
 #include <string>
 #include "../signing-key.hpp"
+#include "KeyConfiguration.hpp"
 
 std::string generateOpenPgpKey(
-        uint8_t version,
         const SigningKey &signingKey,
         const std::string &userIdPacketContent,
-        uint32_t timestamp
+        uint32_t timestamp,
+        const EdDsaKeyConfiguration &configuration = EdDsaKeyConfiguration()
 );

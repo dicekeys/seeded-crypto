@@ -153,7 +153,7 @@ const std::string SigningKey::toOpenSshPublicKey() const {
 const std::string SigningKey::toOpenPgpPemFormatSecretKey(
   const std::string& UserIdPacketContent,
   uint32_t timestamp,
-  uint8_t version
+  const EdDsaKeyConfiguration keyConfiguration
 ) const {
-  return generateOpenPgpKey(version, *this, UserIdPacketContent, timestamp);
+  return generateOpenPgpKey(*this, UserIdPacketContent, timestamp, keyConfiguration);
 }

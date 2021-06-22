@@ -18,9 +18,6 @@
 //                 representing the Object Identifier tag,
 //                 and the second omitted field
 //                  is the length of the Object Identifier body.
-PublicKeyConfiguration edDsaConfiguration(ALGORITHM_ED_DSA, ALGORITHM_ED_DSA_CURVE_OID_25519);
-PublicKeyConfiguration ecDhConfiguration(ALGORITHM_EC_DH, ALGORITHM_EC_DH_CURVE_OID_25519);
-
 const ByteBuffer encodePublicKeyBytesToEccCompressedPointFormat(
   const ByteBuffer& publicKeyBytes
 ) {
@@ -56,8 +53,7 @@ const ByteBuffer encodePublicKeyBytesToEccCompressedPointFormat(
 }
 
 const ByteBuffer createEdDsaPublicPacketBody(
-  const uint8_t version,
-  const PublicKeyConfiguration& configuration,
+  const KeyConfiguration& configuration,
   const ByteBuffer& publicKeyInPointFormat,
   uint32_t timestamp
 ) {
@@ -76,7 +72,7 @@ const ByteBuffer createEdDsaPublicPacketBody(
   //  A version 4 packet contains:
   //
   //  *  A one-octet version number (4 or 5).
-  packetBody.writeByte(version);
+  packetBody.writeByte(configuration.version);
   //  *  A four-octet number denoting the time that the key was created.
   packetBody.write32Bits(timestamp);
   //  *  A one-octet number denoting the public-key algorithm of this key.
@@ -94,7 +90,7 @@ const ByteBuffer createEdDsaPublicPacketBody(
   //   ...
   //   *  A four-octet scalar octet count for the following public key
   //    material.
-  if (version == VERSION_5) {
+  if (configuration.version == VERSION_5) {
     packetBody.write32Bits(
       // The length of the following public key material is....
       // length byte for configuration curve
@@ -120,6 +116,7 @@ const ByteBuffer createEdDsaPublicPacketBody(
   //             -  a one-octet size of the following field; values 0 and 0xFF are
   //                reserved for future extensions,
   packetBody.writeByte(configuration.curve.size());
+
   //        
   //             -  the octets representing a curve OID, defined in Section 9.2;
   //                 https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-9.2
@@ -202,22 +199,21 @@ const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFinger
 
 
 PublicKeyPacket::PublicKeyPacket(
-  const uint8_t _version,
-  const PublicKeyConfiguration& configuration,
   const ByteBuffer& _publicKeyBytes,
-  uint32_t _timestamp
+  uint32_t _timestamp,
+  const KeyConfiguration& _keyConfiguration
 ) :
-  version(_version),
+  keyConfiguration(_keyConfiguration),
   OpenPgpPacket(PTAG_PUBLIC),
   publicKeyBytes(_publicKeyBytes),
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEccCompressedPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
-  body(createEdDsaPublicPacketBody(version, configuration, publicKeyInEdDsaPointFormat, timestamp)),
-  preImage(version == VERSION_4 ?
+  body(createEdDsaPublicPacketBody(keyConfiguration, publicKeyInEdDsaPointFormat, timestamp)),
+  preImage(keyConfiguration.version == VERSION_4 ?
     createEdDsaPublicPacketV4HashPreimage(body) :
     createEdDsaPublicPacketV5HashPreimage(body)
   ),
-  fingerprint(version == VERSION_4 ?
+  fingerprint(keyConfiguration.version == VERSION_4 ?
     getPublicKeyV4FingerprintFromPreImage(preImage) :
     getPublicKeyV5FingerprintFromPreImage(preImage)    
   ),
@@ -227,14 +223,14 @@ PublicKeyPacket::PublicKeyPacket(
 const ByteBuffer& PublicKeyPacket::getBody() const { return body; }
 
 EdDsaPublicPacket::EdDsaPublicPacket(
-  const uint8_t version,
   const ByteBuffer& _publicKeyBytes,
-  uint32_t _timestamp
-) : PublicKeyPacket(version, edDsaConfiguration, _publicKeyBytes, _timestamp) {}
+  uint32_t _timestamp,
+  const EdDsaKeyConfiguration &configuration
+) : PublicKeyPacket(_publicKeyBytes, _timestamp, configuration) {}
 
 EcDhPublicPacket::EcDhPublicPacket(
-  const uint8_t version,
   const ByteBuffer& _publicKeyBytes,
-  uint32_t _timestamp
-) : PublicKeyPacket(version, ecDhConfiguration, _publicKeyBytes, _timestamp) {}
+  uint32_t _timestamp,
+  const EcDhKeyConfiguration &configuration
+) : PublicKeyPacket(_publicKeyBytes, _timestamp, configuration) {}
 

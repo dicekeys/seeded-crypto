@@ -6,7 +6,7 @@
 #include "SecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
-const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBuffer) {
+const ByteBuffer createSubpacket(ubyte type, const ByteBuffer& subpacketBodyBuffer) {
   ByteBuffer packet;
   // RFC2440 Section 4.2.2
   // Should follow the spec as described in RFC4880-bis-10 - Section 5.2.3.1.
@@ -16,13 +16,16 @@ const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBu
   packet.append(subpacketBodyBuffer);
   return packet;
 }
+const ByteBuffer createSubpacket(ubyte type, std::vector<ubyte>& subpacketBodyVector) {
+  return createSubpacket(type, ByteBuffer(subpacketBodyVector));
+}
 
-const ByteBuffer createSubpacketsToBeSigned(uint8_t version, const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
+const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp, const KeyConfiguration &keyConfiguration) {
   ByteBuffer signedSubpackets;
-  // Issuer Fingerprint
   {
+    // Issuer Fingerprint (0x21)
     ByteBuffer subpacket;
-    subpacket.writeByte(version);
+    subpacket.writeByte(keyConfiguration.version);
     subpacket.append(pubicKeyFingerprint);
     signedSubpackets.append(createSubpacket(0x21 /* issuer */, subpacket));
   } {
@@ -30,53 +33,26 @@ const ByteBuffer createSubpacketsToBeSigned(uint8_t version, const ByteBuffer & 
     ByteBuffer subpacket;
     subpacket.write32Bits(timestamp);
     signedSubpackets.append(createSubpacket(0x02, subpacket));
-  } {
-    // Key Flags (0x1b)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x01); // Certify (0x1)
-    signedSubpackets.append(createSubpacket(0x1b, subpacket));
-  } {
-    // Preferred Symmetric Algorithms (0xb)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x09); // AES with 256-bit key (0x9)
-    subpacket.writeByte(0x08); // AES with 192-bit key (0x8)
-    subpacket.writeByte(0x07); // AES with 128-bit key (0x7)
-    subpacket.writeByte(0x02); // TripleDES (DES-EDE, 168 bit key derived from 192) (0x2)
-    signedSubpackets.append(createSubpacket(0x0b, subpacket));
-  } {
-    // Preferred Hash Algorithms (0x15)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x0a); // SHA512 (0xa)
-    subpacket.writeByte(0x09); // SHA384 (0x9)
-    subpacket.writeByte(0x08); // SHA256 (0x8)
-    subpacket.writeByte(0x0b); // SHA224 (0xb)
-    subpacket.writeByte(0x02); // SHA1 (0x2)
-    signedSubpackets.append(createSubpacket(0x15, subpacket));
-  } {
-    // Preferred Compression Algorithms (0x16)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x02); // ZLIB (0x2)
-    subpacket.writeByte(0x03); // BZip2 (0x3)
-    subpacket.writeByte(0x01); // ZIP (0x1)
-    signedSubpackets.append(createSubpacket(0x16, subpacket));
-  } {
-    // Features (0x1e)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x01); // Modification detection (0x1)
-    signedSubpackets.append(createSubpacket(0x1e, subpacket));
-  } {
-    // Key Server Preferences (0x17)
-    ByteBuffer subpacket;
-    subpacket.writeByte(0x80); // No-modify (0x80)
-    signedSubpackets.append(createSubpacket(0x17, subpacket));
-  }
+  }  
+  // Key Flags (0x1b)
+  signedSubpackets.append(createSubpacket(0x1b, keyConfiguration.keyFlags));  
+  // Preferred Symmetric Algorithms (0xb)
+  signedSubpackets.append(createSubpacket(0x0b, keyConfiguration.preferredSymmetricAlgorithms));
+  // Preferred Hash Algorithms (0x15)
+  signedSubpackets.append(createSubpacket(0x15, keyConfiguration.preferredHashAlgorithms));
+  // Preferred Compression Algorithms (0x16)
+  signedSubpackets.append(createSubpacket(0x16, keyConfiguration.preferredCompressionAlgorithms));
+  // Features (0x1e)
+  signedSubpackets.append(createSubpacket(0x1e, keyConfiguration.features));
+  // Key Server Preferences (0x17)
+  signedSubpackets.append(createSubpacket(0x17, keyConfiguration.keyServerPreferences));
   return signedSubpackets;
 }
 
 const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
-  uint8_t version,
   const ByteBuffer& pubicKeyFingerprint,
-  uint32_t timestamp
+  uint32_t timestamp,
+  const KeyConfiguration &keyConfiguration
 ) {
     ByteBuffer packetBody;
     // 5.2.3.  Version 4 and 5 Signature Packet Formats
@@ -84,7 +60,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
 
     // *  One-octet version number.  This is 4 for V4 signatures and 5 for
     //     V5 signatures.
-    packetBody.writeByte(version);
+    packetBody.writeByte(keyConfiguration.version);
 
     // *  One-octet signature type.
     //       5.2.1.  Signature Types
@@ -109,7 +85,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
     //     the hashed subpackets.
 
     //  *  Hashed subpacket data set (zero or more subpackets).
-    ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(version, pubicKeyFingerprint, timestamp);
+    ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(pubicKeyFingerprint, timestamp, keyConfiguration);
     packetBody.write16Bits(hashedSubpackets.size()); // hashed_area_len
     packetBody.append(hashedSubpackets);
 
@@ -135,7 +111,7 @@ const ByteBuffer createSignaturePacketHashPreImage(
   // (the above function takes us to the end of the line that includes "the hashed subpacket body")
   // ...
   //   -  the two octets 0x04 and 0xFF,
-  preImage.writeByte(publicKeyPacket.version);
+  preImage.writeByte(publicKeyPacket.keyConfiguration.version);
   preImage.writeByte(0xff);
   //   -  a four-octet big-endian number that is the length of the hashed
   //      data from the Signature packet stopping right before the 0x04,
@@ -208,7 +184,6 @@ const ByteBuffer createSignaturePacketBody(
 }
 
 SignaturePacket::SignaturePacket(
-  const uint8_t version,
   const SigningKey& signingKey,
   const UserPacket& userPacket,
   const SecretKeyPacket& secretPacket,
@@ -217,7 +192,7 @@ SignaturePacket::SignaturePacket(
 ) :
   OpenPgpPacket(PTAG_SIGNATURE),
   timestamp(_timestamp),
-  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(version, publicKeyPacket.fingerprint, _timestamp)),
+  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(publicKeyPacket.fingerprint, _timestamp, publicKeyPacket.keyConfiguration)),
   signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
   signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
   signature(createSignature(signingKey, signatureHashSha256)),

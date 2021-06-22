@@ -16,7 +16,6 @@ public:
   const ByteBuffer body;
 
   SignaturePacket(
-    uint8_t version,
     const SigningKey& signingKey,
     const UserPacket& userPacket,
     const SecretKeyPacket& secretPacket,

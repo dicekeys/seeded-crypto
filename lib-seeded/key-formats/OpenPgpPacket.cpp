@@ -17,7 +17,7 @@
 //    3.  A five-octet Body Length header encodes packet lengths of up to
 //        4,294,967,295 (0xFFFFFFFF) octets in length.  (This actually
 //        encodes a four-octet scalar number.)
-const std::vector<uint8_t> encodeOpenPgpPacketLength(size_t length) {
+const std::vector<ubyte> encodeOpenPgpPacketLength(size_t length) {
   if (length <= 191) {
     // 4.2.2.1.  One-Octet Lengths
     //
@@ -26,7 +26,7 @@ const std::vector<uint8_t> encodeOpenPgpPacketLength(size_t length) {
     // is less than 192.  The body length is equal to:
     //
     // bodyLen = 1st_octet;
-    return std::vector<uint8_t>{ uint8_t(length) };
+    return std::vector<ubyte>{ ubyte(length) };
   } else if (length < 8383) {
     // 4.2.2.2.  Two-Octet Lengths
     //
@@ -36,9 +36,9 @@ const std::vector<uint8_t> encodeOpenPgpPacketLength(size_t length) {
     //
     // bodyLen = ((1st_octet - 192) << 8) + (2nd_octet) + 192
     const size_t lengthMinus192 = length - 192;
-    const uint8_t highByte = 192 + uint8_t( (lengthMinus192 >> 8) & 0xff);
-    const uint8_t lowByte = lengthMinus192 & 0xff;    
-    return std::vector<uint8_t>{ highByte, lowByte };
+    const ubyte highByte = 192 + ubyte( (lengthMinus192 >> 8) & 0xff);
+    const ubyte lowByte = lengthMinus192 & 0xff;    
+    return std::vector<ubyte>{ highByte, lowByte };
   } else {
     // 4.2.2.3.  Five-Octet Lengths
     //
@@ -48,23 +48,23 @@ const std::vector<uint8_t> encodeOpenPgpPacketLength(size_t length) {
     //
     // bodyLen = (2nd_octet << 24) | (3rd_octet << 16) |
     //           (4th_octet << 8)  | 5th_octet
-    return std::vector<uint8_t> { 
+    return std::vector<ubyte> { 
       0xff,
-      uint8_t( (length >> 24) & 0xff),
-      uint8_t( (length >> 16) & 0xff),
-      uint8_t( (length >>  8) & 0xff),
-      uint8_t( (length      ) & 0xff),
+      ubyte( (length >> 24) & 0xff),
+      ubyte( (length >> 16) & 0xff),
+      ubyte( (length >>  8) & 0xff),
+      ubyte( (length      ) & 0xff),
     };
   }
 }
 
-const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<uint8_t> &byteVector) {
+const uint16_t numberOfConsecutive0BitsAtStartOfByteVector(const std::vector<ubyte> &byteVector) {
   uint16_t numberOfConsecutive0Bits = 0;
   const auto bytes = byteVector.size();
   for (size_t byteIndex = 0; byteIndex < bytes; byteIndex++) {
-    uint8_t byte = byteVector[byteIndex];
+    ubyte byte = byteVector[byteIndex];
     for (int bitIndex = 0; bitIndex < 8; bitIndex++) {
-      uint8_t bit = (byte >> (7 - bitIndex)) & 1;
+      ubyte bit = (byte >> (7 - bitIndex)) & 1;
       if (bit == 1) {
         return numberOfConsecutive0Bits;
       } else {
@@ -106,7 +106,7 @@ const ByteBuffer wrapKeyAsMpiFormat(const ByteBuffer &value) {
  * @return const ByteBuffer The packet including length information that allows
  * the reader to determien the packet length. 
  */
-const ByteBuffer createOpenPgpPacket(uint8_t packetTag, const ByteBuffer &packetBodyBuffer) {
+const ByteBuffer createOpenPgpPacket(ubyte packetTag, const ByteBuffer &packetBodyBuffer) {
   ByteBuffer packet;
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-rfc4880bis-09#section-4.3
   packet.writeByte(packetTag);
