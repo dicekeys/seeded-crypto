@@ -208,6 +208,7 @@ public:
   */
   const std::string toOpenPgpPemFormatSecretKey(
     const std::string& UserIdPacketContent,
-    uint32_t timestamp
+    uint32_t timestamp,
+    uint8_t version = 5
   ) const;
 };

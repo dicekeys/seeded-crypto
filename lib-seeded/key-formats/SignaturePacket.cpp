@@ -17,12 +17,12 @@ const ByteBuffer createSubpacket(uint8_t type, const ByteBuffer& subpacketBodyBu
   return packet;
 }
 
-const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
+const ByteBuffer createSubpacketsToBeSigned(uint8_t version, const ByteBuffer & pubicKeyFingerprint, uint32_t timestamp) {
   ByteBuffer signedSubpackets;
   // Issuer Fingerprint
   {
     ByteBuffer subpacket;
-    subpacket.writeByte(VERSION_4);
+    subpacket.writeByte(version);
     subpacket.append(pubicKeyFingerprint);
     signedSubpackets.append(createSubpacket(0x21 /* issuer */, subpacket));
   } {
@@ -74,6 +74,7 @@ const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerpri
 }
 
 const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
+  uint8_t version,
   const ByteBuffer& pubicKeyFingerprint,
   uint32_t timestamp
 ) {
@@ -83,7 +84,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
 
     // *  One-octet version number.  This is 4 for V4 signatures and 5 for
     //     V5 signatures.
-    packetBody.writeByte(VERSION_4);
+    packetBody.writeByte(version);
 
     // *  One-octet signature type.
     //       5.2.1.  Signature Types
@@ -108,7 +109,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
     //     the hashed subpackets.
 
     //  *  Hashed subpacket data set (zero or more subpackets).
-    ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(pubicKeyFingerprint, timestamp);
+    ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(version, pubicKeyFingerprint, timestamp);
     packetBody.write16Bits(hashedSubpackets.size()); // hashed_area_len
     packetBody.append(hashedSubpackets);
 
@@ -134,7 +135,7 @@ const ByteBuffer createSignaturePacketHashPreImage(
   // (the above function takes us to the end of the line that includes "the hashed subpacket body")
   // ...
   //   -  the two octets 0x04 and 0xFF,
-  preImage.writeByte(VERSION_4);
+  preImage.writeByte(publicKeyPacket.version);
   preImage.writeByte(0xff);
   //   -  a four-octet big-endian number that is the length of the hashed
   //      data from the Signature packet stopping right before the 0x04,
@@ -216,7 +217,7 @@ SignaturePacket::SignaturePacket(
 ) :
   OpenPgpPacket(PTAG_SIGNATURE),
   timestamp(_timestamp),
-  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(publicKeyPacket.fingerprint, _timestamp)),
+  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(version, publicKeyPacket.fingerprint, _timestamp)),
   signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
   signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
   signature(createSignature(signingKey, signatureHashSha256)),

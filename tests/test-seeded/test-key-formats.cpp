@@ -125,6 +125,34 @@ TEST(KeyFormats, PacketFunctions) {
 	}
 }
 
+TEST(KeyFormats, PacketFunctionV5) {
+	for (const auto& testCase : testCases) {
+		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
+		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
+
+		const UserPacket userPacket(testCase.name, testCase.email);
+		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
+
+		EdDsaPublicPacket publicPacket(VERSION_5, ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp);
+		ByteBuffer encodedPublicPacket = publicPacket.encode();
+
+		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
+
+		const SignaturePacket signaturePacket(VERSION_5, sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+
+		const std::string testResultsDirectoryPath = "./test-results";
+		fs::create_directories(testResultsDirectoryPath);
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";
+		std::ofstream privateKeyFile(keyFileName);
+		ByteBuffer out;
+    out.append(secretPacket.encode());
+    out.append(userPacket.encode());
+    out.append(signaturePacket.encode());
+    const std::string pemData = PEM("PGP PRIVATE KEY BLOCK", out);
+		privateKeyFile << pemData;
+	}
+}
+
 TEST(KeyFormats, SigningKeyConstructor) {
 	for (const auto& testCase : testCases) {
 		SigningKey signingKey(SodiumBuffer(ByteBuffer::fromHex(testCase.privateKeyHex).byteVector), "");

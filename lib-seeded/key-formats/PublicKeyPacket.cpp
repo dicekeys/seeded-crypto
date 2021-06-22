@@ -81,6 +81,32 @@ const ByteBuffer createEdDsaPublicPacketBody(
   packetBody.write32Bits(timestamp);
   //  *  A one-octet number denoting the public-key algorithm of this key.
   packetBody.writeByte(configuration.algorithm);
+
+
+  const ByteBuffer publicKeyInMpiFormat = wrapKeyAsMpiFormat(publicKeyInPointFormat);
+  // Version 5 only
+  //   The version 5 format is similar to the version 4 format except for
+  //   the addition of a count for the key material.  This count helps
+  //   parsing secret key packets (which are an extension of the public key
+  //   packet format) in the case of an unknown algorithm.  In addition,
+  //   fingerprints of version 5 keys are calculated differently from
+  //   version 4 keys, as described in the section "Enhanced Key Formats".
+  //   ...
+  //   *  A four-octet scalar octet count for the following public key
+  //    material.
+  if (version == VERSION_5) {
+    packetBody.write32Bits(
+      // The length of the following public key material is....
+      // length byte for configuration curve
+      1 +
+      // the configuration curve itself
+      configuration.curve.size() +
+      // the public key bytes
+      publicKeyInMpiFormat.size()
+    );
+  }
+  /// END Version 5 only
+
   //
   //  *  A series of multiprecision integers comprising the key material.
   //     This is algorithm-specific and described in Section 5.6.
@@ -104,7 +130,7 @@ const ByteBuffer createEdDsaPublicPacketBody(
   return packetBody;
 }
 
-const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& publicPacketBody) {
+const ByteBuffer createEdDsaPublicPacketV4HashPreimage(const ByteBuffer& publicPacketBody) {
   ByteBuffer preImage;
   // 5.2.4.  Computing Signatures
   // ...
@@ -121,7 +147,7 @@ const ByteBuffer createEdDsaPublicPacketHashPreimage(const ByteBuffer& publicPac
 // A V4 fingerprint is the 160-bit SHA-1 hash of the octet 0x99,
 // followed by the two-octet packet length, followed by the entire
 // Public-Key packet starting with the version field.
-const ByteBuffer getPublicKeyFingerprintFromPreImage(const ByteBuffer& preImage) {
+const ByteBuffer getPublicKeyV4FingerprintFromPreImage(const ByteBuffer& preImage) {
   sha1 hash = sha1();
   hash.add(preImage.byteVector.data(), preImage.byteVector.size());
   hash.finalize();
@@ -133,6 +159,42 @@ const ByteBuffer getPublicKeyFingerprintFromPreImage(const ByteBuffer& preImage)
   return hashBuffer;
 }
 
+  const ByteBuffer createEdDsaPublicPacketV5HashPreimage(const ByteBuffer& publicPacketBody) {
+  ByteBuffer preImage;
+  //    A V5 fingerprint is the 256-bit SHA2-256 hash of the octet 0x9A,
+  //    followed by the four-octet packet length, followed by the entire
+  //    Public-Key packet starting with the version field.  The Key ID is the
+  //    high-order 64 bits of the fingerprint.  Here are the fields of the
+  //    hash material, with the example of a DSA key:
+  //
+  //    a.1) 0x9A (1 octet)
+  preImage.writeByte(START_V5_SIGNATURE_PREIMAGE); // 0x9a
+  //
+  //    a.2) four-octet scalar octet count of (b)-(f)
+  preImage.write32Bits(publicPacketBody.size()); // 4 octets
+  //    b) version number = 5 (1 octet);
+  //
+  //    c) timestamp of key creation (4 octets);
+  //
+  //    d) algorithm (1 octet): 17 = DSA (example);
+  //
+  //    e) four-octet scalar octet count for the following key material;
+  //
+  //    f) algorithm-specific fields.
+  //
+  // The spec for (b)-(f) mirrors the spec for the packet body, so we just copy
+  // the packet body into pre-image here.
+  preImage.append(publicPacketBody);
+  return preImage;
+}
+
+const ByteBuffer getPublicKeyV5FingerprintFromPreImage(const ByteBuffer& preImage) {
+  ByteBuffer sha256Hash(crypto_hash_sha256_BYTES);
+  crypto_hash_sha256(sha256Hash.byteVector.data(), preImage.byteVector.data(), preImage.byteVector.size());
+  return sha256Hash;
+}
+
+// 12.2
 // The Key ID is the low-order 64 bits of the fingerprint.
 const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFingerprint) {
   return publicKeyFingerprint.slice(publicKeyFingerprint.size() - 8, 8);
@@ -140,18 +202,25 @@ const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFinger
 
 
 PublicKeyPacket::PublicKeyPacket(
-  const uint8_t version,
+  const uint8_t _version,
   const PublicKeyConfiguration& configuration,
   const ByteBuffer& _publicKeyBytes,
   uint32_t _timestamp
 ) :
+  version(_version),
   OpenPgpPacket(PTAG_PUBLIC),
   publicKeyBytes(_publicKeyBytes),
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEccCompressedPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
   body(createEdDsaPublicPacketBody(version, configuration, publicKeyInEdDsaPointFormat, timestamp)),
-  preImage(createEdDsaPublicPacketHashPreimage(body)),
-  fingerprint(getPublicKeyFingerprintFromPreImage(preImage)),
+  preImage(version == VERSION_4 ?
+    createEdDsaPublicPacketV4HashPreimage(body) :
+    createEdDsaPublicPacketV5HashPreimage(body)
+  ),
+  fingerprint(version == VERSION_4 ?
+    getPublicKeyV4FingerprintFromPreImage(preImage) :
+    getPublicKeyV5FingerprintFromPreImage(preImage)    
+  ),
   keyId(getPublicKeyIdFromFingerprint(fingerprint))
 {};
 

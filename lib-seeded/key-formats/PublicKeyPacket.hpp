@@ -6,16 +6,20 @@
 class PublicKeyConfiguration {
 public:
   PublicKeyConfiguration(
+//    const uint8_t _version,
     const uint8_t _algorithm,
     const std::vector<uint8_t> _curve
-  ) : algorithm(_algorithm), curve(_curve) {}
+  ) : //version(_version),
+  algorithm(_algorithm), curve(_curve) {}
 
+//   const uint8_t version;
   const uint8_t algorithm;
   const std::vector<uint8_t> curve;
 };
 
 class PublicKeyPacket : public OpenPgpPacket {
 public:
+  const uint8_t version;
   const uint32_t timestamp;
   const ByteBuffer publicKeyBytes;
   const ByteBuffer publicKeyInEdDsaPointFormat;

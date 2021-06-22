@@ -13,11 +13,11 @@ const size_t  VERSION_5_FINGERPRINT_LENGTH_IN_BYTES = 32; // 160 bits
 // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-3.7.1.1
   //  This directly hashes the string to produce the key data.  See below
   //  for how this hashing is done.
-
+  //
   //    Octet 0:        0x00
   //    Octet 1:        hash algorithm
 const uint8_t SECRET_KEY_ENCRYPTION_OFF = 0x00;
-const uint8_t SECRET_KEY_ENCRYPTION_ON = 0xff; // 0xfe also works
+const uint8_t SECRET_KEY_ENCRYPTION_ON = 0xfe; // 0xff forbidden by version 5
 
   // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-4.2
   
@@ -69,6 +69,7 @@ const uint8_t PTAG_USER_ID = pTagOctetOldFormat(13); // 0xb4, type 13: 0x80 | ((
 
 
 const uint8_t START_V4_SIGNATURE_PREIMAGE = 0x99;
+const uint8_t START_V5_SIGNATURE_PREIMAGE = 0x9A;
 
 const uint8_t ALGORITHM_HASH_SHA_256 = 0x08; // RFC4880-bis-10 - Section 9.5 - 08 - SHA2-256 [FIPS180]
 

@@ -19,7 +19,7 @@ const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecr
 }
 
 
-const ByteBuffer createSecretKeyPacketBody(const ByteBuffer& secretKey, const PublicKeyPacket& publicKeyPacket, uint32_t timestamp) {
+const ByteBuffer createSecretKeyPacketBody(uint8_t version, const ByteBuffer& secretKey, const PublicKeyPacket& publicKeyPacket, uint32_t timestamp) {
   ByteBuffer packetBody;
 // 5.5.1.3.  Secret-Key Packet (Tag 5)
 //
@@ -27,31 +27,56 @@ const ByteBuffer createSecretKeyPacketBody(const ByteBuffer& secretKey, const Pu
 //    Public-Key packet, including the public-key material, but also
 //    includes the secret-key material after all the public-key fields.
   packetBody.append(publicKeyPacket.body);
+  // 5.5.3.  Secret-Key Packet Formats
 
-  // 3.7.2.1.  Secret-Key Encryption
+  //    The Secret-Key and Secret-Subkey packets contain all the data of the
+  //    Public-Key and Public-Subkey packets, with additional algorithm-
+  //    specific secret-key data appended, usually in encrypted form.
   //
-  //    An S2K specifier can be stored in the secret keyring to specify how
-  //    to convert the passphrase to a key that unlocks the secret data.
-  //    Older versions of PGP just stored a cipher algorithm octet preceding
-  //    the secret data or a zero to indicate that the secret data was
-  //    unencrypted.  The MD5 hash function was always used to convert the
-  //    passphrase to a key for the specified cipher algorithm.
+  //    The packet contains:
   //
-  //    For compatibility, when an S2K specifier is used, the special value
-  //    254 or 255 is stored in the position where the hash algorithm octet
-  //    would have been in the old data structure.  This is then followed
-  //    immediately by a one-octet algorithm identifier, and then by the S2K
-  //    specifier as encoded above.
-  //
-  //    Therefore, preceding the secret data there will be one of these
-  //    possibilities:
-  //
-  //   0:           secret data is unencrypted (no passphrase)
+  //    *  A Public-Key or Public-Subkey packet, as described above.
+
+  //  *  One octet indicating string-to-key usage conventions.  Zero
+  //     indicates that the secret-key data is not encrypted. 255 or 254
+  //     indicates that a string-to-key specifier is being given.  Any
+  //     other value is a symmetric-key encryption algorithm identifier.  A
+  //     version 5 packet MUST NOT use the value 255.
   packetBody.writeByte(SECRET_KEY_ENCRYPTION_OFF);
+
+  //  *  Only for a version 5 packet, a one-octet scalar octet count of the
+  //     next 4 optional fields.
+  if (version == VERSION_5) {
+    packetBody.writeByte(0);
+  }
+
+  //  *  [Optional] If string-to-key usage octet was 255 or 254, a one-
+  //     octet symmetric encryption algorithm.
+
+  //  *  [Optional] If string-to-key usage octet was 255 or 254, a string-
+  //     to-key specifier.  The length of the string-to-key specifier is
+  //     implied by its type, as described above.
+
+  //  *  [Optional] If secret data is encrypted (string-to-key usage octet
+  //     not zero), an Initial Vector (IV) of the same length as the
+  //     cipher's block size.
 
   // Append the actual secret key material, in MPI format as specified above
   const ByteBuffer keyWrappedInMpiFormat = wrapKeyAsMpiFormat(secretKey);
+
+  //  *  Only for a version 5 packet, a four-octet scalar octet count for
+  //     the following secret key material.  This includes the encrypted
+  //     SHA-1 hash or AEAD tag if the string-to-key usage octet is 254 or
+  //     253.
+  if (version == VERSION_5) {
+    packetBody.write32Bits(
+      keyWrappedInMpiFormat.size() +
+      2 // checksum, future -- include conditionally only if S2K byte is 0 (no encryption)
+      );
+  }
+
   packetBody.append(keyWrappedInMpiFormat);
+  // future --  include conditionally only if S2K byte is 0 (no encryption)
   packetBody.write16Bits(calculateCheckSumOfWrappedSecretKey(keyWrappedInMpiFormat));
   return packetBody;
 }
@@ -63,7 +88,7 @@ SecretKeyPacket::SecretKeyPacket(
 ) : OpenPgpPacket(PTAG_SECRET),
   secretKey(_secretKey),
   timestamp(_timestamp),
-  body(createSecretKeyPacketBody(secretKey, publicKeyPacket, timestamp))
+  body(createSecretKeyPacketBody(publicKeyPacket.version, secretKey, publicKeyPacket, timestamp))
   {}
 
 const ByteBuffer& SecretKeyPacket::getBody() const { return body; };
