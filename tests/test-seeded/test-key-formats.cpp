@@ -92,7 +92,7 @@ TEST(KeyFormats, SignaturHashPreImage) {
 	const SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
 	const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
-	const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+	const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
 //		ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 
 	// Calculate the SHA256-bit hash of the packet before appending the
@@ -124,7 +124,7 @@ TEST(KeyFormats, PacketFunctions) {
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
-		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 		const std::string testResultsDirectoryPath = "./test-results";
@@ -155,7 +155,7 @@ TEST(KeyFormats, PacketFunctionV5) {
 
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
-		const SignaturePacket signaturePacket(sk, userPacket, secretPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
 
 		fs::create_directories(testResultsDirectoryPath);
 		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";

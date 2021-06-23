@@ -186,7 +186,6 @@ const ByteBuffer createSignaturePacketBody(
 SignaturePacket::SignaturePacket(
   const SigningKey& signingKey,
   const UserPacket& userPacket,
-  const SecretKeyPacket& secretPacket,
   const EdDsaPublicPacket& publicKeyPacket,
   uint32_t _timestamp
 ) :

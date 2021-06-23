@@ -102,7 +102,7 @@ std::string generateOpenPgpKey(
     const EdDsaPublicPacket publicKeyPacket(publicKey, timestamp, configuration);
     const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
     const UserPacket userPacket(userIdPacketContent);
-    const SignaturePacket signaturePacket(signingKey, userPacket, secretPacket, publicKeyPacket, timestamp);
+    const SignaturePacket signaturePacket(signingKey, userPacket, publicKeyPacket, timestamp);
 
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
