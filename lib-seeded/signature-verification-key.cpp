@@ -6,7 +6,7 @@
 #include "common-names.hpp"
 #include "key-formats/OpenSshKey.hpp"
 #include "key-formats/OpenPgpKey.hpp"
-#include "key-formats/PEM.hpp"
+#include "key-formats/asciiArmor.hpp"
 
 namespace SignatureVerificationKeyJsonFieldName {
   static const std::string keyBytes = "keyBytes";

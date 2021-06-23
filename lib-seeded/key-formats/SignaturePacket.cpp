@@ -50,6 +50,7 @@ const ByteBuffer createSubpacketsToBeSigned(const ByteBuffer & pubicKeyFingerpri
 }
 
 const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
+  const ubyte signatureType,
   const ByteBuffer& pubicKeyFingerprint,
   uint32_t timestamp,
   const KeyConfiguration &keyConfiguration
@@ -71,7 +72,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
     //             "key signatures" as 0x10 certifications.Some implementations can
     //             issue 0x11 - 0x13 certifications, but few differentiate between the
     //             types.
-    packetBody.writeByte(0x13); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
+    packetBody.writeByte(signatureType); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
 
     // *  One-octet public-key algorithm.
     packetBody.writeByte(ALGORITHM_ED_DSA);
@@ -94,7 +95,7 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
 
 
 const ByteBuffer createSignaturePacketHashPreImage(
-  const EdDsaPublicPacket& publicKeyPacket,
+  const PublicKeyPacket& publicKeyPacket,
   const UserPacket& userPacket,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
@@ -184,14 +185,16 @@ const ByteBuffer createSignaturePacketBody(
 }
 
 SignaturePacket::SignaturePacket(
+  const ubyte _signatureType,
   const SigningKey& signingKey,
   const UserPacket& userPacket,
-  const EdDsaPublicPacket& publicKeyPacket,
+  const PublicKeyPacket& publicKeyPacket,
   uint32_t _timestamp
 ) :
   OpenPgpPacket(PTAG_SIGNATURE),
+  signatureType(_signatureType),
   timestamp(_timestamp),
-  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(publicKeyPacket.fingerprint, _timestamp, publicKeyPacket.keyConfiguration)),
+  packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(_signatureType, publicKeyPacket.fingerprint, _timestamp, publicKeyPacket.keyConfiguration)),
   signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
   signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
   signature(createSignature(signingKey, signatureHashSha256)),

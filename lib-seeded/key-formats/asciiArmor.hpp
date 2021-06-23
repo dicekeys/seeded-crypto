@@ -59,7 +59,7 @@ inline const std::string base64Blocks(const std::vector<unsigned char> &data) {
   return result;
 }
 
-inline const std::string PEM(const std::string type, ByteBuffer data, const std::string recipe = "") {
+inline const std::string asciiArmor(const std::string type, ByteBuffer data, const std::string recipe = "") {
     return "\n" + fiveDashes + "BEGIN " + type + fiveDashes + "\n" +
     (recipe.size() == 0 ? "":
       recipe.find('\n') == -1 ?

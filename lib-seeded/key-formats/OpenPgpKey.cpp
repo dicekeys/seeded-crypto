@@ -3,7 +3,7 @@
 #include "SecretKeyPacket.hpp"
 #include "SignaturePacket.hpp"
 #include "UserPacket.hpp"
-#include "PEM.hpp"
+#include "asciiArmor.hpp"
 
 // https://datatracker.ietf.org/doc/html/draft-ietf-openpgp-crypto-refresh#section-11.1
 //   11.1.  Transferable Public Keys
@@ -93,7 +93,8 @@ std::string generateOpenPgpKey(
     const SigningKey &signingKey,
     const std::string &userIdPacketContent,
     uint32_t timestamp,
-    const EdDsaKeyConfiguration &configuration
+    const EdDsaKeyConfiguration &configuration,
+    const ubyte signatureType
 ) {
     const ByteBuffer privateKey(signingKey.getSeedBytes());
     const ByteBuffer publicKey(signingKey.getSignatureVerificationKeyBytes());
@@ -102,11 +103,11 @@ std::string generateOpenPgpKey(
     const EdDsaPublicPacket publicKeyPacket(publicKey, timestamp, configuration);
     const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
     const UserPacket userPacket(userIdPacketContent);
-    const SignaturePacket signaturePacket(signingKey, userPacket, publicKeyPacket, timestamp);
+    const SignaturePacket signaturePacket(signatureType, signingKey, userPacket, publicKeyPacket, timestamp);
 
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
 
-    return PEM("PGP PRIVATE KEY BLOCK", out, signingKey.recipe);
+    return asciiArmor("PGP PRIVATE KEY BLOCK", out, signingKey.recipe);
 }

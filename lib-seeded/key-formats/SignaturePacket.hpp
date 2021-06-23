@@ -5,6 +5,22 @@
 #include "SecretKeyPacket.hpp"
 #include "UserPacket.hpp"
 
+// 0x02: Standalone signature.
+//       This signature is a signature of only its own subpacket contents.
+//       It is calculated identically to a signature over a zero-length
+//       binary document.  Note that it doesn't make sense to have a V3
+//       standalone signature.
+const ubyte SIGNATURE_TYPE_STANDALONE = 0x02;
+// 0x10: Generic certification of a User ID and Public-Key packet.
+const ubyte SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC = 0x10;
+// 0x13: Positive certification of a User ID and Public-Key packet.
+//       The issuer of this certification has done substantial verification
+//       of the claim of identity.  Most OpenPGP implementations make their
+//       "key signatures" as 0x10 certifications.  Some implementations can
+//       issue 0x11-0x13 certifications, but few differentiate between the
+//       types.
+const ubyte SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_POSITIVE = 0x13;
+
 /**
  * @brief A class representing an OpenPGP Signature Packet
  * 
@@ -22,6 +38,7 @@
  */
 class SignaturePacket : public OpenPgpPacket {
 public:
+  const ubyte signatureType;
   const uint32_t timestamp;
   const ByteBuffer packetBodyIncludedInSignatureHash;
   const ByteBuffer signatureHashPreImage;
@@ -31,9 +48,10 @@ public:
   const ByteBuffer body;
 
   SignaturePacket(
+    const ubyte signatureType,
     const SigningKey& signingKey,
     const UserPacket& userPacket,
-    const EdDsaPublicPacket& publicKeyPacket,
+    const PublicKeyPacket& publicKeyPacket,
     uint32_t _timestamp
   );
 

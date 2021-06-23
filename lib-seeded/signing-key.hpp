@@ -196,17 +196,18 @@ public:
   */
   const std::string toOpenSshPublicKey() const;
 
-  /**
-   * @brief Convert to an OpenPGP PEM formatted (string) private key.
+   /**
+   * @brief Encodes the (private) signing key into a PGP ascii armored block per RFC4880.
    * 
+   * @param UserIdPacketContent The user to associate with the key
+   * (typically a name followed by an email in arrow brackets), such as
+   * Mika Jung <mika@leiajung.org>.
+   * @param timestamp Unix timeof creation (number of seconds since Jan 1 1970 UTC)
+   * @param keyConfiguration encoding options, including the GPG version to use
+   * and which encryption/hash algorithms to advertise.
    * 
-   * https://datatracker.ietf.org/doc/html/rfc4880#section-5.11
-   * 
-   * @param name The keyholder's name to appear in the PEM format
-   * @param email The keyholder's email to appear in the PEM format.
-   * @param timestamp seconds elapsed since midnight, 1 January 1970 UTC.
-   *        https://datatracker.ietf.org/doc/html/rfc4880#section-3.5
-  */
+   * @return const std::string The app-armored RFC4880 encoded key, self signed.
+   */
   const std::string toOpenPgpPemFormatSecretKey(
     const std::string& UserIdPacketContent,
     uint32_t timestamp,

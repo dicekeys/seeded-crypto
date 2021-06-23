@@ -6,7 +6,7 @@
 #include "common-names.hpp"
 #include "key-formats/OpenSshKey.hpp"
 #include "key-formats/OpenPgpKey.hpp"
-#include "key-formats/PEM.hpp"
+#include "key-formats/asciiArmor.hpp"
 
 const SodiumBuffer convertSeedToSodiumPrivateKey(const SodiumBuffer& seedOrSodiumPrivateKey) {
   if (seedOrSodiumPrivateKey.length == crypto_sign_SECRETKEYBYTES) {

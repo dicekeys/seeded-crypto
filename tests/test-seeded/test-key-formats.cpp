@@ -10,7 +10,7 @@
 #include "../lib-seeded/key-formats/SignaturePacket.hpp"
 #include "../lib-seeded/key-formats/OpenSshKey.hpp"
 #include "../lib-seeded/key-formats/OpenPgpKey.hpp"
-#include "../lib-seeded/key-formats/PEM.hpp"
+#include "../lib-seeded/key-formats/asciiArmor.hpp"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -92,7 +92,7 @@ TEST(KeyFormats, SignaturHashPreImage) {
 	const SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
 	const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
-	const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
+	const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_POSITIVE, sk, userPacket, publicPacket, testCase.timestamp);
 //		ByteBuffer packetBody = createSignaturePacketBodyIncludedInHash(publicPacket.fingerprint, testCase.timestamp);
 
 	// Calculate the SHA256-bit hash of the packet before appending the
@@ -124,18 +124,18 @@ TEST(KeyFormats, PacketFunctions) {
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 		ASSERT_STRCASEEQ(secretPacket.encode().toHex().c_str(), testCase.secretPacketHex.c_str());
 
-		const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_POSITIVE, sk, userPacket, publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
 		const std::string testResultsDirectoryPath = "./test-results";
 		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
 		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
-    const std::string pemData = PEM("PGP PRIVATE KEY BLOCK", out);
+    const std::string pemData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
 		privateKeyFile << pemData;
 	}
 }
@@ -155,16 +155,16 @@ TEST(KeyFormats, PacketFunctionV5) {
 
 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp);
 
-		const SignaturePacket signaturePacket(sk, userPacket, publicPacket, testCase.timestamp);
+		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
 
 		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".pem";
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
 		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
-    const std::string pemData = PEM("PGP PRIVATE KEY BLOCK", out);
+    const std::string pemData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
 		privateKeyFile << pemData;
 	}
 }
@@ -197,16 +197,17 @@ TEST(KeyFormats, OpenPGP_Signing) {
 	const std::string pem = generateOpenPgpKey(signingKey, createUserIdPacketContent(testCase.name, testCase.email), testCase.timestamp, configuration);
 
 	std::string expectedKeyBlock = 
-		"\n-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
+		"\n"
+		"-----BEGIN PGP PRIVATE KEY BLOCK-----\n"
 		"Comment: recipe={\"bogusRecipeWhichWillBeIgnored\": true}\n"
 		"\n"
 		"lFgEYIRFYBYJKwYBBAHaRw8BAQdAcfBjFSWhELKmBG1MHc8KK4uM2d7x53PbQIFl\n"
 		"p0ei4+gAAP9Yy6hJbqvD1Y+EwDREjvHB+VycZYLgBsK7IFtw61jVzxNctCBES19V\n"
-		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBMWCAA4FiEE++YqtdyMQbEs\n"
+		"U0VSXzEgPGRrdXNlcjFAZGljZWtleXMub3JnPoiQBBAWCAA4FiEE++YqtdyMQbEs\n"
 		"BvN+hbejV7Dp/9gFAmCERWACGwEFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQ\n"
-		"hbejV7Dp/9hl6wEAxad9KNliPHS0k6el5yq/JPNMThM9qF4xTGEFsGpOJq8BAKbs\n"
-		"E5IMgCP8BERwXU8ypVuXfsFHvjtraPESYBpStnMK\n"
-		"=Gc1v\n"
+		"hbejV7Dp/9hf8AEArHSpVeJops0K2N6B16SMf2C574Bk244JLzcb2Gklkw4A/04j\n"
+		"rTfyL+DKmsMmr9Of8TnvfVT7Uwo/IwC4DA78p+MJ\n"
+		"=mdiM\n"
 		"-----END PGP PRIVATE KEY BLOCK-----\n";
 		ASSERT_STREQ(pem.c_str(), expectedKeyBlock.c_str());
 }
@@ -255,13 +256,13 @@ TEST(KeyFormats, OpenPGP_Encryption) {
 	EcDhKeyConfiguration configuration;
 	{
 		configuration.version = VERSION_4;
-		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV4-" + pk.unsealingKeyBytes.toHexString() + ".pem");
-		privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV4-" + pk.unsealingKeyBytes.toHexString() + ".asc");
+		privateKeyFile << pk.toOpenPgpAsciiArmoredFormat("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
 	}
 	{
 		configuration.version = VERSION_5;
-		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".pem");
-		privateKeyFile << pk.toOpenPgpSecretKey("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".asc");
+		privateKeyFile << pk.toOpenPgpAsciiArmoredFormat("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
 	}
 }
 
