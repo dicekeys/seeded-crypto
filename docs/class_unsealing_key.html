@@ -131,9 +131,9 @@ const <a class="el" href="class_sealing_key.html">SealingKey</a>&#160;</td><td c
 <tr class="memitem:a4e4da8c47783a9be54747ef0fbad4e71"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_sodium_buffer.html">SodiumBuffer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a4e4da8c47783a9be54747ef0fbad4e71">toSerializedBinaryForm</a> () const</td></tr>
 <tr class="memdesc:a4e4da8c47783a9be54747ef0fbad4e71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serialize to byte array as a list of: (unsealingKeyBytes, sealingKeyBytes, recipe)  <a href="class_unsealing_key.html#a4e4da8c47783a9be54747ef0fbad4e71">More...</a><br /></td></tr>
 <tr class="separator:a4e4da8c47783a9be54747ef0fbad4e71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada629485e753f8294f0a73cc41b9d104"><td class="memItemLeft" align="right" valign="top"><a id="ada629485e753f8294f0a73cc41b9d104"></a>
-const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>toOpenPgpSecretKey</b> (const std::string &amp;UserIdPacketContent, uint32_t timestamp, const EcDhKeyConfiguration keyConfiguration=EcDhKeyConfiguration()) const</td></tr>
-<tr class="separator:ada629485e753f8294f0a73cc41b9d104"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87d7cb7307d0bdc4d3a1cf6669934998"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_unsealing_key.html#a87d7cb7307d0bdc4d3a1cf6669934998">toOpenPgpAsciiArmoredFormat</a> (const std::string &amp;UserIdPacketContent, uint32_t timestamp, const EcDhKeyConfiguration keyConfiguration=EcDhKeyConfiguration()) const</td></tr>
+<tr class="memdesc:a87d7cb7307d0bdc4d3a1cf6669934998"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encodes the (private) unsealing key into a PGP ascii armored block per RFC4880.  <a href="class_unsealing_key.html#a87d7cb7307d0bdc4d3a1cf6669934998">More...</a><br /></td></tr>
+<tr class="separator:a87d7cb7307d0bdc4d3a1cf6669934998"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -388,6 +388,51 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>const std::string an <a class="el" href="class_unsealing_key.html" title="an UnsealingKey is used to unseal messages sealed with its corresponding SealingKey....">UnsealingKey</a> serialized to JSON format. </dd></dl>
+
+</div>
+</div>
+<a id="a87d7cb7307d0bdc4d3a1cf6669934998"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87d7cb7307d0bdc4d3a1cf6669934998">&#9670;&nbsp;</a></span>toOpenPgpAsciiArmoredFormat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string UnsealingKey::toOpenPgpAsciiArmoredFormat </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>UserIdPacketContent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>timestamp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const EcDhKeyConfiguration&#160;</td>
+          <td class="paramname"><em>keyConfiguration</em> = <code>EcDhKeyConfiguration()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Encodes the (private) unsealing key into a PGP ascii armored block per RFC4880. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">UserIdPacketContent</td><td>The userId to associate with the key (typically a name followed by an email in arrow brackets), such as Mika Jung <a href="#" onclick="location.href='mai'+'lto:'+'mik'+'a@'+'lei'+'aj'+'ung'+'.o'+'rg'; return false;">mika@<span style="display: none;">.nosp@m.</span>leia<span style="display: none;">.nosp@m.</span>jung.<span style="display: none;">.nosp@m.</span>org</a>. </td></tr>
+    <tr><td class="paramname">timestamp</td><td>Unix timeof creation (number of seconds since Jan 1 1970 UTC) </td></tr>
+    <tr><td class="paramname">keyConfiguration</td><td>encoding options, including the GPG version to use and which encryption/hash algorithms to advertise.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>const std::string The app-armored RFC4880 encoded key. </dd></dl>
 
 </div>
 </div>

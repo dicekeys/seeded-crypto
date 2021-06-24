@@ -145,39 +145,31 @@ const ByteBuffer createEdDsaPublicPacketV4HashPreimage(const ByteBuffer& publicP
 // followed by the two-octet packet length, followed by the entire
 // Public-Key packet starting with the version field.
 const ByteBuffer getPublicKeyV4FingerprintFromPreImage(const ByteBuffer& preImage) {
-  sha1 hash = sha1();
-  hash.add(preImage.byteVector.data(), preImage.byteVector.size());
-  hash.finalize();
-  ByteBuffer hashBuffer;
-  // Write a word at a time to ensure the hash has the correct byte ordering.
-  for (uint32_t word = 0; word < 5; word++) {
-    hashBuffer.write32Bits(hash.state[word]);
-  }
-  return hashBuffer;
+  return preImage.SHA1();
 }
 
   const ByteBuffer createEdDsaPublicPacketV5HashPreimage(const ByteBuffer& publicPacketBody) {
   ByteBuffer preImage;
-  //    A V5 fingerprint is the 256-bit SHA2-256 hash of the octet 0x9A,
-  //    followed by the four-octet packet length, followed by the entire
-  //    Public-Key packet starting with the version field.  The Key ID is the
-  //    high-order 64 bits of the fingerprint.  Here are the fields of the
-  //    hash material, with the example of a DSA key:
+  // |    A V5 fingerprint is the 256-bit SHA2-256 hash of the octet 0x9A,
+  // |    followed by the four-octet packet length, followed by the entire
+  // |    Public-Key packet starting with the version field.  The Key ID is the
+  // |    high-order 64 bits of the fingerprint.  Here are the fields of the
+  // |    hash material, with the example of a DSA key:
   //
-  //    a.1) 0x9A (1 octet)
+  // |    a.1) 0x9A (1 octet)
   preImage.writeByte(START_V5_SIGNATURE_PREIMAGE); // 0x9a
   //
-  //    a.2) four-octet scalar octet count of (b)-(f)
+  // |    a.2) four-octet scalar octet count of (b)-(f)
   preImage.write32Bits(publicPacketBody.size()); // 4 octets
-  //    b) version number = 5 (1 octet);
+  // |    b) version number = 5 (1 octet);
   //
-  //    c) timestamp of key creation (4 octets);
+  // |    c) timestamp of key creation (4 octets);
   //
-  //    d) algorithm (1 octet): 17 = DSA (example);
+  // |    d) algorithm (1 octet): 17 = DSA (example);
   //
-  //    e) four-octet scalar octet count for the following key material;
+  // |    e) four-octet scalar octet count for the following key material;
   //
-  //    f) algorithm-specific fields.
+  // |    f) algorithm-specific fields.
   //
   // The spec for (b)-(f) mirrors the spec for the packet body, so we just copy
   // the packet body into pre-image here.
@@ -186,15 +178,29 @@ const ByteBuffer getPublicKeyV4FingerprintFromPreImage(const ByteBuffer& preImag
 }
 
 const ByteBuffer getPublicKeyV5FingerprintFromPreImage(const ByteBuffer& preImage) {
-  ByteBuffer sha256Hash(crypto_hash_sha256_BYTES);
-  crypto_hash_sha256(sha256Hash.byteVector.data(), preImage.byteVector.data(), preImage.byteVector.size());
-  return sha256Hash;
+  return preImage.SHA2_256();
 }
 
 // 12.2
 // The Key ID is the low-order 64 bits of the fingerprint.
-const ByteBuffer getPublicKeyIdFromFingerprint(const ByteBuffer& publicKeyFingerprint) {
-  return publicKeyFingerprint.slice(publicKeyFingerprint.size() - 8, 8);
+const ByteBuffer getPublicKeyIdFromFingerprint(const uint8_t version, const ByteBuffer& publicKeyFingerprint) {
+  //  |   12.2.  Key IDs and Fingerprints
+  //  |   ...
+  if (version == VERSION_4) {
+    //  |   A V4 fingerprint is ... [fingerprint calculation elsewhere in code]
+    //  |   The Key ID is the
+    //  |   low-order 64 bits of the fingerprint.
+    //      ^^^^^^^^^
+    return publicKeyFingerprint.slice(publicKeyFingerprint.size() - 8, 8);
+  } else if (version == VERSION_5) {
+    //  |   A V5 fingerprint is ... [fingerprint calculation elsewhere in code]
+    //  |   The Key ID is the
+    //  |   high-order 64 bits of the fingerprint.
+    //      ^^^^^^^^^^
+    return publicKeyFingerprint.slice(0, 8);
+  } else {
+    return ByteBuffer();
+  }
 }
 
 
@@ -217,7 +223,7 @@ PublicKeyPacket::PublicKeyPacket(
     getPublicKeyV4FingerprintFromPreImage(preImage) :
     getPublicKeyV5FingerprintFromPreImage(preImage)    
   ),
-  keyId(getPublicKeyIdFromFingerprint(fingerprint))
+  keyId(getPublicKeyIdFromFingerprint(keyConfiguration.version, fingerprint))
 {};
 
 const ByteBuffer& PublicKeyPacket::getBody() const { return body; }

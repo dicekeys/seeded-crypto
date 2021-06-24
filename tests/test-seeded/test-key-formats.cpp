@@ -84,6 +84,8 @@ TEST(KeyFormats, SignaturHashPreImage) {
 //	const auto userIdPacketBody = createUserPacketBody(createUserIdPacketContent(testCase.name, testCase.email));
 	EdDsaKeyConfiguration configuration;
 	configuration.version = testCase.version;
+	configuration.features = { FEATURE_MODIFICATION_DETECTION };
+	configuration.keyFlags = { KEY_FLAG_OCTET1_CERTIFY_OTHER_KEYS };
 	configuration.preferredSymmetricAlgorithms = {9,8,7,2};
 	configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
 	configuration.preferredCompressionAlgorithms = {2,3,1};
@@ -112,6 +114,8 @@ TEST(KeyFormats, PacketFunctions) {
 
 		EdDsaKeyConfiguration configuration;
 		configuration.version = testCase.version;
+		configuration.features = { FEATURE_MODIFICATION_DETECTION };
+		configuration.keyFlags = { KEY_FLAG_OCTET1_CERTIFY_OTHER_KEYS };
 		configuration.preferredSymmetricAlgorithms = {9,8,7,2};
 		configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
 		configuration.preferredCompressionAlgorithms = {2,3,1};
@@ -129,14 +133,14 @@ TEST(KeyFormats, PacketFunctions) {
 
 		const std::string testResultsDirectoryPath = "./test-results";
 		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V4-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
 		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
-    const std::string pemData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
-		privateKeyFile << pemData;
+    const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
+		privateKeyFile << ascData;
 	}
 }
 
@@ -158,14 +162,44 @@ TEST(KeyFormats, PacketFunctionV5) {
 		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
 
 		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKeyV5-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V5-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
 		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
-    const std::string pemData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
-		privateKeyFile << pemData;
+    const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
+		privateKeyFile << ascData;
+	}
+}
+
+
+TEST(KeyFormats, PacketFunctionV5Encrypted) {
+	for (const auto& testCase : testCases) {
+		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
+		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
+
+		const UserPacket userPacket(testCase.name, testCase.email);
+		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
+
+		EdDsaKeyConfiguration configuration;
+		configuration.version = VERSION_5;
+		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
+		ByteBuffer encodedPublicPacket = publicPacket.encode();
+
+		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp, "yollama");
+
+		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
+
+		fs::create_directories(testResultsDirectoryPath);
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V5-Encrypted-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
+		std::ofstream privateKeyFile(keyFileName);
+		ByteBuffer out;
+    out.append(secretPacket.encode());
+    out.append(userPacket.encode());
+    out.append(signaturePacket.encode());
+    const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
+		privateKeyFile << ascData;
 	}
 }
 
@@ -187,6 +221,8 @@ TEST(KeyFormats, OpenPGP_Signing) {
 		EdDsaKeyConfiguration configuration;
 		configuration.version = testCase.version;
 		configuration.preferredSymmetricAlgorithms = {9,8,7,2};
+		configuration.features = { FEATURE_MODIFICATION_DETECTION };
+		configuration.keyFlags = { KEY_FLAG_OCTET1_CERTIFY_OTHER_KEYS };
 		configuration.preferredHashAlgorithms = {0x0a, 0x09, 0x08, 0x0b, 0x02};
 		configuration.preferredCompressionAlgorithms = {2,3,1};
 
@@ -256,12 +292,12 @@ TEST(KeyFormats, OpenPGP_Encryption) {
 	EcDhKeyConfiguration configuration;
 	{
 		configuration.version = VERSION_4;
-		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV4-" + pk.unsealingKeyBytes.toHexString() + ".asc");
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateKey-Dh-V4-" + pk.unsealingKeyBytes.toHexString() + ".asc");
 		privateKeyFile << pk.toOpenPgpAsciiArmoredFormat("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
 	}
 	{
 		configuration.version = VERSION_5;
-		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateDhKeyV5-" + pk.unsealingKeyBytes.toHexString() + ".asc");
+		std::ofstream privateKeyFile(testResultsDirectoryPath + "/PrivateKey-Dh-V4-" + pk.unsealingKeyBytes.toHexString() + ".asc");
 		privateKeyFile << pk.toOpenPgpAsciiArmoredFormat("stuart <stuart@dicekeys.com>", 0x60844560u, configuration);
 	}
 }

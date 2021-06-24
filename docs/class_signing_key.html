@@ -141,7 +141,7 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <tr class="memdesc:aadeb8ef86c86bafb6373996cb415e935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert the signature-verification key to an OpenSSH public key string. <br /></td></tr>
 <tr class="separator:aadeb8ef86c86bafb6373996cb415e935"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9e4c6c4831328e6b974d3be90149763"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763">toOpenPgpPemFormatSecretKey</a> (const std::string &amp;UserIdPacketContent, uint32_t timestamp, const EdDsaKeyConfiguration keyConfiguration=EdDsaKeyConfiguration()) const</td></tr>
-<tr class="memdesc:aa9e4c6c4831328e6b974d3be90149763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert to an OpenPGP PEM formatted (string) private key.  <a href="class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763">More...</a><br /></td></tr>
+<tr class="memdesc:aa9e4c6c4831328e6b974d3be90149763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encodes the (private) signing key into a PGP ascii armored block per RFC4880.  <a href="class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763">More...</a><br /></td></tr>
 <tr class="separator:aa9e4c6c4831328e6b974d3be90149763"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
@@ -491,16 +491,16 @@ const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="e
       </table>
 </div><div class="memdoc">
 
-<p>Convert to an OpenPGP PEM formatted (string) private key. </p>
-<p><a href="https://datatracker.ietf.org/doc/html/rfc4880#section-5.11">https://datatracker.ietf.org/doc/html/rfc4880#section-5.11</a></p>
+<p>Encodes the (private) signing key into a PGP ascii armored block per RFC4880. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">name</td><td>The keyholder's name to appear in the PEM format </td></tr>
-    <tr><td class="paramname">email</td><td>The keyholder's email to appear in the PEM format. </td></tr>
-    <tr><td class="paramname">timestamp</td><td>seconds elapsed since midnight, 1 January 1970 UTC. <a href="https://datatracker.ietf.org/doc/html/rfc4880#section-3.5">https://datatracker.ietf.org/doc/html/rfc4880#section-3.5</a> </td></tr>
+    <tr><td class="paramname">UserIdPacketContent</td><td>The user to associate with the key (typically a name followed by an email in arrow brackets), such as Mika Jung <a href="#" onclick="location.href='mai'+'lto:'+'mik'+'a@'+'lei'+'aj'+'ung'+'.o'+'rg'; return false;">mika@<span style="display: none;">.nosp@m.</span>leia<span style="display: none;">.nosp@m.</span>jung.<span style="display: none;">.nosp@m.</span>org</a>. </td></tr>
+    <tr><td class="paramname">timestamp</td><td>Unix timeof creation (number of seconds since Jan 1 1970 UTC) </td></tr>
+    <tr><td class="paramname">keyConfiguration</td><td>encoding options, including the GPG version to use and which encryption/hash algorithms to advertise.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>const std::string The app-armored RFC4880 encoded key, self signed. </dd></dl>
 
 </div>
 </div>

@@ -13,7 +13,8 @@ public:
   SecretKeyPacket(
     const PublicKeyPacket& publicKeyPacket,
     const ByteBuffer& _secretKey,
-    uint32_t _timestamp
+    uint32_t _timestamp,
+  const std::string &passphrase = ""
   );
 
   const ByteBuffer& getBody() const override;

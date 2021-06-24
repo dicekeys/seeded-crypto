@@ -29,9 +29,14 @@ class ByteBuffer {
     ByteBuffer();
 
     static ByteBuffer fromHex(const std::string &hex);
+    static ByteBuffer concat(const ByteBuffer &firstPart, const ByteBuffer &secondPart);
     std::string toHex() const;
 
+    const ByteBuffer SHA1() const;
+    const ByteBuffer SHA2_256() const;
+
     uint32_t size() const;
+    ubyte* data() const;
 
     ByteBuffer slice(size_t start, size_t count) const;
 
