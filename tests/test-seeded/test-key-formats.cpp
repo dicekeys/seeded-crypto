@@ -131,20 +131,19 @@ TEST(KeyFormats, PacketFunctions) {
 		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_POSITIVE, sk, userPacket, publicPacket, testCase.timestamp);
 		ASSERT_STRCASEEQ(signaturePacket.encode().toHex().c_str(), testCase.signaturePacketHex.c_str());
 
-		const std::string testResultsDirectoryPath = "./test-results";
-		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V4-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
-		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
     out.append(userPacket.encode());
     out.append(signaturePacket.encode());
     const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
-		privateKeyFile << ascData;
 	}
 }
 
-TEST(KeyFormats, PacketFunctionV5) {
+TEST(KeyFormats, PacketFiles) {
+	const std::vector<std::string> passphrases = {"", "yollama"};
+	const std::vector<ubyte> versions = {VERSION_4, VERSION_5};
+	for (const auto &passphrase : passphrases)
+	for (const auto &version : versions)
 	for (const auto& testCase : testCases) {
 		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
 		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
@@ -153,7 +152,7 @@ TEST(KeyFormats, PacketFunctionV5) {
 		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
 		EdDsaKeyConfiguration configuration;
-		configuration.version = VERSION_5;
+		configuration.version = version;
 		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
 		ByteBuffer encodedPublicPacket = publicPacket.encode();
 
@@ -162,7 +161,10 @@ TEST(KeyFormats, PacketFunctionV5) {
 		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
 
 		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V5-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
+		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-Dsa-V" +
+			std::to_string(version) + "-" +
+			(passphrase.size() > 0 ? ("Encrypted-") : "") +
+			toHexStr(publicPacket.keyId.byteVector) + ".asc";
 		std::ofstream privateKeyFile(keyFileName);
 		ByteBuffer out;
     out.append(secretPacket.encode());
@@ -174,34 +176,34 @@ TEST(KeyFormats, PacketFunctionV5) {
 }
 
 
-TEST(KeyFormats, PacketFunctionV5Encrypted) {
-	for (const auto& testCase : testCases) {
-		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
-		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
+// TEST(KeyFormats, PacketFunctionV5Encrypted) {
+// 	for (const auto& testCase : testCases) {
+// 		const auto privateKeyBytes = ByteBuffer::fromHex(testCase.privateKeyHex);
+// 		const auto sk = SigningKey(SodiumBuffer(privateKeyBytes.byteVector), "");
 
-		const UserPacket userPacket(testCase.name, testCase.email);
-		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
+// 		const UserPacket userPacket(testCase.name, testCase.email);
+// 		ASSERT_STRCASEEQ(userPacket.encode().toHex().c_str(), testCase.userIdPacketHex.c_str());
 
-		EdDsaKeyConfiguration configuration;
-		configuration.version = VERSION_5;
-		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
-		ByteBuffer encodedPublicPacket = publicPacket.encode();
+// 		EdDsaKeyConfiguration configuration;
+// 		configuration.version = VERSION_5;
+// 		EdDsaPublicPacket publicPacket(ByteBuffer::fromHex(testCase.publicKeyHex), testCase.timestamp, configuration);
+// 		ByteBuffer encodedPublicPacket = publicPacket.encode();
 
-		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp, "yollama");
+// 		SecretKeyPacket secretPacket(publicPacket, privateKeyBytes, testCase.timestamp, "yollama");
 
-		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
+// 		const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, sk, userPacket, publicPacket, testCase.timestamp);
 
-		fs::create_directories(testResultsDirectoryPath);
-		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V5-Encrypted-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
-		std::ofstream privateKeyFile(keyFileName);
-		ByteBuffer out;
-    out.append(secretPacket.encode());
-    out.append(userPacket.encode());
-    out.append(signaturePacket.encode());
-    const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
-		privateKeyFile << ascData;
-	}
-}
+// 		fs::create_directories(testResultsDirectoryPath);
+// 		const std::string keyFileName = testResultsDirectoryPath + "/PrivateKey-V5-Encrypted-" + toHexStr(publicPacket.keyId.byteVector) + ".asc";
+// 		std::ofstream privateKeyFile(keyFileName);
+// 		ByteBuffer out;
+//     out.append(secretPacket.encode());
+//     out.append(userPacket.encode());
+//     out.append(signaturePacket.encode());
+//     const std::string ascData = asciiArmor("PGP PRIVATE KEY BLOCK", out);
+// 		privateKeyFile << ascData;
+// 	}
+// }
 
 TEST(KeyFormats, SigningKeyConstructor) {
 	for (const auto& testCase : testCases) {
