@@ -145,33 +145,33 @@ const ByteBuffer createSecretKeyPacketBody(
 ) {
   ByteBuffer packetBody;
   const KeyConfiguration& keyConfiguration = publicKeyPacket.keyConfiguration;
-// 5.5.1.3.  Secret-Key Packet (Tag 5)
-//
-//    A Secret-Key packet contains all the information that is found in a
-//    Public-Key packet, including the public-key material, but also
-//    includes the secret-key material after all the public-key fields.
-  packetBody.append(publicKeyPacket.body);
-  // 5.5.3.  Secret-Key Packet Formats
-
-  // |    The Secret-Key and Secret-Subkey packets contain all the data of the
-  // |    Public-Key and Public-Subkey packets, with additional algorithm-
-  // |    specific secret-key data appended, usually in encrypted form.
+  // | 5.5.3.  Secret-Key Packet Formats
   // |
-  // |    The packet contains:
+  // |  The Secret-Key and Secret-Subkey packets contain all the data of the
+  // |  Public-Key and Public-Subkey packets, with additional algorithm-
+  // |  specific secret-key data appended, usually in encrypted form.
+  // |
+  // |  The packet contains:
   // |
   // |    *  A Public-Key or Public-Subkey packet, as described above.
+  packetBody.append(publicKeyPacket.body);
 
-  // |  *  One octet indicating string-to-key usage conventions.  Zero
-  // |     indicates that the secret-key data is not encrypted. 255 or 254
-  // |     indicates that a string-to-key specifier is being given.  Any
-  // |     other value is a symmetric-key encryption algorithm identifier.  A
-  // |     version 5 packet MUST NOT use the value 255.
+  // |    *  One octet indicating string-to-key usage conventions.  Zero
+  // |       indicates that the secret-key data is not encrypted. 255 or 254
+  // |       indicates that a string-to-key specifier is being given.  Any
+  // |       other value is a symmetric-key encryption algorithm identifier.  A
+  // |       version 5 packet MUST NOT use the value 255.
   const bool encrypt = passphrase.size() > 0;
   packetBody.writeByte(encrypt ? SECRET_KEY_ENCRYPTION_ON : SECRET_KEY_ENCRYPTION_OFF);
 
-  if (keyConfiguration.version == VERSION_5) {
+  if (keyConfiguration.version >= VERSION_5) {
     // |  *  Only for a version 5 packet, a one-octet scalar octet count of the
-    // |    next 4 optional fields.
+    // |     next 4 optional fields.
+    // SpecFeedback "Only for a version 5 packet", sometimes "V5 packet".
+    //    Makes it very hard to search for changes between v4 and v5.
+    // SpecFeedback: Um, there are only three fields below.  They seem
+    // like an all-or-nothing deal, too.
+    // FIXME -- confirm this is 4 and that the two octets below count as 1
     packetBody.writeByte(encrypt ? 4 : 0);
   }
 
@@ -216,11 +216,15 @@ const ByteBuffer createSecretKeyPacketBody(
       // |      of all octets, mod 65536).  ...
     ByteBuffer::concat(wrappedSecretKey, calculateCheckSumOfWrappedSecretKey(wrappedSecretKey));
 
-  if (keyConfiguration.version == VERSION_5) {
+  if (keyConfiguration.version >= VERSION_5) {
     // |  *  Only for a version 5 packet, a four-octet scalar octet count for
     // |     the following secret key material.  This includes the encrypted
     // |     SHA-1 hash or AEAD tag if the string-to-key usage octet is 254 or
     // |     253.
+    // SpecFeedback: Not clear whether to included the two-byte hash in the length,
+    // especially since this is an iff not an if.
+    // FIXME -- confirm this is right.
+    // packetBody.write32Bits(encrypt ? keyDataOptionallyEncrypted.size() : wrappedSecretKey.size());
     packetBody.write32Bits(keyDataOptionallyEncrypted.size());
   }
 

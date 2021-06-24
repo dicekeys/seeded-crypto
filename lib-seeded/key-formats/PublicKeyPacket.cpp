@@ -127,54 +127,39 @@ const ByteBuffer createEdDsaPublicPacketBody(
   return packetBody;
 }
 
-const ByteBuffer createEdDsaPublicPacketV4HashPreimage(const ByteBuffer& publicPacketBody) {
+const ByteBuffer createPublicPacketHashPreimage(const KeyConfiguration &keyConfiguration, const ByteBuffer& publicPacketBody) {
   ByteBuffer preImage;
-  // 5.2.4.  Computing Signatures
-  // ...
-  //  When a V4 signature is made over a key, the hash data starts with the
-  //  octet 0x99, followed by a two-octet length of the key, and then body
-  //  of the key packet;
-  preImage.writeByte(START_V4_SIGNATURE_PREIMAGE); // 0x99
-  preImage.write16Bits(publicPacketBody.size()); // 2 octets
-  preImage.append(publicPacketBody);
-  return preImage;
-}
-
-
-// A V4 fingerprint is the 160-bit SHA-1 hash of the octet 0x99,
-// followed by the two-octet packet length, followed by the entire
-// Public-Key packet starting with the version field.
-const ByteBuffer getPublicKeyV4FingerprintFromPreImage(const ByteBuffer& preImage) {
-  return preImage.SHA1();
-}
-
-  const ByteBuffer createEdDsaPublicPacketV5HashPreimage(const ByteBuffer& publicPacketBody) {
-  ByteBuffer preImage;
+  // |   5.2.4.  Computing Signatures
+  // |   ...
+  // |    When a V4 signature is made over a key, the hash data starts with the
+  // |    octet 0x99, followed by a two-octet length of the key, and then body
+  // |    of the key packet;
+  // | ...
   // |    A V5 fingerprint is the 256-bit SHA2-256 hash of the octet 0x9A,
   // |    followed by the four-octet packet length, followed by the entire
   // |    Public-Key packet starting with the version field.  The Key ID is the
   // |    high-order 64 bits of the fingerprint.  Here are the fields of the
   // |    hash material, with the example of a DSA key:
-  //
-  // |    a.1) 0x9A (1 octet)
-  preImage.writeByte(START_V5_SIGNATURE_PREIMAGE); // 0x9a
-  //
-  // |    a.2) four-octet scalar octet count of (b)-(f)
-  preImage.write32Bits(publicPacketBody.size()); // 4 octets
-  // |    b) version number = 5 (1 octet);
-  //
-  // |    c) timestamp of key creation (4 octets);
-  //
-  // |    d) algorithm (1 octet): 17 = DSA (example);
-  //
-  // |    e) four-octet scalar octet count for the following key material;
-  //
-  // |    f) algorithm-specific fields.
-  //
-  // The spec for (b)-(f) mirrors the spec for the packet body, so we just copy
-  // the packet body into pre-image here.
+  preImage.writeByte(keyConfiguration.version > 4 ? START_V5_SIGNATURE_PREIMAGE : START_V4_SIGNATURE_PREIMAGE); // 0x99
+  if (keyConfiguration.version > 4) {
+    preImage.write32Bits(publicPacketBody.size()); // 4 octets for V5+
+  } else {
+    preImage.write16Bits(publicPacketBody.size()); // 2 octets for V4
+  }
   preImage.append(publicPacketBody);
   return preImage;
+}
+
+
+const ByteBuffer getPublicKeyFingerprintFromPreimage(const KeyConfiguration &keyConfiguration, const ByteBuffer& preImage) {
+  if (keyConfiguration.version > 4) {
+    return preImage.SHA2_256();   
+  } else {
+    // A V4 fingerprint is the 160-bit SHA-1 hash of the octet 0x99,
+    // followed by the two-octet packet length, followed by the entire
+    // Public-Key packet starting with the version field.
+    return preImage.SHA1();
+  }
 }
 
 const ByteBuffer getPublicKeyV5FingerprintFromPreImage(const ByteBuffer& preImage) {
@@ -183,16 +168,16 @@ const ByteBuffer getPublicKeyV5FingerprintFromPreImage(const ByteBuffer& preImag
 
 // 12.2
 // The Key ID is the low-order 64 bits of the fingerprint.
-const ByteBuffer getPublicKeyIdFromFingerprint(const uint8_t version, const ByteBuffer& publicKeyFingerprint) {
+const ByteBuffer getPublicKeyIdFromFingerprint(const KeyConfiguration &keyConfiguration, const ByteBuffer& publicKeyFingerprint) {
   //  |   12.2.  Key IDs and Fingerprints
   //  |   ...
-  if (version == VERSION_4) {
+  if (keyConfiguration.version == VERSION_4) {
     //  |   A V4 fingerprint is ... [fingerprint calculation elsewhere in code]
     //  |   The Key ID is the
     //  |   low-order 64 bits of the fingerprint.
     //      ^^^^^^^^^
     return publicKeyFingerprint.slice(publicKeyFingerprint.size() - 8, 8);
-  } else if (version == VERSION_5) {
+  } else if (keyConfiguration.version == VERSION_5) {
     //  |   A V5 fingerprint is ... [fingerprint calculation elsewhere in code]
     //  |   The Key ID is the
     //  |   high-order 64 bits of the fingerprint.
@@ -215,15 +200,9 @@ PublicKeyPacket::PublicKeyPacket(
   publicKeyInEdDsaPointFormat(encodePublicKeyBytesToEccCompressedPointFormat(publicKeyBytes)),
   timestamp(_timestamp),
   body(createEdDsaPublicPacketBody(keyConfiguration, publicKeyInEdDsaPointFormat, timestamp)),
-  preImage(keyConfiguration.version == VERSION_4 ?
-    createEdDsaPublicPacketV4HashPreimage(body) :
-    createEdDsaPublicPacketV5HashPreimage(body)
-  ),
-  fingerprint(keyConfiguration.version == VERSION_4 ?
-    getPublicKeyV4FingerprintFromPreImage(preImage) :
-    getPublicKeyV5FingerprintFromPreImage(preImage)    
-  ),
-  keyId(getPublicKeyIdFromFingerprint(keyConfiguration.version, fingerprint))
+  preImage(createPublicPacketHashPreimage(keyConfiguration, body)),
+  fingerprint(getPublicKeyFingerprintFromPreimage(keyConfiguration, preImage)),
+  keyId(getPublicKeyIdFromFingerprint(keyConfiguration, fingerprint))
 {};
 
 const ByteBuffer& PublicKeyPacket::getBody() const { return body; }

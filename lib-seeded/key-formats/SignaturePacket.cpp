@@ -56,36 +56,36 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
   const KeyConfiguration &keyConfiguration
 ) {
     ByteBuffer packetBody;
-    // 5.2.3.  Version 4 and 5 Signature Packet Formats
-    //   The body of a V4 or V5 Signature packet contains:
+    // |  5.2.3.  Version 4 and 5 Signature Packet Formats
+    // |    The body of a V4 or V5 Signature packet contains:
 
-    // *  One-octet version number.  This is 4 for V4 signatures and 5 for
-    //     V5 signatures.
+    // |  *  One-octet version number.  This is 4 for V4 signatures and 5 for
+    // |      V5 signatures.
     packetBody.writeByte(keyConfiguration.version);
 
-    // *  One-octet signature type.
-    //       5.2.1.  Signature Types
-    //       ...
-    //       0x13: Positive certification of a User ID and Public - Key packet.
-    //             The issuer of this certification has done substantial verification
-    //             of the claim of identity.Most OpenPGP implementations make their
-    //             "key signatures" as 0x10 certifications.Some implementations can
-    //             issue 0x11 - 0x13 certifications, but few differentiate between the
-    //             types.
-    packetBody.writeByte(signatureType); //   signatureType: "Positive certification of a User ID and Public-Key packet. (0x13)"
+    // |  *  One-octet signature type.
+    // |        5.2.1.  Signature Types
+    // |        ...
+    // |        0x13: Positive certification of a User ID and Public - Key packet.
+    // |              The issuer of this certification has done substantial verification
+    // |              of the claim of identity.Most OpenPGP implementations make their
+    // |              "key signatures" as 0x10 certifications.Some implementations can
+    // |              issue 0x11 - 0x13 certifications, but few differentiate between the
+    // |              types.
+    packetBody.writeByte(signatureType);
 
-    // *  One-octet public-key algorithm.
+    // |  *  One-octet public-key algorithm.
     packetBody.writeByte(ALGORITHM_ED_DSA);
     
-    // *  One-octet hash algorithm.
+    // |  *  One-octet hash algorithm.
     packetBody.writeByte(ALGORITHM_HASH_SHA_256);
 
-    //  *  Two-octet scalar octet count for following hashed subpacket data.
-    //     Note that this is the length in octets of all of the hashed
-    //     subpackets; a pointer incremented by this number will skip over
-    //     the hashed subpackets.
+    // |   *  Two-octet scalar octet count for following hashed subpacket data.
+    // |      Note that this is the length in octets of all of the hashed
+    // |      subpackets; a pointer incremented by this number will skip over
+    // |      the hashed subpackets.
 
-    //  *  Hashed subpacket data set (zero or more subpackets).
+    // |   *  Hashed subpacket data set (zero or more subpackets).
     ByteBuffer hashedSubpackets = createSubpacketsToBeSigned(pubicKeyFingerprint, timestamp, keyConfiguration);
     packetBody.write16Bits(hashedSubpackets.size()); // hashed_area_len
     packetBody.append(hashedSubpackets);
@@ -95,28 +95,41 @@ const ByteBuffer createSignaturePacketBodyIncludedInSignatureHash(
 
 
 const ByteBuffer createSignaturePacketHashPreImage(
+  const KeyConfiguration &keyConfiguration,
   const PublicKeyPacket& publicKeyPacket,
   const UserPacket& userPacket,
   const ByteBuffer& signaturePacketBodyIncludedInHash
 ) {
   ByteBuffer preImage;
-  // 5.2.3.  Version 4 and 5 Signature Packet Formats
-  // ...
-  //  The concatenation of the data being signed and the signature data
-  //  from the version number through the hashed subpacket data (inclusive)
-  //  is hashed.
+  // | 5.2.3.  Version 4 and 5 Signature Packet Formats
+  // | ...
+  // |  The concatenation of the data being signed and the signature data
+  // |  from the version number through the hashed subpacket data (inclusive)
+  // |  is hashed.
   preImage.append(publicKeyPacket.preImage);
   preImage.append(userPacket.getPreImage());
   preImage.append(signaturePacketBodyIncludedInHash);
-  // 5.2.4. Computing Signatures
-  // (the above function takes us to the end of the line that includes "the hashed subpacket body")
-  // ...
-  //   -  the two octets 0x04 and 0xFF,
-  preImage.writeByte(publicKeyPacket.keyConfiguration.version);
-  preImage.writeByte(0xff);
-  //   -  a four-octet big-endian number that is the length of the hashed
-  //      data from the Signature packet stopping right before the 0x04,
-  //      0xff octets
+  // | 5.2.4. Computing Signatures
+  // | (the above function takes us to the end of the line that includes "the hashed subpacket body")
+  // | ...
+  // [V4 ONLY] |  -  the two octets 0x04 and 0xFF
+  // [V5 ONLY| |  -  the two octets 0x05 and 0xFF,
+    preImage.writeByte(keyConfiguration.version);
+    preImage.writeByte(0xff);
+  if (keyConfiguration.version > VERSION_4) {
+    // Buried in 5.2.4 of the spec, in a long list of items that go in V4 and V5 signatures,
+    // is the fact that V4 
+    // The length field is documented as 4 octets for V4 signatures and
+    // 8 octets for V5 signatures.
+    // |  -  a [four (V4)/eight (V5)-octet big-endian number that is the length of the
+    // |     hashed data from the Signature packet stopping right before the
+    // |     [0x04 0xff if V4, 0x05 0xff if V5] octets.
+    // (Thanks spec writers for forcing the reader to do a diff to find this difference!)
+
+    // The first 4 octets of an 8-byte counter will be zero because we are not
+    // supporting 4GB+ files.
+    preImage.write32Bits(0);
+  }
   preImage.write32Bits(signaturePacketBodyIncludedInHash.size());
   return preImage;
 }
@@ -195,7 +208,7 @@ SignaturePacket::SignaturePacket(
   signatureType(_signatureType),
   timestamp(_timestamp),
   packetBodyIncludedInSignatureHash(createSignaturePacketBodyIncludedInSignatureHash(_signatureType, publicKeyPacket.fingerprint, _timestamp, publicKeyPacket.keyConfiguration)),
-  signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
+  signatureHashPreImage(createSignaturePacketHashPreImage(publicKeyPacket.keyConfiguration, publicKeyPacket, userPacket, packetBodyIncludedInSignatureHash)),
   signatureHashSha256(createSignatureHashSHA256(signatureHashPreImage)),
   signature(createSignature(signingKey, signatureHashSha256)),
   unhashedSubpacketsWithSizePrefix(createUnhashedSubpacketsWithSizePrefix(publicKeyPacket.keyId)),
