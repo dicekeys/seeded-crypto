@@ -124,7 +124,6 @@ const ByteBuffer createSignaturePacketHashPreImage(
     // |  -  a [four (V4)/eight (V5)-octet big-endian number that is the length of the
     // |     hashed data from the Signature packet stopping right before the
     // |     [0x04 0xff if V4, 0x05 0xff if V5] octets.
-    // (Thanks spec writers for forcing the reader to do a diff to find this difference!)
 
     // The first 4 octets of an 8-byte counter will be zero because we are not
     // supporting 4GB+ files.
