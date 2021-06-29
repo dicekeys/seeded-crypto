@@ -6,6 +6,7 @@ var class_unsealing_key =
     [ "UnsealingKey", "class_unsealing_key.html#a2a7f4946a7a7746fe93dbf9ec76f10d8", null ],
     [ "getSealingKey", "class_unsealing_key.html#a6a270e0fc1af19cc12ebbb341d6e6201", null ],
     [ "toJson", "class_unsealing_key.html#ad8961337d073ec59e57c5ea3fc660ce3", null ],
+    [ "toOpenPgpAsciiArmoredFormat", "class_unsealing_key.html#a87d7cb7307d0bdc4d3a1cf6669934998", null ],
     [ "toSerializedBinaryForm", "class_unsealing_key.html#a4e4da8c47783a9be54747ef0fbad4e71", null ],
     [ "unseal", "class_unsealing_key.html#a2b541488b48be70d5afe6a83d61cded4", null ],
     [ "unseal", "class_unsealing_key.html#a3ad8c9e2b24486fe85ca39c8e8b44383", null ],

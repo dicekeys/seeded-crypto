@@ -2,6 +2,7 @@
 
 #include "sodium-buffer.hpp"
 #include "sealing-key.hpp"
+#include "key-formats/KeyConfiguration.hpp"
 
 /**
  * @brief an UnsealingKey is used to _unseal_ messages sealed with its
@@ -203,5 +204,21 @@ public:
    */
   static UnsealingKey fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm);
 
-
+  /**
+   * @brief Encodes the (private) unsealing key into a PGP ascii armored block per RFC4880.
+   * 
+   * @param UserIdPacketContent The userId to associate with the key
+   * (typically a name followed by an email in arrow brackets), such as
+   * Mika Jung <mika@leiajung.org>.
+   * @param timestamp Unix timeof creation (number of seconds since Jan 1 1970 UTC)
+   * @param keyConfiguration encoding options, including the GPG version to use
+   * and which encryption/hash algorithms to advertise.
+   * 
+   * @return const std::string The app-armored RFC4880 encoded key.
+   */
+  const std::string toOpenPgpAsciiArmoredFormat(
+    const std::string& UserIdPacketContent,
+    uint32_t timestamp,
+    const EcDhKeyConfiguration keyConfiguration = EcDhKeyConfiguration()
+  ) const;
 };

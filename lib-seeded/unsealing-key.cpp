@@ -5,6 +5,11 @@
 #include "convert.hpp"
 #include "exceptions.hpp"
 #include "common-names.hpp"
+#include "key-formats/PublicKeyPacket.hpp"
+#include "key-formats/SecretKeyPacket.hpp"
+#include "key-formats/SignaturePacket.hpp"
+#include "key-formats/UserPacket.hpp"
+#include "key-formats/asciiArmor.hpp"
 
 UnsealingKey::UnsealingKey(
     const SodiumBuffer _unsealingKeyBytes,
@@ -150,4 +155,29 @@ const SodiumBuffer UnsealingKey::toSerializedBinaryForm() const {
 UnsealingKey UnsealingKey::fromSerializedBinaryForm(const SodiumBuffer &serializedBinaryForm) {
   const auto fields = serializedBinaryForm.splitFixedLengthList(3);
   return UnsealingKey(fields[0], fields[1].toVector(), fields[2].toUtf8String());
+}
+
+const std::string UnsealingKey::toOpenPgpAsciiArmoredFormat(
+  const std::string& userIdPacketContent,
+  uint32_t timestamp,
+  const EcDhKeyConfiguration keyConfiguration
+) const {
+    const ByteBuffer privateKey(unsealingKeyBytes);
+    const ByteBuffer publicKey(sealingKeyBytes);
+
+    // Create a signing key for the purpose of self-signing,
+    // using the unsealing key bytes (in hex format) as the seed.
+    SigningKey signingKey = SigningKey::deriveFromSeed(toHexStr(unsealingKeyBytes.toVector()), recipe);
+
+    ByteBuffer out;
+    const EcDhPublicPacket publicKeyPacket(publicKey, timestamp, keyConfiguration);
+    const SecretKeyPacket secretPacket(publicKeyPacket, privateKey, timestamp);
+    const UserPacket userPacket(userIdPacketContent);
+//    const SignaturePacket signaturePacket(SIGNATURE_TYPE_USER_ID_AND_PUBLIC_KEY_GENERIC, signingKey, userPacket, publicKeyPacket, timestamp);
+
+    out.append(secretPacket.encode());
+    out.append(userPacket.encode());
+//    out.append(signaturePacket.encode());
+
+    return asciiArmor("PGP PRIVATE KEY BLOCK", out, recipe);
 }

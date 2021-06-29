@@ -9,7 +9,7 @@ var class_signing_key =
     [ "getSignatureVerificationKey", "class_signing_key.html#a820b7e090433f7e7ebad5ea691356c4b", null ],
     [ "getSignatureVerificationKeyBytes", "class_signing_key.html#affa52eb5128fbae4456866344a0e6562", null ],
     [ "toJson", "class_signing_key.html#a586ebeef4ff3790ab2f15efeeaca6b53", null ],
-    [ "toOpenPgpPemFormatSecretKey", "class_signing_key.html#a6c8f1db3eeec2f55eaab261f379c26f9", null ],
+    [ "toOpenPgpPemFormatSecretKey", "class_signing_key.html#aa9e4c6c4831328e6b974d3be90149763", null ],
     [ "toOpenSshPemPrivateKey", "class_signing_key.html#aaa214f2cdee46358666ae88734c72d97", null ],
     [ "toOpenSshPublicKey", "class_signing_key.html#aadeb8ef86c86bafb6373996cb415e935", null ],
     [ "toSerializedBinaryForm", "class_signing_key.html#aae3e30ba725366bd95e5142befe200a2", null ],

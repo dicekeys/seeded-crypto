@@ -2,15 +2,21 @@
 
 #include "ByteBuffer.hpp"
 #include "../signing-key.hpp"
+#include "PublicKeyPacket.hpp"
 
-const uint16_t calculateCheckSumOfWrappedSecretKey(const ByteBuffer &wrappedSecretKey);
-const ByteBuffer createEd25519SecretKeyPacket(
-      const ByteBuffer &secretKey,
-      const ByteBuffer &publicKey,
-      uint32_t timestamp
-);
+class SecretKeyPacket : public OpenPgpPacket {
+public:
+  const ByteBuffer secretKey;
+  const uint32_t timestamp;
+  const ByteBuffer body;
 
-const ByteBuffer createEd25519SecretKeyPacket(
-  const SigningKey& signingKey,
-  uint32_t timestamp
-);
+  SecretKeyPacket(
+    const PublicKeyPacket& publicKeyPacket,
+    const ByteBuffer& _secretKey,
+    uint32_t _timestamp,
+  const std::string &passphrase = ""
+  );
+
+  const ByteBuffer& getBody() const override;
+
+};

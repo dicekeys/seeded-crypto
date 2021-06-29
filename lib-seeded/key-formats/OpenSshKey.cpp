@@ -1,6 +1,6 @@
 #include "OpenSshKey.hpp"
 #include "../convert.hpp"
-#include "PEM.hpp"
+#include "asciiArmor.hpp"
 #include <sodium.h>
 
 class PgpByteBuffer : public ByteBuffer {
@@ -42,8 +42,8 @@ public:
 
         const int blockSize = 8; // for unencrypted is 8
 
-        const uint8_t paddingBytesNeeded = (blockSize - (size() % blockSize)) % blockSize;
-        for (uint8_t i = 1; i <= paddingBytesNeeded; i++) {
+        const ubyte paddingBytesNeeded = (blockSize - (size() % blockSize)) % blockSize;
+        for (ubyte i = 1; i <= paddingBytesNeeded; i++) {
             writeByte(i);
         }
     }
@@ -87,5 +87,5 @@ const std::string getOpenSshPemPrivateKeyEd25519(
   const std::string comment,
   uint32_t checksum
 ) {
-  return PEM("OPENSSH PRIVATE KEY", getOpenSSHPrivateKeyEd25519(signingKey, comment, checksum));
+  return asciiArmor("OPENSSH PRIVATE KEY", getOpenSSHPrivateKeyEd25519(signingKey, comment, checksum));
 }

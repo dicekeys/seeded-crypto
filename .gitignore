@@ -65,6 +65,8 @@ Browse.VC.db
 extern/**
 !extern/*.cmake
 builds
-.vscode/c_cpp_properties.json
 .vscode/settings.json
 documentation
+
+// Directory for storing c++ test results
+test-results/**
