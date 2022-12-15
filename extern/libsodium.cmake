@@ -143,6 +143,7 @@ add_library(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
         C_STANDARD 99
+        POSITION_INDEPENDENT_CODE ON
 )
 
 target_include_directories(${PROJECT_NAME}
